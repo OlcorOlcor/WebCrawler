@@ -1,4 +1,20 @@
 ###################
+# Rollup          #
+###################
+.DS_Store
+node_modules
+package-lock.json
+public/bundle*
+###################
+# Svelte          #
+###################
+.idea
+.DS_Store
+.vscode/*
+!.vscode/launch.json
+node_modules
+.eslintcache
+###################
 # compiled source #
 ###################
 *.com
