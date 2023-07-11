@@ -1,0 +1,14 @@
+{
+  "name": "SvelteApp",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "rollup -c rollup.config.js"
+  },
+  "devDependencies": {
+    "@rollup/plugin-node-resolve": "^11.2.0",
+    "eslint": "^8.44.0",
+    "rollup": "^2.39.0",
+    "rollup-plugin-svelte": "^7.1.0",
+    "svelte": "^3.32.3"
+  }
+}

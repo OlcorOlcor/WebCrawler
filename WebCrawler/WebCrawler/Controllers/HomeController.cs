@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using WebCrawler.Models;
 
@@ -10,6 +11,8 @@ namespace WebCrawler.Controllers {
             _logger = logger;
         }
         public IActionResult Index() {
+            this.ViewBag.Name = "Honza";
+            this.ViewData["Name"] = "Honza";
             return View();
         }
 

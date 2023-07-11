@@ -5,5 +5,9 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
-
+  
+  <Target Name="Rollup" BeforeTargets="Build">
+    <Exec Command="npm run build" />
+  </Target>
+  
 </Project>
