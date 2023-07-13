@@ -1,10 +1,15 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
+    ViewData["WRList"] = new List<WebsiteRecord>();
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Here will be list of given Website Records.</p>
+    <h2>Here is the list of current Website Records.</h2>
+    @{
+        //The view must contain Label, Periodicity, Tags, 
+        //time of last execution, the status of last execution.
+    }
 </div>
-<svelte-app id="khalid" name="Khalid" test="Ahoj"></svelte-app>
-<svelte-app id="paul" name="Paul"></svelte-app>
+
+<!-- <svelte-app id="khalid" name="Khalid" test="Ahoj"></svelte-app>
+<svelte-app id="paul" name="Paul"></svelte-app> -->

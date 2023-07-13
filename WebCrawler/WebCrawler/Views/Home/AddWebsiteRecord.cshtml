@@ -5,3 +5,24 @@
 
 <p>Use this page to add new website records.</p>
 
+<form action="">
+    <label for="url">Page URL:</label><br>
+    <input type="url" required placeholder="https://example.com" id="url" name="url" value=""><br>
+    
+    <label for="regex">Boundary Regular Expresion:</label><br>
+    <input type="text" required id="regex" name="regex" value=""><br><br>
+    
+    <label for="datetime">Periodicity(day,hour,minute):</label><br>
+    <input type="number" min="0" max="1000" id="datetime" name="days" value="">
+    <label>:</label>
+    <input type="number" min="0" max="59" id="datetime" name="hours" value="">
+    <label>:</label>
+    <input type="number" min="0" max="59" id="datetime" name="minutes" value=""><br><br>
+
+    <label for="label">Label:</label><br>
+    <input type="text" id="label" name="label" value=""><br><br>
+
+    <button action="">Add new Tag</button>
+
+    <input type="submit" value="Submit">
+</form> 
