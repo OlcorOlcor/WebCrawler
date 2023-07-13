@@ -53,12 +53,13 @@
 
 <div class="canvas">
     @{
-        if (ViewData["WRList"].Count == 0)
-        { }
+        if (((List<WebsiteRecord>)ViewData["WRList"]!).Count == 0)  {
+        
+        }
     }
     <h3>No Website Records added yet.</h3>
     <h3>Currently displaying graf for @{
-            ViewData["WRList"][ViewData["CurrentGrafIndex"].Name]
+            //((string)(((List<WebsiteRecord>)ViewData["WRList"]!)[((int)ViewData["CurrentGrafIndex"]!)]).Name);
 } </h3>
 </div>
 
