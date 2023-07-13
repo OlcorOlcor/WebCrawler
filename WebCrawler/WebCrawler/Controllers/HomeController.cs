@@ -26,6 +26,9 @@ namespace WebCrawler.Controllers {
         }
         [HttpPost]
         public IActionResult AddRecord(WebsiteRecord record) {
+            if (ViewBag["WRList"] is null) {
+                ViewBag["WRList"] = new List<WebsiteRecord>();
+            }
             //TODO: Do this better - prolly in another class
             ((List<WebsiteRecord>)ViewBag["WRList"]).Add(record);
             return View();
