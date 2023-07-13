@@ -10,9 +10,18 @@ namespace WebCrawler.Controllers {
         public HomeController(ILogger<HomeController> logger) {
             _logger = logger;
         }
+
         public IActionResult Index() {
             this.ViewBag.Name = "Honza";
             this.ViewData["Name"] = "Honza";
+            return View();
+        }
+
+        public IActionResult AddWebsiteRecord() {
+            return View();
+        }
+
+        public IActionResult AboutProject() {
             return View();
         }
 
