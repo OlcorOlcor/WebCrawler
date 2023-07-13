@@ -1,10 +1,45 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
     ViewData["WRList"] = new List<WebsiteRecord>();
+    void addTag(){
+
+    }
+    void createWebsiteRecord()
+    {
+        
+    }
 }
 
+<div class="form">
+    
+    <h3>Use this form to add new website records.</h3>
+
+    <form action="">
+        <label for="url">Page URL:</label><br>
+        <input type="url" required placeholder="https://example.com" id="url" name="url" value=""><br>
+
+        <label for="regex">Boundary Regular Expresion:</label><br>
+        <input type="text" required id="regex" name="regex" value=""><br><br>
+
+        <label for="datetime">Periodicity(day,hour,minute):</label><br>
+        <input type="number" min="0" max="1000" id="datetime" name="days" value="">
+        <label>:</label>
+        <input type="number" min="0" max="59" id="datetime" name="hours" value="">
+        <label>:</label>
+        <input type="number" min="0" max="59" id="datetime" name="minutes" value=""><br><br>
+
+        <label for="label">Label:</label><br>
+        <input type="text" id="label" name="label" value=""><br><br>
+
+        <button action="@{addTag();}">Add new Tag</button>
+
+        <button action="@{createWebsiteRecord();}">Create Website Record</button>
+    </form>
+
+</div>
+
 <div class="text-center">
-    <h2>Here is the list of current Website Records.</h2>
+    <h3>Here is the list of current Website Records.</h3>
     @{
         //The view must contain Label, Periodicity, Tags, 
         //time of last execution, the status of last execution.
