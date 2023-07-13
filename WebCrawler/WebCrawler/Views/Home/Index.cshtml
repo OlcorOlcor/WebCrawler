@@ -1,6 +1,9 @@
-﻿@{
+﻿@model WebCrawler.Models.WebsiteRecord
+@{
     ViewData["Title"] = "Home Page";
-    ViewData["WRList"] = new List<WebsiteRecord>();
+    if (ViewData["WRLIst"] is not null) {
+        ViewData["WRList"] = new List<WebsiteRecord>();
+    }
     ViewData["CurrentGrafIndex"] = 0;
 
     void addTag(){
@@ -17,22 +20,22 @@
     
     <h3>Use this form to add new website records.</h3>
 
-    <form action="">
-        <label for="url">Page URL:</label><br>
-        <input type="url" required placeholder="https://example.com" id="url" name="url" value=""><br>
+    <form asp-action="AddRecord" method="post">
+        <label asp-for="Url">Page URL:</label><br>
+        <input asp-for="Url" placeholder="https://example.com" id="url" name="Url"><br>
 
-        <label for="regex">Boundary Regular Expresion:</label><br>
-        <input type="text" required id="regex" name="regex" value=""><br><br>
+        <label asp-for="Regex">Boundary Regular Expresion:</label><br>
+        <input id="regex" asp-for="Regex"><br><br>
 
         <label for="datetime">Periodicity(day,hour,minute):</label><br>
-        <input type="number" min="0" max="1000" id="datetime" name="days" value="">
+        <input type="number" min="0" max="1000" id="datetime" asp-for="Days" value="">
         <label>:</label>
-        <input type="number" min="0" max="59" id="datetime" name="hours" value="">
+        <input type="number" min="0" max="59" id="datetime" asp-for="Hours" value="">
         <label>:</label>
-        <input type="number" min="0" max="59" id="datetime" name="minutes" value=""><br><br>
+        <input type="number" min="0" max="59" id="datetime" asp-for="Minutes" value=""><br><br>
 
-        <label for="label">Label:</label><br>
-        <input type="text" id="label" name="label" value=""><br><br>
+        <label asp-for="Label">Label:</label><br>
+        <input type="text" id="label" asp-for="Label" value=""><br><br>
 
         <button action="@{addTag();}">Add new Tag</button>
 
