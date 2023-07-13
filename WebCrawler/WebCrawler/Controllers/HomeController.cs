@@ -24,7 +24,12 @@ namespace WebCrawler.Controllers {
         public IActionResult AboutProject() {
             return View();
         }
-
+        [HttpPost]
+        public IActionResult AddRecord(WebsiteRecord record) {
+            //TODO: Do this better - prolly in another class
+            ((List<WebsiteRecord>)ViewBag["WRList"]).Add(record);
+            return View();
+        }
         public IActionResult Privacy() {
             return View();
         }
