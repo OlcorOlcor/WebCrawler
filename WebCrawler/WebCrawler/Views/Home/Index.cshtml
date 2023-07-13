@@ -1,18 +1,10 @@
 ﻿@model WebCrawler.Models.WebsiteRecord
 @{
     ViewData["Title"] = "Home Page";
-    if (ViewData["WRLIst"] is not null) {
-        ViewData["WRList"] = new List<WebsiteRecord>();
-    }
     ViewData["CurrentGrafIndex"] = 0;
 
     void addTag(){
 
-    }
-
-    void createWebsiteRecord()
-    {
-        
     }
 }
 
@@ -20,7 +12,7 @@
     
     <h3>Use this form to add new website records.</h3>
 
-    <form asp-action="AddRecord" method="post">
+    <form asp-controller="Home" asp-action="AddRecord" method="post">
         <label asp-for="Url">Page URL:</label><br>
         <input asp-for="Url" placeholder="https://example.com" id="url" name="Url"><br>
 
@@ -39,7 +31,7 @@
 
         <button action="@{addTag();}">Add new Tag</button>
 
-        <button action="@{createWebsiteRecord();}">Create Website Record</button>
+        <button type="submit">Create Website Record</button>
     </form>
 
 </div>
@@ -47,7 +39,22 @@
 <div class="list">
 
     <h3>Here is the list of current Website Records.</h3>
-
+    <table class="table table-striped">
+        <tr>
+            <td>Url</td>
+            <td>Regex</td>
+            <td>Periodicity</td>
+            <td>Label</td>
+        </tr>
+        @foreach (WebsiteRecord record in ViewBag.WRList) {
+            <tr>
+                <td>@record.Url</td>
+                <td>@record.Regex</td>
+                <td>@record.Days.ToString()d @record.Hours.ToString()h @record.Minutes.ToString()m</td>
+                <td>@record.Label</td>
+            </tr>
+        }
+    </table>
     @{
         //The view must contain Label, Periodicity, Tags, 
         //time of last execution, the status of last execution.
@@ -56,7 +63,7 @@
 
 <div class="canvas">
     @{
-        if (((List<WebsiteRecord>)ViewData["WRList"]!).Count == 0)  {
+        if (((List<WebsiteRecord>)ViewBag.WRList!).Count == 0) {
         
         }
     }
