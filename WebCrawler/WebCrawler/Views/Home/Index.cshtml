@@ -1,9 +1,12 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
     ViewData["WRList"] = new List<WebsiteRecord>();
+    ViewData["CurrentGrafIndex"] = 0;
+
     void addTag(){
 
     }
+
     void createWebsiteRecord()
     {
         
@@ -38,12 +41,25 @@
 
 </div>
 
-<div class="text-center">
+<div class="list">
+
     <h3>Here is the list of current Website Records.</h3>
+
     @{
         //The view must contain Label, Periodicity, Tags, 
         //time of last execution, the status of last execution.
     }
+</div>
+
+<div class="canvas">
+    @{
+        if (ViewData["WRList"].Count == 0)
+        { }
+    }
+    <h3>No Website Records added yet.</h3>
+    <h3>Currently displaying graf for @{
+            ViewData["WRList"][ViewData["CurrentGrafIndex"]]
+} </h3>
 </div>
 
 <!-- <svelte-app id="khalid" name="Khalid" test="Ahoj"></svelte-app>
