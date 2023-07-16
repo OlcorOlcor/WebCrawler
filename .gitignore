@@ -14,7 +14,7 @@ public/bundle*
 !.vscode/launch.json
 node_modules
 .eslintcache
-*/wwwrood/js/build/*
+*/wwwroot/js/build/*
 ###################
 # compiled source #
 ###################
