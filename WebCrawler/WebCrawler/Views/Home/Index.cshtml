@@ -39,22 +39,28 @@
 <div class="list">
 
     <h3>Here is the list of current Website Records.</h3>
-    <table class="table table-striped">
-        <tr>
-            <td>Url</td>
-            <td>Regex</td>
-            <td>Periodicity</td>
-            <td>Label</td>
-        </tr>
-        @foreach (WebsiteRecord record in ViewBag.WRList) {
+    @if (ViewBag.WRList.Count != 0) {
+        <table class="table table-striped">
             <tr>
-                <td>@record.Url</td>
-                <td>@record.Regex</td>
-                <td>@record.Days.ToString()d @record.Hours.ToString()h @record.Minutes.ToString()m</td>
-                <td>@record.Label</td>
+                <td>Url</td>
+                <td>Regex</td>
+                <td>Periodicity</td>
+                <td>Label</td>
             </tr>
-        }
-    </table>
+            @foreach (WebsiteRecord record in ViewBag.WRList) {
+                <tr>
+                    <td>@record.Url</td>
+                    <td>@record.Regex</td>
+                    <td>@record.Days.ToString()d @record.Hours.ToString()h @record.Minutes.ToString()m</td>
+                    <td>@record.Label</td>
+                </tr>
+            }
+        </table>
+    }
+    else {
+        <h4>No Website Records added yet.</h4>
+        <hr/>
+    }
     @{
         //The view must contain Label, Periodicity, Tags, 
         //time of last execution, the status of last execution.
@@ -67,7 +73,6 @@
         
         }
     }
-    <h3>No Website Records added yet.</h3>
     <h3>Currently displaying graf for @{
             //((string)(((List<WebsiteRecord>)ViewData["WRList"]!)[((int)ViewData["CurrentGrafIndex"]!)]).Name);
 } </h3>
