@@ -1,6 +1,6 @@
 ﻿namespace WebCrawler.Models {
     public class WebsiteRecord {
-        public int Id { get; set; } 
+        public int Id { get; init; } 
         public string Url { get; set; }
         public string Regex { get; set; }
         public int Days { get; set; }
