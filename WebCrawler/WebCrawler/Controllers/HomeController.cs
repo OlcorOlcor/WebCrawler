@@ -6,7 +6,7 @@ using WebCrawler.Models;
 namespace WebCrawler.Controllers {
     public class HomeController : Controller {
         private readonly ILogger<HomeController> _logger;
-        private static List<WebsiteRecord> _records = new();
+        private static WebsiteRecordRepository repo = new WebsiteRecordRepository();
         public HomeController(ILogger<HomeController> logger) {
             _logger = logger;
         }
@@ -14,7 +14,7 @@ namespace WebCrawler.Controllers {
         public IActionResult Index() {
             this.ViewBag.Name = "Honza";
             this.ViewData["Name"] = "Honza";
-            this.ViewBag.WRList = _records;
+            this.ViewBag.WRList = repo.GetAll();
             return View();
         }
 
@@ -27,8 +27,7 @@ namespace WebCrawler.Controllers {
         }
         [HttpPost]
         public IActionResult AddRecord(WebsiteRecord record) {
-            //TODO: Do this better - prolly in another class
-            _records.Add(record);
+            repo.Add(record);
             return Redirect("Index");
         }
         public IActionResult Privacy() {
