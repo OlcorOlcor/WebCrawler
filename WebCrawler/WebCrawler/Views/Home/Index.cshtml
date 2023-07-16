@@ -6,51 +6,53 @@
     void addTag(){
 
     }
-}
-
-<div class="form">
-    
-    <h3>Use this form to add new website records.</h3>
-
-    <form asp-controller="Home" asp-action="AddRecord" method="post">
-        <div class="form-group">
-            <label asp-for="Url">Page URL:</label>
-            <input asp-for="Url" class="form-control" placeholder="https://example.com" id="url" name="Url">
-        </div>
-        <div class="form-group">
-            <label asp-for="Regex">Boundary Regular Expresion:</label>
-            <input id="regex" class="form-control" asp-for="Regex">
-        </div>
-        <label for="time">Periodicity:</label>
-        <div id="time" class="form-group row">
-            <div class="col-sm">
-                <small><label for="days">Days</label></small>
-                <input class="form-control" type="number" min="0" max="1000" id="days" asp-for="Days" value="">
+}   
+<button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#WebRecordForm" aria-expanded="false" aria-controls="WebRecordForm">
+    Add Website
+</button>
+<div class="collapse" id="WebRecordForm">
+    <div class="card card-body" style="margin-top: 30px">
+        <h3>Use this form to add new website records.</h3>
+        <form asp-controller="Home" asp-action="AddRecord" method="post">
+            <div class="form-group">
+                <label asp-for="Url">Page URL:</label>
+                <input asp-for="Url" class="form-control" placeholder="https://example.com" id="url" name="Url">
             </div>
-            <div class="col-sm">
-                <small><label for="hours">Hours</label></small>
-                <input class="form-control" type="number" min="0" max="59" id="hours" asp-for="Hours" value="">
+            <div class="form-group">
+                <label asp-for="Regex">Boundary Regular Expresion:</label>
+                <input id="regex" class="form-control" asp-for="Regex">
             </div>
-            <div class="col-sm">
-                <small><label for="minutes">Minutes</label></small>
-                <input class="form-control" type="number" min="0" max="59" id="minutes" asp-for="Minutes" value="">
+            <label for="time">Periodicity:</label>
+            <div id="time" class="form-group row">
+                <div class="col-sm">
+                    <small><label for="days">Days</label></small>
+                    <input class="form-control" type="number" min="0" max="1000" id="days" asp-for="Days" value="">
+                </div>
+                <div class="col-sm">
+                    <small><label for="hours">Hours</label></small>
+                    <input class="form-control" type="number" min="0" max="59" id="hours" asp-for="Hours" value="">
+                </div>
+                <div class="col-sm">
+                    <small><label for="minutes">Minutes</label></small>
+                    <input class="form-control" type="number" min="0" max="59" id="minutes" asp-for="Minutes" value="">
+                </div>
             </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Label">Label:</label>
-            <input class="form-control" type="text" id="label" asp-for="Label" value="">
-        </div>
-        <div class="row" style="margin-top: 20px">
-            <div class="col-sm">
-                <button class="btn btn-dark" style="width: 100%" action="@{addTag();}">Add new Tag</button>
+            <div class="form-group">
+                <label asp-for="Label">Label:</label>
+                <input class="form-control" type="text" id="label" asp-for="Label" value="">
             </div>
-            <div class="col-sm">
-                <button class="btn btn-dark" style="width: 100%" type="submit">Create Website Record</button>
+            <div class="row" style="margin-top: 20px">
+                <div class="col-sm">
+                    <button class="btn btn-dark" style="width: 100%" action="@{addTag();}">Add new Tag</button>
+                </div>
+                <div class="col-sm">
+                    <button class="btn btn-dark" style="width: 100%" type="submit">Create Website Record</button>
+                </div>
             </div>
-        </div>
-    </form>
-
+        </form>
+    </div>
 </div>
+
 
 <div class="list">
 
