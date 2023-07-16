@@ -13,25 +13,41 @@
     <h3>Use this form to add new website records.</h3>
 
     <form asp-controller="Home" asp-action="AddRecord" method="post">
-        <label asp-for="Url">Page URL:</label><br>
-        <input asp-for="Url" placeholder="https://example.com" id="url" name="Url"><br>
-
-        <label asp-for="Regex">Boundary Regular Expresion:</label><br>
-        <input id="regex" asp-for="Regex"><br><br>
-
-        <label for="datetime">Periodicity(day,hour,minute):</label><br>
-        <input type="number" min="0" max="1000" id="datetime" asp-for="Days" value="">
-        <label>:</label>
-        <input type="number" min="0" max="59" id="datetime" asp-for="Hours" value="">
-        <label>:</label>
-        <input type="number" min="0" max="59" id="datetime" asp-for="Minutes" value=""><br><br>
-
-        <label asp-for="Label">Label:</label><br>
-        <input type="text" id="label" asp-for="Label" value=""><br><br>
-
-        <button action="@{addTag();}">Add new Tag</button>
-
-        <button type="submit">Create Website Record</button>
+        <div class="form-group">
+            <label asp-for="Url">Page URL:</label>
+            <input asp-for="Url" class="form-control" placeholder="https://example.com" id="url" name="Url">
+        </div>
+        <div class="form-group">
+            <label asp-for="Regex">Boundary Regular Expresion:</label>
+            <input id="regex" class="form-control" asp-for="Regex">
+        </div>
+        <label for="time">Periodicity:</label>
+        <div id="time" class="form-group row">
+            <div class="col-sm">
+                <small><label for="days">Days</label></small>
+                <input class="form-control" type="number" min="0" max="1000" id="days" asp-for="Days" value="">
+            </div>
+            <div class="col-sm">
+                <small><label for="hours">Hours</label></small>
+                <input class="form-control" type="number" min="0" max="59" id="hours" asp-for="Hours" value="">
+            </div>
+            <div class="col-sm">
+                <small><label for="minutes">Minutes</label></small>
+                <input class="form-control" type="number" min="0" max="59" id="minutes" asp-for="Minutes" value="">
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Label">Label:</label>
+            <input class="form-control" type="text" id="label" asp-for="Label" value="">
+        </div>
+        <div class="row" style="margin-top: 20px">
+            <div class="col-sm">
+                <button class="btn btn-dark" style="width: 100%" action="@{addTag();}">Add new Tag</button>
+            </div>
+            <div class="col-sm">
+                <button class="btn btn-dark" style="width: 100%" type="submit">Create Website Record</button>
+            </div>
+        </div>
     </form>
 
 </div>
