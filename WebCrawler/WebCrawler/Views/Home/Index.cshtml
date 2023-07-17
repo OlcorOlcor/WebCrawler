@@ -1,10 +1,100 @@
-﻿@{
+﻿@model WebCrawler.Models.WebsiteRecord
+@{
     ViewData["Title"] = "Home Page";
-}
+    ViewData["CurrentGrafIndex"] = 0;
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    void addTag(){
+
+    }
+}   
+<button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#WebRecordForm" aria-expanded="false" aria-controls="WebRecordForm">
+    Add Website
+</button>
+<div class="collapse" id="WebRecordForm">
+    <div class="card card-body" style="margin-top: 30px">
+        <h3>Use this form to add new website records.</h3>
+        <form asp-controller="Home" asp-action="AddRecord" method="post">
+            <div class="form-group">
+                <label asp-for="Url">Page URL:</label>
+                <input asp-for="Url" class="form-control" placeholder="https://example.com" id="url" name="Url">
+            </div>
+            <div class="form-group">
+                <label asp-for="Regex">Boundary Regular Expresion:</label>
+                <input id="regex" class="form-control" asp-for="Regex">
+            </div>
+            <label for="time">Periodicity:</label>
+            <div id="time" class="form-group row">
+                <div class="col-sm">
+                    <small><label for="days">Days</label></small>
+                    <input class="form-control" type="number" min="0" max="1000" id="days" asp-for="Days" value="">
+                </div>
+                <div class="col-sm">
+                    <small><label for="hours">Hours</label></small>
+                    <input class="form-control" type="number" min="0" max="59" id="hours" asp-for="Hours" value="">
+                </div>
+                <div class="col-sm">
+                    <small><label for="minutes">Minutes</label></small>
+                    <input class="form-control" type="number" min="0" max="59" id="minutes" asp-for="Minutes" value="">
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="Label">Label:</label>
+                <input class="form-control" type="text" id="label" asp-for="Label" value="">
+            </div>
+            <div class="row" style="margin-top: 20px">
+                <div class="col-sm">
+                    <button class="btn btn-dark" style="width: 100%" action="@{addTag();}">Add new Tag</button>
+                </div>
+                <div class="col-sm">
+                    <button class="btn btn-dark" style="width: 100%" type="submit">Create Website Record</button>
+                </div>
+            </div>
+        </form>
+    </div>
 </div>
-<svelte-app id="khalid" name="Khalid" test="Ahoj"></svelte-app>
-<svelte-app id="paul" name="Paul"></svelte-app>
+
+
+<div class="list">
+
+    <h3>Here is the list of current Website Records.</h3>
+    @if (ViewBag.WRList.Count != 0) {
+        <table class="table table-striped">
+            <tr>
+                <td>Url</td>
+                <td>Regex</td>
+                <td>Periodicity</td>
+                <td>Label</td>
+            </tr>
+            @foreach (WebsiteRecord record in ViewBag.WRList) {
+                <tr>
+                    <td>@record.Url</td>
+                    <td>@record.Regex</td>
+                    <td>@record.Days.ToString()d @record.Hours.ToString()h @record.Minutes.ToString()m</td>
+                    <td>@record.Label</td>
+                </tr>
+            }
+        </table>
+    }
+    else {
+        <h4>No Website Records added yet.</h4>
+        <hr/>
+    }
+    @{
+        //The view must contain Label, Periodicity, Tags, 
+        //time of last execution, the status of last execution.
+    }
+</div>
+
+<div class="canvas">
+    @{
+        if (((List<WebsiteRecord>)ViewBag.WRList!).Count == 0) {
+        
+        }
+    }
+    <h3>Currently displaying graf for @{
+            //((string)(((List<WebsiteRecord>)ViewData["WRList"]!)[((int)ViewData["CurrentGrafIndex"]!)]).Name);
+} </h3>
+</div>
+
+<!-- <svelte-app id="khalid" name="Khalid" test="Ahoj"></svelte-app>
+<svelte-app id="paul" name="Paul"></svelte-app> -->
