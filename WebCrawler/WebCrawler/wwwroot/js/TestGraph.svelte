@@ -141,11 +141,14 @@
         event.subject.fx = null;
         event.subject.fy = null;
     }
-
+    let i = 0;
     function addNode() {
-        
-        nodes.push({id: "idk", group: 2});
+        nodes.push({id: "idk" + i, group: 2});
+        links.push({"source": "idk" + i, "target": "Myriel", "value": i});
         simulation.nodes(nodes);
+        console.log(nodes[nodes.length - 1]);
+        i++;
+        //simulation.nodes(nodes);
     }
 
 </script>
@@ -155,6 +158,6 @@
     <canvas bind:this={canvas} width='600' height='500'/>
 </div>
 
-<button on:click={addNode()}>
+<button on:click={addNode}>
 addd
 </button>
