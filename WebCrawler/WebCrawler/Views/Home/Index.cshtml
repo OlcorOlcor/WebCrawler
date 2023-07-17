@@ -69,6 +69,7 @@
                 <td>Time of last executions</td>
                 <td>Status of last executions</td>
                 <td>Tags</td>
+                <td>Crawl now</td>
             </tr>
             @{ int i = 0; }
             @foreach (WebsiteRecord record in ViewBag.WRList) {
@@ -82,9 +83,12 @@
                     <td>
                         <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#Tags@(i)" aria-expanded="false" aria-controls="Tags@(i)">Show Tags</button>
                     </td>
+                    <td>
+                        <button class="btn btn-primary" type="button">Crawl - placeholder</button>
+                    </td>
                 </tr>
                 <tr class="collapse" id="Tags@(i)">
-                    <td colspan="7"> Tags:
+                    <td colspan="8"> Tags:
                     @foreach (string tag in record.TagsArray) {
                         @(tag + ", ") 
                     }
