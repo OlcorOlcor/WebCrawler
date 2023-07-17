@@ -57,7 +57,7 @@
 
     const groupColour = d3.scaleOrdinal(d3.schemeCategory10);
 
-    let simulation, context
+    let simulation, context;
     onMount(() => {
         context = canvas.getContext('2d');
         resize()
@@ -94,11 +94,11 @@
 
         // title
         d3.select(context.canvas)
-            .on("mousemove", () => {
-            const d = simulation.find(d3.event.offsetX, d3.event.offsetY, nodeRadius);
-            
+            .on("mousemove", (event) => {
+            const d = simulation.find(event.offsetX, event.offsetY, nodeRadius);
+            console.log(event.offsetX, event.offsetY);
             if (d) {
-                console.log(d3.event.x, d3.event.y, 'title: ', d.id, ' ', d.x, d.y);
+                console.log(event.x, event.y, 'title: ', d.id, ' ', d.x, d.y);
                 if (context.canvas.title !== d.id) context.canvas.title = d.id;
             } else {
                 console.log('cleared')
@@ -116,8 +116,8 @@
     });
 
     // Use the d3-force simulation to locate the node
-    function dragsubject() {
-        return simulation.find(d3.event.x, d3.event.y, nodeRadius);
+    function dragsubject(event) {
+        return simulation.find(event.x, event.y, nodeRadius);
     }
 
     function resize() {
@@ -125,31 +125,21 @@
         // console.log('resize()', width, height)
     }
 
-    function indexToColor(index) {
-        const color = "#" + (index + 250).toString(16).padStart(6, "0");
-        return color;
+    function dragstarted(event) {
+        if (!event.active) simulation.alphaTarget(0.3).restart();
+        event.subject.fx = event.subject.x;
+        event.subject.fy = event.subject.y;
     }
 
-    function colorToIndex(color) {
-        const index = ((color[0] << 16) + (color[1] << 8) + color[2]) - 250;
-        return index;
+    function dragged(event) {
+        event.subject.fx = event.x;
+        event.subject.fy = event.y;
     }
 
-    function dragstarted() {
-        if (!d3.event.active) simulation.alphaTarget(0.3).restart();
-        d3.event.subject.fx = d3.event.subject.x;
-        d3.event.subject.fy = d3.event.subject.y;
-    }
-
-    function dragged() {
-        d3.event.subject.fx = d3.event.x;
-        d3.event.subject.fy = d3.event.y;
-    }
-
-    function dragended() {
-        if (!d3.event.active) simulation.alphaTarget(0);
-        d3.event.subject.fx = null;
-        d3.event.subject.fy = null;
+    function dragended(event) {
+        if (!event.active) simulation.alphaTarget(0);
+        event.subject.fx = null;
+        event.subject.fy = null;
     }
 
 </script>
