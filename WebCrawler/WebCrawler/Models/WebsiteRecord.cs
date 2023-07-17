@@ -13,5 +13,10 @@
         public int Minutes { get; set; }
         public string Label { get; set; } = "";
         public string Tags { get; set; } = "";
+        public string[] TagsArray { get; set; }
+
+        public void ParseTags() {
+            TagsArray = Tags.Split(',');
+        }
     }
 }

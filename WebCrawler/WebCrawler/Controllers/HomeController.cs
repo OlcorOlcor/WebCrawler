@@ -27,6 +27,7 @@ namespace WebCrawler.Controllers {
         }
         [HttpPost]
         public IActionResult AddRecord(WebsiteRecord record) {
+            record.ParseTags();
             repo.Add(record);
             return Redirect("Index");
         }
