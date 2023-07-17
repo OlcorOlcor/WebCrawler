@@ -89,9 +89,12 @@
                 </tr>
                 <tr class="collapse" id="Tags@(i)">
                     <td colspan="8"> Tags:
-                    @foreach (string tag in record.TagsArray) {
-                        @(tag + ", ") 
-                    }
+                        @for (int j = 0; j < record.TagsArray.Length; j++) {
+                            @(record.TagsArray[j])
+                            @if (j + 1 != record.TagsArray.Length) {
+                                @(", ")
+                            }
+                        }
                     </td>
                 </tr>
                 i++;
