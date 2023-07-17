@@ -1,3 +1,4 @@
-﻿import App from './App.svelte'
-import LinePlot from './LinePlot.svelte'
+﻿import App from './App.svelte';
+import NodePlot from './NodePlot.svelte';
+import TestGraph from './TestGraph.svelte';
 
