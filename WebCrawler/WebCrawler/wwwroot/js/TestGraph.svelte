@@ -142,9 +142,19 @@
         event.subject.fy = null;
     }
 
+    function addNode() {
+        
+        nodes.push({id: "idk", group: 2});
+        simulation.nodes(nodes);
+    }
+
 </script>
 
 <!-- <svelte:window on:resize='{resize}'/> -->
 <div class='container'>
     <canvas bind:this={canvas} width='600' height='500'/>
 </div>
+
+<button on:click={addNode()}>
+addd
+</button>
