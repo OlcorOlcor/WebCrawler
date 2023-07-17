@@ -38,6 +38,11 @@
                 <label asp-for="Label">Label:</label>
                 <input class="form-control" type="text" id="label" asp-for="Label" value="">
             </div>
+            <div class="form-group">
+                <label asp-for="Tags">Tags:</label>
+                <input class="form-control" typeof="text" id="tags" name="Tags">
+                <small>Add tags seperated by a comma</small>
+            </div>
             <div class="row" style="margin-top: 20px">
                 <div class="col-sm">
                     <button class="btn btn-dark" style="width: 100%">Add new Tag</button>
@@ -61,24 +66,37 @@
                 <td>Regex</td>
                 <td>Periodicity</td>
                 <td>Label</td>
+                <td>Time of last executions</td>
+                <td>Status of last executions</td>
+                <td>Tags</td>
             </tr>
+            @{ int i = 0; }
             @foreach (WebsiteRecord record in ViewBag.WRList) {
                 <tr>
                     <td>@record.Url</td>
                     <td>@record.Regex</td>
                     <td>@record.Days.ToString()d @record.Hours.ToString()h @record.Minutes.ToString()m</td>
+                    <td></td>
+                    <td></td>
                     <td>@record.Label</td>
+                    <td>
+                        <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#Tags@(i)" aria-expanded="false" aria-controls="Tags@(i)">Show Tags</button>
+                    </td>
                 </tr>
+                <tr class="collapse" id="Tags@(i)">
+                    <td colspan="7"> Tags:
+                    @foreach (string tag in record.TagsArray) {
+                        @(tag + ", ") 
+                    }
+                    </td>
+                </tr>
+                i++;
             }
         </table>
     }
     else {
         <h4>No Website Records added yet.</h4>
         <hr/>
-    }
-    @{
-        //The view must contain Label, Periodicity, Tags, 
-        //time of last execution, the status of last execution.
     }
 </div>
 
