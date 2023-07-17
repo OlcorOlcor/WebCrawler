@@ -2,12 +2,8 @@
 @{
     ViewData["Title"] = "Home Page";
     ViewData["CurrentGrafIndex"] = 0;
-
-
-    void addTag(){
-
-    }
-}   
+} 
+  
 <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#WebRecordForm" aria-expanded="false" aria-controls="WebRecordForm">
     Add Website
 </button>
@@ -44,7 +40,7 @@
             </div>
             <div class="row" style="margin-top: 20px">
                 <div class="col-sm">
-                    <button class="btn btn-dark" style="width: 100%" action="@{addTag();}">Add new Tag</button>
+                    <button class="btn btn-dark" style="width: 100%">Add new Tag</button>
                 </div>
                 <div class="col-sm">
                     <button class="btn btn-dark" style="width: 100%" type="submit">Create Website Record</button>
@@ -86,18 +82,5 @@
     }
 </div>
 
-<div class="canvas">
-    @{
-        if (((List<WebsiteRecord>)ViewBag.WRList!).Count == 0) {
-        
-        }
-    }
-    <h3>Currently displaying graf for @{
-            //((string)(((List<WebsiteRecord>)ViewData["WRList"]!)[((int)ViewData["CurrentGrafIndex"]!)]).Name);
-} </h3>
-</div>
-
-<!-- <svelte-app id="khalid" name="Khalid" test="Ahoj"></svelte-app>
-<svelte-app id="paul" name="Paul"></svelte-app> -->
-<node-plot/>
-<test-graph/>
+@* <node-plot></node-plot> *@
+<test-graph></test-graph>
