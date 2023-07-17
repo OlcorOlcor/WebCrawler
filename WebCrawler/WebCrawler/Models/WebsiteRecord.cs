@@ -16,7 +16,12 @@
         public string[] TagsArray { get; set; }
 
         public void ParseTags() {
-            TagsArray = Tags.Split(',');
+            if (Tags != "" && Tags != null) {
+                TagsArray = Tags.Split(',');
+            }
+            else {
+                TagsArray = new string[0];
+            }
         }
     }
 }
