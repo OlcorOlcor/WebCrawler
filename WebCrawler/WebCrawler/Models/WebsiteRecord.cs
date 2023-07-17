@@ -12,5 +12,6 @@
         public int Hours { get; set; }
         public int Minutes { get; set; }
         public string Label { get; set; } = "";
+        public string Tags { get; set; } = "";
     }
 }
