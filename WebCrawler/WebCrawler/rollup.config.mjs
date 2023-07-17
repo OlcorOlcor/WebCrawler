@@ -1,5 +1,8 @@
 ﻿import svelte from 'rollup-plugin-svelte';
 import resolve from '@rollup/plugin-node-resolve';
+// import autoPreprocess from 'svelte-preprocess';
+// import ts from '@rollup/plugin-typescript';
+// import typescript from 'typescript';
 
 export default {
     // This `main.js` file we wrote
@@ -19,9 +22,13 @@ export default {
             emitCss: false,
             compilerOptions: {
                 customElement: true
-            }
+            },
         }),
+        // ts({
+        //     typescript
+        // }),
         // Tell any third-party plugins that we're building for the browser
         resolve({ browser: true }),
+
     ]
 };
