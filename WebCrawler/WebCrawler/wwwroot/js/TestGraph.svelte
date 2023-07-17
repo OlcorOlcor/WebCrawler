@@ -143,12 +143,13 @@
     }
     let i = 0;
     function addNode() {
-        nodes.push({id: "idk" + i, group: 2});
-        links.push({"source": "idk" + i, "target": "Myriel", "value": i});
+        nodes.push({id: "idk" + i, group: 2, x: width/2, y:height/2});
+        links.push({source: "idk" + i, target: "Bahorel", "value": 1});
+        links.push({source: "idk" + i, target: "Valjean", "value": 1});
         simulation.nodes(nodes);
-        console.log(nodes[nodes.length - 1]);
+        simulation.alpha(0.3);
+        simulation.restart();
         i++;
-        //simulation.nodes(nodes);
     }
 
 </script>
@@ -159,5 +160,5 @@
 </div>
 
 <button on:click={addNode}>
-addd
+test add
 </button>
