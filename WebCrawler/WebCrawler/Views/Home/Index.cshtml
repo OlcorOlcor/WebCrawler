@@ -103,17 +103,27 @@
 </div>
 
 <script>
-    const uri = './Home/GetMetaData';
+    const metaDataUri = './Home/GetMetaData';
+    const fullDataUri = './Home/GetFullData';
+    let currentRecordIndex = 0;
 
-    function getJson() {
-    fetch(uri)
+    
+    function getMetaData() {
+    fetch(metaDataUri)
+        .then(response => response.json())
+        .then(data => console.log(data))
+        .catch(error => console.error('Unable to get items.', error));
+
+    function getFullData() {
+    fetch(fullDataUri)
         .then(response => response.json())
         .then(data => console.log(data))
         .catch(error => console.error('Unable to get items.', error));
 }
 </script>
 
-<button onclick="getJson()">aaaaaa</button>
+<button onclick="getMetaData()">aaaaaaMEta</button>
+<button onclick="getFullData()">aaaaaaFUll</button>
 
 @* <node-plot></node-plot> *@
 <test-graph></test-graph>
