@@ -28,8 +28,8 @@ namespace WebCrawler.Controllers {
         }
 
         [HttpGet]
-        public IActionResult GetMetaData() {
-            return View(); //implement
+        public JsonResult GetMetaData() {
+            return Json("status: ok"); 
         }
 
         [HttpGet]
