@@ -12,6 +12,6 @@
             //TODO
         }
 
-        // lsit of pages and pages to be crawled
+        // list of pages and pages to be crawled
     }
 }
