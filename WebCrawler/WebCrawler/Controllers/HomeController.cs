@@ -12,8 +12,6 @@ namespace WebCrawler.Controllers {
         }
 
         public IActionResult Index() {
-            this.ViewBag.Name = "Honza";
-            this.ViewData["Name"] = "Honza";
             this.ViewBag.WRList = repo.GetAll();
             return View();
         }
