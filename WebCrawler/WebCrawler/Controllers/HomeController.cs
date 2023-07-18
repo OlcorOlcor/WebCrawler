@@ -29,7 +29,7 @@ namespace WebCrawler.Controllers {
 
         [HttpGet]
         public JsonResult GetMetaData() {
-            return Json("status: ok"); 
+            return Json("{status: ok}"); 
         }
 
         [HttpGet]
