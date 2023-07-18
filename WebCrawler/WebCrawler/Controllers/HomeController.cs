@@ -35,8 +35,8 @@ namespace WebCrawler.Controllers {
 
         //gets all the data for the given website record
         [HttpGet]
-        public JsonResult GetFullData() {
-            return Json("{add: data}");
+        public JsonResult GetFullData(int recordId) {
+            return Json($"{{add: {recordId}}}");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
