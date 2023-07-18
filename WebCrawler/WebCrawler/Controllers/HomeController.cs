@@ -24,7 +24,17 @@ namespace WebCrawler.Controllers {
         public IActionResult AddRecord(WebsiteRecord record) {
             record.ParseTags();
             repo.Add(record);
-            return Redirect("Index");
+            return Redirect("Index"); //No
+        }
+
+        [HttpGet]
+        public IActionResult GetMetaData() {
+            return View(); //implement
+        }
+
+        [HttpGet]
+        public IActionResult GetFullData() {
+            return View(); //implement
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
