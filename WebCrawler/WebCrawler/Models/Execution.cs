@@ -21,6 +21,7 @@
             this._visited = new HashSet<bool>();
         }
 
+        //does all the crawling
         public void Execute() {
             while (_queue.Count > 0) {
                 //TODO
