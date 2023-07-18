@@ -18,21 +18,15 @@ namespace WebCrawler.Controllers {
             return View();
         }
 
-        public IActionResult AddWebsiteRecord() {
-            return View();
-        }
-
         public IActionResult AboutProject() {
             return View();
         }
+
         [HttpPost]
         public IActionResult AddRecord(WebsiteRecord record) {
             record.ParseTags();
             repo.Add(record);
             return Redirect("Index");
-        }
-        public IActionResult Privacy() {
-            return View();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
