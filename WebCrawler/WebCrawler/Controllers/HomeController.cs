@@ -33,8 +33,8 @@ namespace WebCrawler.Controllers {
         }
 
         [HttpGet]
-        public IActionResult GetFullData() {
-            return View(); //implement
+        public JsonResult GetFullData() {
+            return Json("add data");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
