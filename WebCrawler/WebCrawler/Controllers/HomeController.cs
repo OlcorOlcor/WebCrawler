@@ -12,27 +12,31 @@ namespace WebCrawler.Controllers {
         }
 
         public IActionResult Index() {
-            this.ViewBag.Name = "Honza";
-            this.ViewData["Name"] = "Honza";
             this.ViewBag.WRList = repo.GetAll();
-            return View();
-        }
-
-        public IActionResult AddWebsiteRecord() {
             return View();
         }
 
         public IActionResult AboutProject() {
             return View();
         }
+
         [HttpPost]
         public IActionResult AddRecord(WebsiteRecord record) {
             record.ParseTags();
             repo.Add(record);
-            return Redirect("Index");
+            return Redirect("Index"); //No
         }
-        public IActionResult Privacy() {
-            return View();
+
+        //gets brief data for all website records
+        [HttpGet]
+        public JsonResult GetMetaData() {
+            return Json("{records:[{id:1, data:{lastExTime: 12, lastExStat: ok, runExCount: 3}}]}"); 
+        }
+
+        //gets all the data for the given website record
+        [HttpGet]
+        public JsonResult GetFullData(int recordId) {
+            return Json($"{{add: {recordId}}}");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
