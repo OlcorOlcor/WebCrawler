@@ -142,7 +142,8 @@
         event.subject.fy = null;
     }
     let i = 0;
-    function addNode() {
+    export function addNode(node) {
+        console.log(node);
         nodes.push({id: "idk" + i, group: 2, x: width/2, y:height/2});
         links.push({source: "idk" + i, target: "Bahorel", "value": 1});
         links.push({source: "idk" + i, target: "Valjean", "value": 1});
