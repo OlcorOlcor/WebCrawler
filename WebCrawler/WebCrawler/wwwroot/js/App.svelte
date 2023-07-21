@@ -1,17 +1,20 @@
 <svelte:options tag="svelte-app" />
 <script>
-    import TestGraph from "./TestGraph.svelte";
+    import NodeChart from "./NodeChart.svelte";
     
     const metaDataUri = './GetMetaData';
     const fullDataUri = './GetFullData';
     let currentRecordIndex = 0;
     let metaData;
     let currentRecordFullData;
-    let graph;
+    let chart;
 
     setInterval(() => {
         getMetaData().then(data => metaData = data);
-        getFullData().then(data => {currentRecordFullData = data; graph.addNode(currentRecordFullData); });
+        getFullData().then(data => { 
+            currentRecordFullData = data; 
+            chart.addNode(currentRecordFullData); 
+        });
     }, 2000);
 
     function getMetaData() {
@@ -29,4 +32,4 @@
     }
 </script>
 
-<TestGraph bind:this={graph}></TestGraph>
+<NodeChart bind:this={chart}></NodeChart>
