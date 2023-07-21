@@ -15,7 +15,7 @@
             currentRecordFullData = data; 
             chart.addNode(currentRecordFullData); 
         });
-    }, 2000);
+    }, 500);
 
     function getMetaData() {
         return fetch(metaDataUri)

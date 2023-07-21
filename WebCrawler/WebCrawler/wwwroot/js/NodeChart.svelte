@@ -18,6 +18,7 @@
     let width = 1200;
     let height = 800;
     const nodeRadius = 10;
+    let offset = 0;
 
     const padding = { top: 20, right: 40, bottom: 40, left: 25 };
 
@@ -48,6 +49,7 @@
 
     let simulation, context;
     onMount(() => {
+        //march();
         context = canvas.getContext('2d');
         resize()
         
@@ -62,11 +64,13 @@
             //
             links.forEach(d => {
                 context.beginPath();
+                //context.setLineDash([8,2]);
+                //context.lineDashOffset = -offset;
                 context.moveTo(d.source.x, d.source.y);
                 context.lineTo(d.target.x, d.target.y);
                 context.globalAlpha = 0.6;
                 context.strokeStyle = "#999";
-                context.lineWidth = Math.sqrt(d.value);
+                context.lineWidth = 2; //Math.sqrt(d.value);
                 context.stroke();
                 context.globalAlpha = 1;
             });
@@ -142,12 +146,21 @@
         links.push({source: "idk" + i, target: "Bahorel", "value": 1});
         links.push({source: "idk" + i, target: "Valjean", "value": 1});
         simulation.nodes(nodes);
-        simulation.alpha(0.3);
+        simulation.alpha(0.2);
         simulation.restart();
         i++;
     }
 
+    function march() {
+        offset += 1;
+        if (offset > 16) {
+            offset = 0;
+        }
+        setTimeout(march, 10);  
+    }
+
 </script>
+
 
 <!-- <svelte:window on:resize='{resize}'/> -->
 <div class='container'>
