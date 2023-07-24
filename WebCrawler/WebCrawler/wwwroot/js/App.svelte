@@ -4,18 +4,31 @@
     
     const metaDataUri = './GetMetaData';
     const fullDataUri = './GetFullData';
+    const interval = 5000;
     let currentRecordIndex = 0;
     let metaData;
     let currentRecordFullData;
     let chart;
+    
 
-    setInterval(() => {
+    // setInterval(() => {
+    //     getMetaData().then(data => metaData = data);
+    //     getFullData().then(data => { 
+    //         currentRecordFullData = data; 
+    //         chart.update(currentRecordFullData); 
+    //     });
+    // }, interval);
+
+    getData();
+
+    function getData() {
         getMetaData().then(data => metaData = data);
         getFullData().then(data => { 
             currentRecordFullData = data; 
-            chart.addNode(currentRecordFullData); 
+            chart.update(currentRecordFullData); 
         });
-    }, 500);
+        setTimeout(getData, interval)
+    }
 
     function getMetaData() {
         return fetch(metaDataUri)
