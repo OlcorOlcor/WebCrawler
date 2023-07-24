@@ -2,8 +2,8 @@
 <script>
     import NodeChart from "./NodeChart.svelte";
     
-    const metaDataUri = './GetMetaData';
-    const fullDataUri = './GetFullData';
+    const metaDataUri = '/Api/GetMetaData';
+    const fullDataUri = '/Api/GetFullData';
     const interval = 5000;
     let currentRecordIndex = 0;
     let metaData;
