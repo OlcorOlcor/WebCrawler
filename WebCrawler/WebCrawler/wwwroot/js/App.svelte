@@ -1,17 +1,48 @@
 <svelte:options tag="svelte-app" />
 <script>
-    export let name;
-    export let id;
-    export let test;
+    import NodeGraph from "./NodeGraph.svelte";
+    
+    const metaDataUri = '/Api/GetMetaData';
+    const fullDataUri = '/Api/GetFullData';
+    const interval = 5000;
+    let currentRecordIndex = 0;
+    let metaData;
+    let currentRecordFullData;
+    let graph;
+    
+
+    // setInterval(() => {
+    //     getMetaData().then(data => metaData = data);
+    //     getFullData().then(data => { 
+    //         currentRecordFullData = data; 
+    //         chart.update(currentRecordFullData); 
+    //     });
+    // }, interval);
+
+    getData();
+
+    function getData() {
+        getMetaData().then(data => metaData = data);
+        getFullData().then(data => { 
+            currentRecordFullData = data; 
+            graph.update(currentRecordFullData); 
+        });
+        setTimeout(getData, interval)
+    }
+
+    function getMetaData() {
+        return fetch(metaDataUri)
+            .then(response => response.json())
+            .then(data => data)
+            .catch(error => console.error('Unable to get items.', error));
+    }
+
+    function getFullData() {
+        return fetch(fullDataUri + "/" + currentRecordIndex)
+            .then(response => response.json())
+            .then(data => data)
+            .catch(error => console.error('Unable to get items.', error));
+    }
 </script>
 
-<main>
-    <h1 id="{id}">Hello {name}!</h1>
-    <p>{test}</p>
-</main>
-
-<style>
-    h1 {
-        font-size: 5em;
-    }
-</style>
+<NodeGraph bind:this={graph}></NodeGraph>
