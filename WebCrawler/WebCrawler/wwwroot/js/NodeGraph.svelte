@@ -1,11 +1,9 @@
-<svelte:options tag="node-chart" />
+<svelte:options tag="node-graph" />
 
-<h2>Visualization</h2>
 <script>
     import { onMount } from 'svelte';
 
     import { scaleLinear, scaleOrdinal } from 'd3-scale';
-
     import * as d3 from 'd3';
 
     export let data = {nodes: [], links: []};

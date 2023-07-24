@@ -50,10 +50,11 @@
     </div>
 </div>
 
+<hr/>
 
 <div class="list">
 
-    <h3>Here is the list of current Website Records.</h3>
+    <h3>List of current Website Records</h3>
     @if (ViewBag.WRList.Count != 0) {
         <table class="table table-striped">
             <tr>
@@ -97,9 +98,11 @@
         </table>
     }
     else {
-        <h4>No Website Records added yet.</h4>
+        <p>No Website Records added yet.</p>
         <hr/>
     }
 </div>
+
+<h2>Visualisation</h2>
 
 <svelte-app></svelte-app>

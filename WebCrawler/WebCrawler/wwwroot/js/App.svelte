@@ -1,6 +1,6 @@
 <svelte:options tag="svelte-app" />
 <script>
-    import NodeChart from "./NodeChart.svelte";
+    import NodeGraph from "./NodeGraph.svelte";
     
     const metaDataUri = '/Api/GetMetaData';
     const fullDataUri = '/Api/GetFullData';
@@ -8,7 +8,7 @@
     let currentRecordIndex = 0;
     let metaData;
     let currentRecordFullData;
-    let chart;
+    let graph;
     
 
     // setInterval(() => {
@@ -25,7 +25,7 @@
         getMetaData().then(data => metaData = data);
         getFullData().then(data => { 
             currentRecordFullData = data; 
-            chart.update(currentRecordFullData); 
+            graph.update(currentRecordFullData); 
         });
         setTimeout(getData, interval)
     }
@@ -45,4 +45,4 @@
     }
 </script>
 
-<NodeChart bind:this={chart}></NodeChart>
+<NodeGraph bind:this={graph}></NodeGraph>
