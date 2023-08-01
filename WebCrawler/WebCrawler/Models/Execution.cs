@@ -3,6 +3,15 @@
         private readonly string _url;
         private readonly string _regex;
 
+        //Delegate that leads to WebsiteRecordRepository and updates Manager
+        public delegate void UpdateManager(Execution exection);
+        public UpdateManager um;
+
+        //list of WebPageExucutions
+        private Queue<WebPageExecution> _executionQueue;
+
+        //TODO: CLEANUP
+
         //list of websites to be crawled
         private Queue<WebPage> _queue;
 
@@ -29,6 +38,12 @@
                 var page = _queue.Dequeue();
                 _crawler.CrawlSite(page, _regex);
             }
-        }        
+        }
+        private void UpdateUponCompletion(List<WebPage> webPages) {
+            foreach (var webPage in webPages) {
+                this._executionQueue.Enqueue(new WebPageExecution(webPage, _regex));
+            }
+            um.Invoke(this);
+        }
     }
 }

@@ -2,9 +2,10 @@
     public class WebsiteRecordRepository {
         //here are stored all website records in the app
         private List<WebsiteRecord> _records { get; set; } = new();
+        private Manager _manager = new();
         public List<WebsiteRecord> GetAll() {
             return _records;
-        }
+        }   
 
         //TODO add queue for executions
 

@@ -1,9 +1,9 @@
 ﻿namespace WebCrawler.Models {
     public class WebPage {
         public string Url;
-        public string Title = "";
-        public List<string> OutgoingUrls = new();
-        public TimeSpan CrawlTime = default(TimeSpan);
+        public string? Title; 
+        public List<string>? OutgoingUrls;
+        public TimeSpan? CrawlTime;
         public WebPage(string url) {
             this.Url = url;
         }
