@@ -13,6 +13,8 @@
     let height = 800;
     const nodeRadius = 10;
     let offset = 0;
+    let infoBox;
+    let infoBoxVisible = true;
 
     const padding = { top: 20, right: 40, bottom: 40, left: 25 };
 
@@ -58,8 +60,8 @@
             //
             links.forEach(d => {
                 context.beginPath();
-                //context.setLineDash([8,2]);
-                //context.lineDashOffset = -offset;
+                // context.setLineDash([8,2]);
+                // context.lineDashOffset = -offset;
                 context.moveTo(d.source.x, d.source.y);
                 context.lineTo(d.target.x, d.target.y);
                 context.globalAlpha = 0.6;
@@ -86,16 +88,18 @@
 
         // title
         d3.select(context.canvas)
-            .on("mousemove", (event) => {
+            .on("dblclick", (event) => {
             const d = simulation.find(event.offsetX, event.offsetY, nodeRadius);
             console.log(event.offsetX, event.offsetY);
             if (d) {
                 console.log(event.x, event.y, 'title: ', d.id, ' ', d.x, d.y);
-                if (context.canvas.title !== d.id) context.canvas.title = d.id;
-            } else {
-                console.log('cleared')
-                if (delete context.canvas.title !== undefined) delete context.canvas.title;
+                //if (context.canvas.title !== d.id) context.canvas.title = d.id;
+                showInfo(d.id);
             }
+            // } else {
+            //     console.log('cleared')
+            //     if (delete context.canvas.title !== undefined) delete context.canvas.title;
+            // }
         });
 
         d3.select(canvas)
@@ -185,7 +189,7 @@
             return;
         }
 
-        simulation.alpha(0.5);
+        simulation.alpha(1);
         simulation.restart();
     }
 
@@ -209,10 +213,28 @@
         setTimeout(march, 10);  
     }
 
-</script>
+    function showInfo(id) {
+        console.log(id, infoBox);
+        infoBox.innerText = id;
+        infoBox.style.display = infoBox.style.display === 'block' ? 'none' : 'block';
+        infoBoxVisible = !infoBoxVisible;
+    }
 
+</script>
 
 <!-- <svelte:window on:resize='{resize}'/> -->
 <div class='container'>
     <canvas bind:this={canvas} width={width} height={height}/>
 </div>
+
+
+<div style="display: none" class="nodeInfo" bind:this={infoBox}>TEST TEXT</div>
+
+
+<style>
+    :global(.nodeInfo) { 
+        background-color: darkseagreen;
+        position: absolute;
+        visibility: hidden;
+    }
+</style>

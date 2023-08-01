@@ -4,7 +4,7 @@
     
     const metaDataUri = '/Api/GetMetaData';
     const fullDataUri = '/Api/GetFullData';
-    const interval = 5000;
+    const interval = 3000;
     let currentRecordIndex = 0;
     let metaData;
     let currentRecordFullData;
