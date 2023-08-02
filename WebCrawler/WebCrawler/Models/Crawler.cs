@@ -98,7 +98,7 @@ namespace WebCrawler.Models {
             while ((line = reader.ReadLine()!) is not null) {
                 string? titlePart = FindTitleInLine(line);
                 if(titlePart is not null) {
-                    string? title = FindTitleInLine(titlePart);
+                    string? title = FindTitleInPart(titlePart);
                     if(title is not null) {
                         return title;
                     }
