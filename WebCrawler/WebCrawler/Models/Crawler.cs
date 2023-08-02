@@ -10,9 +10,9 @@ namespace WebCrawler.Models {
         //TODO add delegate to return List<WebaPage> to
         //and where crawler updates info: title and time
 
+        //list to be filled with found webpages
         public async Task<List<WebPage>> CrawlSite(WebPage webPage, string regex) {
 
-            //list to be filled with found webpages
             List<WebPage> foundWebPages = new();
 
             //get data from server
@@ -38,8 +38,8 @@ namespace WebCrawler.Models {
 
             //parse each line
             while ((line = reader.ReadLine()!) is not null) {
-                string? url = FindUrl(line, urlRegularExpression);
-                if(url is not null) {
+                var urls = FindUrlsInLine(line, urlRegularExpression);
+                foreach (var url in urls) { 
                     foundWebPages.Add(new(url));
                     webPage.OutgoingUrls.Add(url);
                 }
@@ -48,15 +48,19 @@ namespace WebCrawler.Models {
         }
 
         //returns a reference html component from given line or null if none present
-        private string? FindRefInLine(string line) {
+        private List<string> FindRefInLine(string line) {
             const string regexPattern = "(<a +href=\".*\" +>)|(<a [^<^>]* href=\".*\" [^<]*>)";
             Regex linkRegularExpression = new Regex(regexPattern, RegexOptions.Compiled);
 
-            Match match = linkRegularExpression.Match(line);
-            if (match.Success) {
-                return match.Value;
+            List<string> references = new();
+
+            var matches = linkRegularExpression.Matches(line);
+            foreach (Match match in matches) {
+                if (match.Success) {
+                    references.Add(match.Value);
+                }
             }
-            return null;
+            return references;
         }
 
         //returns href part from given a reference html component or null if none present
@@ -74,10 +78,11 @@ namespace WebCrawler.Models {
 
         //finds url in given line in a reference if it matches given regex
         //returns null if none such url is present
-        private string? FindUrl(string line, Regex regex) {
-            string? reference = FindRefInLine(line);
+        private List<string> FindUrlsInLine(string line, Regex regex) {
+            List<string> urls = new();
+            List<string> references = FindRefInLine(line);
 
-            if(reference is not null) {
+            foreach (var reference in references) { 
                 string? href;
                 href = FindHrefInRef(reference);
 
@@ -88,12 +93,12 @@ namespace WebCrawler.Models {
                     if (url is not null) {
                         Match urlMatch = regex.Match(url);
                         if (urlMatch.Success) {
-                            return url;
+                            references.Add(url);
                         }
                     }
                 }
             }
-            return null;
+            return urls;
         }
 
         //returns url from given html href section
