@@ -34,9 +34,11 @@ namespace WebCrawler.Models {
 
             webPage.Title = GetPageTitle(reader);
 
+            Regex urlRegularExpression = new Regex(regex);
+
             //parse each line
             while ((line = reader.ReadLine()!) is not null) {
-                string? url = FindUrl(line, regex);
+                string? url = FindUrl(line, urlRegularExpression);
                 if(url is not null) {
                     foundWebPages.Add(new(url));
                     webPage.OutgoingUrls.Add(url);
@@ -72,7 +74,7 @@ namespace WebCrawler.Models {
 
         //finds url in given line in a reference if it matches given regex
         //returns null if none such url is present
-        private string? FindUrl(string line,string regex) {
+        private string? FindUrl(string line, Regex regex) {
             string? reference = FindRefInLine(line);
 
             if(reference is not null) {
@@ -84,7 +86,10 @@ namespace WebCrawler.Models {
                     url = FindUrlInHref(href);
 
                     if (url is not null) {
-                        return url;
+                        Match urlMatch = regex.Match(url);
+                        if (urlMatch.Success) {
+                            return url;
+                        }
                     }
                 }
             }
