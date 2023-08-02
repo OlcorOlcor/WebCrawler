@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Text.RegularExpressions;
 
 namespace WebCrawler.Models {
     public class Crawler {
@@ -27,29 +28,60 @@ namespace WebCrawler.Models {
             webPage.CrawlTime = DateTime.Now;
             //define constant patterns and regular expressions
             string line;
-            const string regexPattern = "(<a +href=\".*\" +>)|(<a [^<^>]* href=\".*\" [^<]*>)";
-            const string hrefPattern = "href=\".{3,\"";
+                       
             StreamReader reader = new StreamReader(pageStream);
-            Regex linkRegularExpression = new Regex(regexPattern, RegexOptions.Compiled);
-            Regex hrefRegularExpression = new Regex(hrefPattern, RegexOptions.Compiled);
-            Regex urlRegularExpression = new Regex(regex);
+            
             //parse each line
             while ((line = reader.ReadLine()!) is not null) {
-                Match match = linkRegularExpression.Match(line);
-                if (match.Success) {
-                    Match hrefMatch = hrefRegularExpression.Match(match.Value);
-                    if (hrefMatch.Success) {
-                        int quotationMarksIndex = hrefMatch.Value.IndexOf(_quotationMarksString);
-                        var url = hrefMatch.Value.Substring(quotationMarksIndex + 1, hrefMatch.Length - quotationMarksIndex - 1);
-                        Match urlMatch = urlRegularExpression.Match(url);
-                        if (urlMatch.Success) {
-                            foundWebPages.Add(new(url));
-                            webPage.OutgoingUrls.Add(url);
-                        }
-                    }
-                }
+                FindUrl(line, regex);
             }
             return foundWebPages;
+        }
+
+        private string? FindRefInLine(string line) {
+            const string regexPattern = "(<a +href=\".*\" +>)|(<a [^<^>]* href=\".*\" [^<]*>)";
+            Regex linkRegularExpression = new Regex(regexPattern, RegexOptions.Compiled);
+
+            Match match = linkRegularExpression.Match(line);
+            if (match.Success) {
+                return match.Value;
+            }
+            return null;
+        }
+
+        private string? FindHrefInRef(string reference) {
+            const string hrefPattern = "href=\".{3,\"";
+            Regex hrefRegularExpression = new Regex(hrefPattern, RegexOptions.Compiled);
+
+            Match hrefMatch = hrefRegularExpression.Match(reference);
+
+            if (hrefMatch.Success) {
+                return hrefMatch.Value;
+            }
+            return null;
+        }
+
+        private string? FindUrl(string line,string regex) {
+            string? reference = FindRefInLine(line);
+
+            string? href;
+            if(reference is not null) {
+                href = FindHrefInRef(reference);
+            }
+
+            int quotationMarksIndex = hrefMatch.Value.IndexOf(_quotationMarksString);
+            var url = hrefMatch.Value.Substring(quotationMarksIndex + 1, hrefMatch.Length - quotationMarksIndex - 1);
+
+            Regex urlRegularExpression = new Regex(regex);
+
+            Match urlMatch = urlRegularExpression.Match(url);
+            if (urlMatch.Success) {
+                return url;
+            }
+            return null;
+
+            foundWebPages.Add(new(url));
+            webPage.OutgoingUrls.Add(url);
         }
     }
 }

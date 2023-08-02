@@ -7,7 +7,7 @@
         public WebPage(string url) {
             this.Url = url;
         }
-        public WebPage(string url, string title, List<string> OutgoingUrls, TimeSpan crawlTime) {
+        public WebPage(string url, string title, List<string> OutgoingUrls, DateTime crawlTime) {
             this.Url = url;
             this.Title = title;
             this.OutgoingUrls = OutgoingUrls;
