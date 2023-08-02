@@ -37,9 +37,6 @@
             while (_queue.Count > 0) {
                 var page = _queue.Dequeue();
                 List<WebPage> foundPages = await _crawler.CrawlSite(page, _regex);
-                foreach (var foundPage in foundPages) {
-                    this._queue.Enqueue(foundPage);
-                }
             }
         }
         private void UpdateUponCompletion(List<WebPage> webPages) {
