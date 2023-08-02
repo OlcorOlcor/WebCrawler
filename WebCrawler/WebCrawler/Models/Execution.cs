@@ -33,17 +33,19 @@
         }
 
         //does all the crawling
-        public void Execute() {
+        public async void Execute() {
             while (_queue.Count > 0) {
                 var page = _queue.Dequeue();
-                _crawler.CrawlSite(page, _regex);
+                List<WebPage> foundPages = await _crawler.CrawlSite(page, _regex);
             }
         }
         private void UpdateUponCompletion(List<WebPage> webPages) {
             foreach (var webPage in webPages) {
                 this._executionQueue.Enqueue(new WebPageExecution(webPage, _regex));
             }
-            um.Invoke(this);
+            if (um is not null) { 
+                um.Invoke(this);
+            }
         }
     }
 }
