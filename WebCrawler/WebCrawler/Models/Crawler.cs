@@ -1,7 +1,11 @@
 ﻿namespace WebCrawler.Models {
     public class Crawler {
+        //strings to be found in page for identifiing references
         private static string RefString = "<a href=\"";
         private static string QuatationMarksString = "\"";
+
+        //TODO add delegate to return List<WebaPage> to
+        //and where crawler updates info: title and time
 
         public List<WebPage> CrawlSite(WebPage webPage, string regex) {
             //list to be filled with new, not yet crawled webpages
