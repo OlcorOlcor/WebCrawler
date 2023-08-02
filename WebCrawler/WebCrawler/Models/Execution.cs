@@ -8,7 +8,7 @@
         public UpdateManager um;
 
         //list of WebPageExucutions
-        private Queue<WebPageExecution> _executionQueue;
+        private Queue<WebPageExecution> _executionQueue = new();
 
         //TODO: CLEANUP
 
