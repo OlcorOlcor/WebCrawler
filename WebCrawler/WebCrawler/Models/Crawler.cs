@@ -17,7 +17,12 @@ namespace WebCrawler.Models {
             //get data from server
             Stream pageStream;
             using (var client = new HttpClient()) {
-                pageStream = await client.GetStreamAsync(webPage.Url);
+                try { 
+                    pageStream = await client.GetStreamAsync(webPage.Url);
+                } catch (Exception e) {
+                    //log e.Message
+                    return new();
+                }
             }
             //define constant patterns and regular expressions
             string line;
