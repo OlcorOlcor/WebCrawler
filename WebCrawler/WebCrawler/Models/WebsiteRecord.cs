@@ -32,7 +32,7 @@
 
         private void UpdateUponCompletion(List<WebPage> webPages) {
             foreach (var webPage in webPages) {
-                this.RunningExecutions.Add(new Execution)
+                //this.RunningExecutions.Add(new Execution)
             }
         }
     }
