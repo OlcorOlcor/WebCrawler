@@ -14,7 +14,6 @@
     const nodeRadius = 10;
     let offset = 0;
     let infoBox;
-    let infoBoxVisible = true;
 
     const padding = { top: 20, right: 40, bottom: 40, left: 25 };
 
@@ -214,15 +213,25 @@
     }
 
     function showInfo(id, x, y) {
-        console.log(id, x, y, infoBox);
+        console.log(id, canvas.getBoundingClientRect() ,infoBox);
+        let canvasBounds = canvas.getBoundingClientRect();
         infoBox.innerText = id;
         infoBox.style.display = infoBox.style.display === 'block' ? 'none' : 'block';
-        infoBox.style.top = y;
-        infoBox.style.left = x;
-        infoBoxVisible = !infoBoxVisible;
+        infoBox.style.position = "absolute";
+        infoBox.style.top = (canvasBounds.top + y).toString() + "px";
+        infoBox.style.left = (canvasBounds.left + x).toString() + "px";
     }
 
 </script>
+
+<style>
+    .nodeInfo { 
+        position: fixed;
+        top: 0;
+        left: 0;
+        border: 3px solid #73AD21;
+    }
+</style>
 
 <!-- <svelte:window on:resize='{resize}'/> -->
 <div class='container'>
@@ -230,14 +239,7 @@
 </div>
 
 
-<div style="display: block" id="nodeInfo" bind:this={infoBox}>TEST TEXT</div>
+<div style="display: block" class="nodeInfo" bind:this={infoBox}>TEST TEXT</div>
 
 
-<style>
-    #nodeInfo { 
-        position: fixed;
-        top: 0;
-        left: 0;
-        border: 3px solid #73AD21;
-    }
-</style>
+
