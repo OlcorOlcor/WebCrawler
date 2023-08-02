@@ -45,6 +45,7 @@ namespace WebCrawler.Models {
             return foundWebPages;
         }
 
+        //returns a reference html component from given line or null if none present
         private string? FindRefInLine(string line) {
             const string regexPattern = "(<a +href=\".*\" +>)|(<a [^<^>]* href=\".*\" [^<]*>)";
             Regex linkRegularExpression = new Regex(regexPattern, RegexOptions.Compiled);
@@ -56,6 +57,7 @@ namespace WebCrawler.Models {
             return null;
         }
 
+        //returns href part from given a reference html component or null if none present
         private string? FindHrefInRef(string reference) {
             const string hrefPattern = "href=\".{3,\"";
             Regex hrefRegularExpression = new Regex(hrefPattern, RegexOptions.Compiled);
@@ -68,6 +70,8 @@ namespace WebCrawler.Models {
             return null;
         }
 
+        //finds url in given line in a reference if it matches given regex
+        //returns null if none such url is present
         private string? FindUrl(string line,string regex) {
             string? reference = FindRefInLine(line);
 
@@ -87,12 +91,14 @@ namespace WebCrawler.Models {
             return null;
         }
 
+        //returns url from given html href section
         private string? FindUrlInHref(string href) {
             int quotationMarksIndex = href.IndexOf(_quotationMarksString);
             var url = href.Substring(quotationMarksIndex + 1, href.Length - quotationMarksIndex - 1);
             return url;
         }
 
+        //returns contents of title element from given string in stream reader
         private string GetPageTitle(StreamReader reader) {
             string line;
             while ((line = reader.ReadLine()!) is not null) {
@@ -108,6 +114,7 @@ namespace WebCrawler.Models {
             return string.Empty;
         }
 
+        //returns whole title element from line or null if there is no title element in this line
         private string? FindTitleInLine(string line) {
             const string titleRegexPattern = "<title>.*</title>";
             Regex linkRegularExpression = new Regex(titleRegexPattern, RegexOptions.Compiled);
@@ -119,6 +126,7 @@ namespace WebCrawler.Models {
             return null;
         }
 
+        //returns title text from given title element or null if the string is not in required format
         private string? FindTitleInPart(string part) {
             const int titleStartElementLength = 7;
             const int titleEndElementLength = 8;
