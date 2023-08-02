@@ -8,6 +8,8 @@
         //and where crawler updates info: title and time
 
         public List<WebPage> CrawlSite(WebPage webPage, string regex) {
+            //TODO start timer ??
+
             //list to be filled with new, not yet crawled webpages
             List<WebPage> foundWebPages = new();
 
@@ -41,6 +43,8 @@
                     }
                 }
             }
+
+            //TODO end timer ??
 
             return foundWebPages;
         }
