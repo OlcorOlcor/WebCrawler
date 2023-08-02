@@ -43,7 +43,9 @@
             foreach (var webPage in webPages) {
                 this._executionQueue.Enqueue(new WebPageExecution(webPage, _regex));
             }
-            um.Invoke(this);
+            if (um is not null) { 
+                um.Invoke(this);
+            }
         }
     }
 }
