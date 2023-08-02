@@ -94,7 +94,7 @@
             if (d) {
                 console.log(event.x, event.y, 'title: ', d.id, ' ', d.x, d.y);
                 //if (context.canvas.title !== d.id) context.canvas.title = d.id;
-                showInfo(d.id);
+                showInfo(d.id, d.x, d.y);
             }
             // } else {
             //     console.log('cleared')
@@ -213,10 +213,12 @@
         setTimeout(march, 10);  
     }
 
-    function showInfo(id) {
-        console.log(id, infoBox);
+    function showInfo(id, x, y) {
+        console.log(id, x, y, infoBox);
         infoBox.innerText = id;
         infoBox.style.display = infoBox.style.display === 'block' ? 'none' : 'block';
+        infoBox.style.top = y;
+        infoBox.style.left = x;
         infoBoxVisible = !infoBoxVisible;
     }
 
@@ -228,13 +230,14 @@
 </div>
 
 
-<div style="display: none" class="nodeInfo" bind:this={infoBox}>TEST TEXT</div>
+<div style="display: block" id="nodeInfo" bind:this={infoBox}>TEST TEXT</div>
 
 
 <style>
-    :global(.nodeInfo) { 
-        background-color: darkseagreen;
-        position: absolute;
-        visibility: hidden;
+    #nodeInfo { 
+        position: fixed;
+        top: 0;
+        left: 0;
+        border: 3px solid #73AD21;
     }
 </style>
