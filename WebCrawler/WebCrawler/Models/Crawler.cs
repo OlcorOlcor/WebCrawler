@@ -11,6 +11,7 @@ namespace WebCrawler.Models {
 
         public async Task<List<WebPage>> CrawlSite(WebPage webPage, string regex) {
 
+            webPage.CrawlTime = DateTime.Now;
             //list to be filled with found webpages
             List<WebPage> foundWebPages = new();
 
