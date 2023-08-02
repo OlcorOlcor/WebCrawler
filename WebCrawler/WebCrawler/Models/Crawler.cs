@@ -26,14 +26,21 @@ namespace WebCrawler.Models {
                 }
             }
             webPage.CrawlTime = DateTime.Now;
+
             //define constant patterns and regular expressions
             string line;
                        
             StreamReader reader = new StreamReader(pageStream);
-            
+
+            webPage.Title = GetPageTitle(reader);
+
             //parse each line
             while ((line = reader.ReadLine()!) is not null) {
-                FindUrl(line, regex);
+                string? url = FindUrl(line, regex);
+                if(url is not null) {
+                    foundWebPages.Add(new(url));
+                    webPage.OutgoingUrls.Add(url);
+                }
             }
             return foundWebPages;
         }
@@ -64,24 +71,65 @@ namespace WebCrawler.Models {
         private string? FindUrl(string line,string regex) {
             string? reference = FindRefInLine(line);
 
-            string? href;
             if(reference is not null) {
+                string? href;
                 href = FindHrefInRef(reference);
-            }
 
-            int quotationMarksIndex = hrefMatch.Value.IndexOf(_quotationMarksString);
-            var url = hrefMatch.Value.Substring(quotationMarksIndex + 1, hrefMatch.Length - quotationMarksIndex - 1);
+                if(href is not null) {
+                    string? url;
+                    url = FindUrlInHref(href);
 
-            Regex urlRegularExpression = new Regex(regex);
-
-            Match urlMatch = urlRegularExpression.Match(url);
-            if (urlMatch.Success) {
-                return url;
+                    if (url is not null) {
+                        return url;
+                    }
+                }
             }
             return null;
+        }
 
-            foundWebPages.Add(new(url));
-            webPage.OutgoingUrls.Add(url);
+        private string? FindUrlInHref(string href) {
+            int quotationMarksIndex = href.IndexOf(_quotationMarksString);
+            var url = href.Substring(quotationMarksIndex + 1, href.Length - quotationMarksIndex - 1);
+            return url;
+        }
+
+        private string GetPageTitle(StreamReader reader) {
+            string line;
+            while ((line = reader.ReadLine()!) is not null) {
+                string? titlePart = FindTitleInLine(line);
+                if(titlePart is not null) {
+                    string? title = FindTitleInLine(titlePart);
+                    if(title is not null) {
+                        return title;
+                    }
+                }
+            }
+            //cannot happen but c# neads this
+            return string.Empty;
+        }
+
+        private string? FindTitleInLine(string line) {
+            const string titleRegexPattern = "<title>.*</title>";
+            Regex linkRegularExpression = new Regex(titleRegexPattern, RegexOptions.Compiled);
+
+            Match match = linkRegularExpression.Match(line);
+            if(match.Success) {
+                return match.Value;
+            }
+            return null;
+        }
+
+        private string? FindTitleInPart(string part) {
+            const int titleStartElementLength = 7;
+            const int titleEndElementLength = 8;
+            string? title;
+            try {
+                title = part.Substring(titleStartElementLength, part.Length - titleEndElementLength - titleStartElementLength);
+            }
+            catch (Exception e) when (e is ArgumentOutOfRangeException){
+                title = null;
+            }
+            return title;
         }
     }
 }
