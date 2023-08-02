@@ -4,6 +4,7 @@
         private static string QuatationMarksString = "\"";
 
         public List<WebPage> CrawlSite(WebPage webPage, string regex) {
+            //list to be filled with new, not yet crawled webpages
             List<WebPage> foundWebPages = new();
 
             //get data from server
@@ -31,10 +32,13 @@
                     //TODO not checking properly
                     Console.WriteLine(currentUrl);
                     if (new Uri(currentUrl).Scheme == "http" || new Uri(currentUrl).Scheme == "https") {
-                        Console.WriteLine(currentUrl);
+                        //add new webpage with given url to list
+                        foundWebPages.Add(new WebPage(currentUrl));
                     }
                 }
             }
+
+            return foundWebPages;
         }
     }
 }
