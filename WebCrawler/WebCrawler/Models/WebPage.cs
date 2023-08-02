@@ -2,7 +2,7 @@
     public class WebPage {
         public string Url;
         public string? Title; 
-        public List<string>? OutgoingUrls;
+        public List<string> OutgoingUrls = new();
         public TimeSpan? CrawlTime;
         public WebPage(string url) {
             this.Url = url;
