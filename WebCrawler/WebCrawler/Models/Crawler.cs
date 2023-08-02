@@ -11,7 +11,6 @@ namespace WebCrawler.Models {
 
         public async Task<List<WebPage>> CrawlSite(WebPage webPage, string regex) {
 
-            webPage.CrawlTime = DateTime.Now;
             //list to be filled with found webpages
             List<WebPage> foundWebPages = new();
 
@@ -25,6 +24,7 @@ namespace WebCrawler.Models {
                     return new();
                 }
             }
+            webPage.CrawlTime = DateTime.Now;
             //define constant patterns and regular expressions
             string line;
             const string regexPattern = "(<a +href=\".*\" +>)|(<a [^<^>]* href=\".*\" [^<]*>)";
