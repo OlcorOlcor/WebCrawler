@@ -6,7 +6,6 @@
         //Delegate that leads to WebsiteRecordRepository and updates Manager
         public delegate void UpdateRepository(Execution execution);
         public UpdateRepository? callbackMethod;
-        //TODO: CLEANUP
 
         //list of websites to be crawled
         private Queue<WebPage> _queue;
