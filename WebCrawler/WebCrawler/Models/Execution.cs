@@ -11,7 +11,7 @@
         private Queue<string> _queue;
 
         //list of all crawled sites with their oriented conections
-        public List<WebPage> _pages;
+        public List<WebPage> pages;
 
         //hashset of already visited urls
         private HashSet<string> _visited;
@@ -23,7 +23,7 @@
             this._regex = regex;
             this._queue = new Queue<string>();
             this._queue.Enqueue(url);
-            this._pages = new List<WebPage>();
+            this.pages = new List<WebPage>();
             this._visited = new HashSet<string>();
         }
 
@@ -38,7 +38,7 @@
                         _queue.Enqueue(outgoingUrl);
                     }
                 }
-                _pages.Add(foundPage);
+                pages.Add(foundPage);
             }
             if (callbackMethod is not null) {
                 callbackMethod.Invoke(this);
