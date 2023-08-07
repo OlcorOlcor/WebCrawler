@@ -5,7 +5,7 @@
 
         //Delegate that leads to WebsiteRecordRepository and updates Manager
         public delegate void UpdateRepository(Execution execution);
-        public UpdateRepository callbackMethod;
+        public UpdateRepository? callbackMethod;
         //TODO: CLEANUP
 
         //list of websites to be crawled
@@ -15,7 +15,7 @@
         public List<WebPage> _pages;
 
         //hashset of already visited sites
-        private HashSet<bool> _visited;
+        private HashSet<string> _visited;
 
         //Crawler for crawling current website
         private Crawler _crawler = new();
@@ -25,7 +25,7 @@
             this._queue = new Queue<WebPage>();
             this._queue.Enqueue(new WebPage(url));
             this._pages = new List<WebPage>();
-            this._visited = new HashSet<bool>();
+            this._visited = new HashSet<string>();
         }
 
         //does all the crawling
@@ -35,11 +35,14 @@
                 List<WebPage> foundPages = await _crawler.CrawlSite(page, _regex);
                 //TODO: GET RID OF ALREADY CRAWLED PAGES
                 foreach (var foundPage in foundPages) { 
-                    _queue.Enqueue(foundPage);
-                    _pages.Add(foundPage);
+                    if(!_visited.Contains(foundPage.Url)) {
+                        _visited.Add(foundPage.Url);
+                        _queue.Enqueue(foundPage);
+                        _pages.Add(foundPage);
+                    }
                 }
             }
-            callbackMethod.Invoke(this);
+            if (callbackMethod is not null) callbackMethod.Invoke(this);
         }
     }
 }
