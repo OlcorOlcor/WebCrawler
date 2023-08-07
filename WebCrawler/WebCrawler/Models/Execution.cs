@@ -33,7 +33,6 @@
             while (_queue.Count > 0) {
                 var page = _queue.Dequeue();
                 List<WebPage> foundPages = await _crawler.CrawlSite(page, _regex);
-                //TODO: GET RID OF ALREADY CRAWLED PAGES
                 foreach (var foundPage in foundPages) { 
                     if(!_visited.Contains(foundPage.Url)) {
                         _visited.Add(foundPage.Url);
