@@ -7,8 +7,6 @@
             return _records;
         }
 
-        //TODO add queue for executions
-
         public WebsiteRecord? Find(int id) {
             foreach (var record in _records) {
                 if (record.Id == id) {
