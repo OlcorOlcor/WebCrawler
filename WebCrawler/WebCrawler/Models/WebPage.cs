@@ -1,9 +1,9 @@
 ﻿namespace WebCrawler.Models {
     public struct WebPage {
-        public string Url;
-        public string? Title; 
-        public string[] OutgoingUrls;
-        public DateTime? CrawlTime;
+        public readonly string Url;
+        public readonly string? Title; 
+        public readonly string[] OutgoingUrls;
+        public readonly DateTime? CrawlTime;
        
         public WebPage(string url, string title, string[] OutgoingUrls, DateTime crawlTime) {
             this.Url = url;
