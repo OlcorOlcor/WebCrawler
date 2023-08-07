@@ -8,7 +8,7 @@
         public UpdateRepository? callbackMethod;
 
         //list of websites to be crawled
-        private Queue<WebPage> _queue;
+        private Queue<string> _queue;
 
         //list of all sites with their oriented conections
         public List<WebPage> _pages;
@@ -21,8 +21,8 @@
         public Execution(string url, string regex) {
             this._url = url;
             this._regex = regex;
-            this._queue = new Queue<WebPage>();
-            this._queue.Enqueue(new WebPage(url));
+            this._queue = new Queue<string>();
+            this._queue.Enqueue(url);
             this._pages = new List<WebPage>();
             this._visited = new HashSet<string>();
         }

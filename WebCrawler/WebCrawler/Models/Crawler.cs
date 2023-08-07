@@ -11,40 +11,39 @@ namespace WebCrawler.Models {
         //and where crawler updates info: title and time
 
         //list to be filled with found webpages
-        public async Task<List<WebPage>> CrawlSite(WebPage webPage, string regex) {
-
-            List<WebPage> foundWebPages = new();
+        public async Task<WebPage> CrawlSite(string url, string regex) {
 
             //get data from server
             Stream pageStream;
             using (var client = new HttpClient()) {
-                try { 
-                    pageStream = await client.GetStreamAsync(webPage.Url);
+                try {
+                    pageStream = await client.GetStreamAsync(url);
                 } catch (Exception e) {
                     //log e.Message
                     return new();
                 }
             }
-            webPage.CrawlTime = DateTime.Now;
+            DateTime crawlTime = DateTime.Now;
 
             //define constant patterns and regular expressions
             string line;
-                       
+
             StreamReader reader = new StreamReader(pageStream);
 
-            webPage.Title = GetPageTitle(reader);
+            string title = GetPageTitle(reader);
 
             Regex urlRegularExpression = new Regex(regex);
 
+            var outgoingUrls = new List<string>();
+
             //parse each line
             while ((line = reader.ReadLine()!) is not null) {
-                var urls = FindUrlsInLine(line, urlRegularExpression);
-                foreach (var url in urls) { 
-                    foundWebPages.Add(new(url));
-                    webPage.OutgoingUrls.Add(url);
+                var foundUrls = FindUrlsInLine(line, urlRegularExpression);
+                foreach (var foundUrl in foundUrls) {
+                    outgoingUrls.Add(url);
                 }
             }
-            return foundWebPages;
+            return new WebPage(url, title, outgoingUrls.ToArray(), crawlTime);
         }
 
         //returns a reference html component from given line or null if none present
