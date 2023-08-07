@@ -50,7 +50,7 @@
         }
         public void StartNewExecution(WebsiteRecord record) {
             var execution = record.StartNewExecution();
-            //this._manager.
+            this._manager.PlanNewExecution(execution);
         }
     }
 }

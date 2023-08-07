@@ -1,11 +1,11 @@
 ﻿namespace WebCrawler.Models {
     public class Execution {
-        private readonly string _url;
+        public readonly string _url;
         private readonly string _regex;
 
         //Delegate that leads to WebsiteRecordRepository and updates Manager
-        //public delegate void UpdateRepository(List<WebPage> webPages);
-        //public UpdateRepository callbackMethod;
+        public delegate void UpdateRepository(Execution execution);
+        public UpdateRepository callbackMethod;
         //TODO: CLEANUP
 
         //list of websites to be crawled
@@ -29,7 +29,7 @@
         }
 
         //does all the crawling
-        public async void Execute() {
+        public async void Execute(Object? state) {
             while (_queue.Count > 0) {
                 var page = _queue.Dequeue();
                 List<WebPage> foundPages = await _crawler.CrawlSite(page, _regex);
@@ -39,6 +39,7 @@
                     _pages.Add(foundPage);
                 }
             }
+            callbackMethod.Invoke(this);
         }
     }
 }

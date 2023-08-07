@@ -31,8 +31,15 @@
         }
         public Execution StartNewExecution() {
             Execution execution = new Execution(this.Url, this.Regex);
+            execution.callbackMethod = ExecutionFinished;
             this.RunningExecutions.Add(execution);
             return execution;
+        }
+        private void ExecutionFinished(Execution execution) {
+            //the exectuion in the parameter is from another thread so the following line might not word :c
+            var executionIndex = RunningExecutions.IndexOf(execution);
+            RunningExecutions.Remove(RunningExecutions[executionIndex]);
+            this.LastFinishedExecution = execution;
         }
     }
 }

@@ -1,7 +1,9 @@
-﻿namespace WebCrawler.Models {
+﻿using System.Numerics;
+
+namespace WebCrawler.Models {
     public class Manager {
-        //execution data structure
-        //Plan
-        //
+        public void PlanNewExecution(Execution execution) {
+            ThreadPool.QueueUserWorkItem(execution.Execute);
+        }
     }
 }
