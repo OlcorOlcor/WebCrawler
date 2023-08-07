@@ -5,7 +5,7 @@
         private Manager _manager = new();
         public List<WebsiteRecord> GetAll() {
             return _records;
-        }   
+        }
 
         //TODO add queue for executions
 
@@ -47,6 +47,10 @@
                     return i;
             }
             return -1;
+        }
+        public void StartNewExecution(WebsiteRecord record) {
+            var execution = record.StartNewExecution();
+            //this._manager.
         }
     }
 }

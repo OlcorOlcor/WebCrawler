@@ -4,19 +4,15 @@
         private readonly string _regex;
 
         //Delegate that leads to WebsiteRecordRepository and updates Manager
-        public delegate void UpdateManager(Execution exection);
-        public UpdateManager um;
-
-        //list of WebPageExucutions
-        private Queue<WebPageExecution> _executionQueue = new();
-
+        //public delegate void UpdateRepository(List<WebPage> webPages);
+        //public UpdateRepository callbackMethod;
         //TODO: CLEANUP
 
         //list of websites to be crawled
         private Queue<WebPage> _queue;
 
         //list of all sites with their oriented conections
-        private List<WebPage> _pages;
+        public List<WebPage> _pages;
 
         //hashset of already visited sites
         private HashSet<bool> _visited;
@@ -37,14 +33,11 @@
             while (_queue.Count > 0) {
                 var page = _queue.Dequeue();
                 List<WebPage> foundPages = await _crawler.CrawlSite(page, _regex);
-            }
-        }
-        private void UpdateUponCompletion(List<WebPage> webPages) {
-            foreach (var webPage in webPages) {
-                this._executionQueue.Enqueue(new WebPageExecution(webPage, _regex));
-            }
-            if (um is not null) { 
-                um.Invoke(this);
+                //TODO: GET RID OF ALREADY CRAWLED PAGES
+                foreach (var foundPage in foundPages) { 
+                    _queue.Enqueue(foundPage);
+                    _pages.Add(foundPage);
+                }
             }
         }
     }

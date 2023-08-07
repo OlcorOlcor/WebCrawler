@@ -29,11 +29,10 @@
                 TagsArray = new string[0];
             }
         }
-
-        private void UpdateUponCompletion(List<WebPage> webPages) {
-            foreach (var webPage in webPages) {
-                //this.RunningExecutions.Add(new Execution)
-            }
+        public Execution StartNewExecution() {
+            Execution execution = new Execution(this.Url, this.Regex);
+            this.RunningExecutions.Add(execution);
+            return execution;
         }
     }
 }
