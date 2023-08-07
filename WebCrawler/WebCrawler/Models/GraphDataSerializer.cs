@@ -3,7 +3,6 @@ using System.Text;
 
 namespace WebCrawler.Models {
     public class GraphDataSerializer {
-        private WebsiteRecord _websiteRecord { get; set; }
         private StringBuilder sb = new StringBuilder();
         public string SerializeRecord(WebsiteRecord record) {
             WebsiteRecord websiteRecord = record;
