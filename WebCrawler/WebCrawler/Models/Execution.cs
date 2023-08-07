@@ -7,13 +7,13 @@
         public delegate void UpdateRepository(Execution execution);
         public UpdateRepository? callbackMethod;
 
-        //list of websites to be crawled
+        //list of urls to be crawled
         private Queue<string> _queue;
 
-        //list of all sites with their oriented conections
+        //list of all crawled sites with their oriented conections
         public List<WebPage> _pages;
 
-        //hashset of already visited sites
+        //hashset of already visited urls
         private HashSet<string> _visited;
 
         //Crawler for crawling current website
@@ -31,16 +31,18 @@
         public async void Execute(Object? state) {
             while (_queue.Count > 0) {
                 var page = _queue.Dequeue();
-                List<WebPage> foundPages = await _crawler.CrawlSite(page, _regex);
-                foreach (var foundPage in foundPages) { 
-                    if(!_visited.Contains(foundPage.Url)) {
-                        _visited.Add(foundPage.Url);
-                        _queue.Enqueue(foundPage);
-                        _pages.Add(foundPage);
+                WebPage foundPage = await _crawler.CrawlSite(page, _regex);
+                foreach (var outgoingUrl in foundPage.OutgoingUrls) { 
+                    if(!_visited.Contains(outgoingUrl)) {
+                        _visited.Add(outgoingUrl);
+                        _queue.Enqueue(outgoingUrl);
                     }
                 }
+                _pages.Add(foundPage);
             }
-            if (callbackMethod is not null) callbackMethod.Invoke(this);
+            if (callbackMethod is not null) {
+                callbackMethod.Invoke(this);
+            }
         }
     }
 }
