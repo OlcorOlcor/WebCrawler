@@ -2,11 +2,10 @@
     public class WebsiteRecordRepository {
         //here are stored all website records in the app
         private List<WebsiteRecord> _records { get; set; } = new();
+        private Manager _manager = new();
         public List<WebsiteRecord> GetAll() {
             return _records;
         }
-
-        //TODO add queue for executions
 
         public WebsiteRecord? Find(int id) {
             foreach (var record in _records) {
@@ -46,6 +45,10 @@
                     return i;
             }
             return -1;
+        }
+        public void StartNewExecution(WebsiteRecord record) {
+            var execution = record.StartNewExecution();
+            this._manager.PlanNewExecution(execution);
         }
     }
 }
