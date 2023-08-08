@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using WebCrawler.Models;
+using WebCrawler.Controllers;
 
 namespace WebCrawler.Controllers {
     public class ApiController : CrawlerController {
