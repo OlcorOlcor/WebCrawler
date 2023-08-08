@@ -50,5 +50,14 @@
             var execution = record.StartNewExecution();
             this._manager.PlanNewExecution(execution);
         }
+
+        public List<Execution> GetAllExecutions(int recordId) {
+            var record = Find(recordId);
+            if (record is null) {
+                 return new();
+            }
+            List<Execution> list = record.GetAllExecutions();
+            return list;
+        }
     }
 }

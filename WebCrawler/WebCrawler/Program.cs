@@ -5,6 +5,8 @@ namespace WebCrawler {
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Logging.ClearProviders();
+            builder.Logging.AddConsole();
 
             var app = builder.Build();
 

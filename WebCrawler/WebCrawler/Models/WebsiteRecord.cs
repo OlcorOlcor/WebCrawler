@@ -19,7 +19,7 @@
         public Execution LastFinishedExecution { get; set; }
 
         //list of all running executions of this WebsiteRecord
-        public List<Execution> RunningExecutions { get; set; }
+        public List<Execution> RunningExecutions { get; set; } = new();
 
         public void ParseTags() {
             if (Tags != "" && Tags != null) {
@@ -40,6 +40,15 @@
             var executionIndex = RunningExecutions.IndexOf(execution);
             RunningExecutions.Remove(RunningExecutions[executionIndex]);
             this.LastFinishedExecution = execution;
+        }
+
+        public List<Execution> GetAllExecutions() {
+            List<Execution> list = new List<Execution>();
+            if (LastFinishedExecution is not null) {
+                list.Add(LastFinishedExecution);
+            }
+            list.AddRange(this.RunningExecutions);
+            return list;
         }
     }
 }

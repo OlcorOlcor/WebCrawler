@@ -3,14 +3,22 @@
     ViewData["Title"] = "Home Page";
     ViewData["CurrentGrafIndex"] = 0;
 } 
-  
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-ajax-unobtrusive@3.2.6/dist/jquery.unobtrusive-ajax.min.js"></script>
+    <script>
+        function clearForm() {
+            document.getElementById("webRecordForm").reset();
+        }
+    </script>
+}
 <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#WebRecordForm" aria-expanded="false" aria-controls="WebRecordForm">
     Add Website
 </button>
 <div class="collapse" id="WebRecordForm">
     <div class="card card-body" style="margin-top: 30px">
         <h3>Use this form to add new website records.</h3>
-        <form asp-controller="Home" asp-action="AddRecord" method="post">
+        <form id="webRecordForm"  method="post" data-ajax-success="clearForm()" data-ajax="true" data-ajax-method="post" data-ajax-mode="after" data-ajax-update="#update">
             <div class="form-group">
                 <label asp-for="Url">Page URL:</label>
                 <input asp-for="Url" class="form-control" placeholder="https://example.com" id="url" name="Url">
@@ -44,7 +52,7 @@
                 <small>Add tags seperated by a comma</small>
             </div>
             <div style="width: 100%">
-                <button class="btn btn-dark" style="margin-left: 70%; margin-right: 0; width: 30%" type="submit">Create Website Record</button>
+                <button class="btn btn-dark" style="margin-left: 70%; margin-right: 0; width: 30%" type="submit" id="submitButton">Create Website Record</button>
             </div>
         </form>
     </div>
@@ -55,8 +63,7 @@
 <div class="list">
 
     <h3>List of current Website Records</h3>
-    @if (ViewBag.WRList.Count != 0) {
-        <table class="table table-striped">
+        <table class="table table-striped" id="update">
             <tr>
                 <td>Url</td>
                 <td>Regex</td>
@@ -96,11 +103,6 @@
                 i++;
             }
         </table>
-    }
-    else {
-        <p>No Website Records added yet.</p>
-        <hr/>
-    }
 </div>
 
 <h2>Visualisation</h2>
