@@ -4,9 +4,8 @@ using System.Diagnostics;
 using WebCrawler.Models;
 
 namespace WebCrawler.Controllers {
-    public class HomeController : Controller {
+    public class HomeController : CrawlerControler {
         private readonly ILogger<HomeController> _logger;
-        private static WebsiteRecordRepository repo = new WebsiteRecordRepository();
         public HomeController(ILogger<HomeController> logger) {
             _logger = logger;
         }

@@ -1,31 +1,48 @@
 ﻿namespace WebCrawler.Models {
     public class Execution {
-        private readonly string _url;
+        public readonly string _url;
         private readonly string _regex;
 
-        //list of websites to be crawled
+        //Delegate that leads to WebsiteRecordRepository and updates Manager
+        public delegate void UpdateRepository(Execution execution);
+        public UpdateRepository? callbackMethod;
+
+        //list of urls to be crawled
         private Queue<string> _queue;
 
-        //list of all sites with their oriented conections
-        private List<WebPage> _pages;
+        //list of all crawled sites with their oriented conections
+        public List<WebPage> pages;
 
-        //hashset of already visited sites
-        private HashSet<bool> _visited;
+        //hashset of already visited urls
+        private HashSet<string> _visited;
 
+        //Crawler for crawling current website
+        private Crawler _crawler = new();
         public Execution(string url, string regex) {
             this._url = url;
             this._regex = regex;
-            this._queue = new Queue<string> { };
+            this._queue = new Queue<string>();
             this._queue.Enqueue(url);
-            this._pages = new List<WebPage>();
-            this._visited = new HashSet<bool>();
+            this.pages = new List<WebPage>();
+            this._visited = new HashSet<string>();
         }
 
         //does all the crawling
-        public void Execute() {
+        public async void Execute(Object? state) {
             while (_queue.Count > 0) {
-                //TODO
+                var page = _queue.Dequeue();
+                WebPage foundPage = await _crawler.CrawlSite(page, _regex);
+                foreach (var outgoingUrl in foundPage.OutgoingUrls) { 
+                    if(!_visited.Contains(outgoingUrl)) {
+                        _visited.Add(outgoingUrl);
+                        _queue.Enqueue(outgoingUrl);
+                    }
+                }
+                pages.Add(foundPage);
             }
-        }        
+            if (callbackMethod is not null) {
+                callbackMethod.Invoke(this);
+            }
+        }
     }
 }
