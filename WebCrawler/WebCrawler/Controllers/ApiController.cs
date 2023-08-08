@@ -40,8 +40,11 @@ namespace WebCrawler.Controllers {
 
         }
         [HttpPost]
-        public void StartNewExuction(WebsiteRecord websiteRecord) {
-            repo.StartNewExecution(websiteRecord);
-        }
+        public void StartNewExecution(int recordId) {
+            var record = repo.Find(recordId);
+            if (record is not null) { 
+			    repo.StartNewExecution(record);
+			}
+		}
     }
 }
