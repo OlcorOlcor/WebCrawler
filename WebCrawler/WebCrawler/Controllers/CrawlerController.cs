@@ -2,7 +2,7 @@
 using WebCrawler.Models;
 
 namespace WebCrawler.Controllers {
-    public class CrawlerControler : Controller {
+    public class CrawlerController : Controller {
         protected static WebsiteRecordRepository repo = new WebsiteRecordRepository();
     }
 }
