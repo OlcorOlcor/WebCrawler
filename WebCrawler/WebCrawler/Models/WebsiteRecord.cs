@@ -31,7 +31,7 @@
         }
         public Execution StartNewExecution() {
             Execution execution = new Execution(this.Url, this.Regex);
-            execution.callbackMethod = ExecutionFinished;
+            execution.updateRepositoryCallback = ExecutionFinished;
             this.RunningExecutions.Add(execution);
             return execution;
         }

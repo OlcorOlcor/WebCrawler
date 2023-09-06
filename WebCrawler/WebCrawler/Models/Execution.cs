@@ -5,7 +5,7 @@
 
         //Delegate that leads to WebsiteRecordRepository and updates Manager
         public delegate void UpdateRepository(Execution execution);
-        public UpdateRepository? callbackMethod;
+        public UpdateRepository? updateRepositoryCallback;
 
         //list of urls to be crawled
         private Queue<string> _queue;
@@ -28,7 +28,7 @@
         }
 
         //does all the crawling
-        public async void Execute(Object? state) {
+        public async void Execute(object? state) {
             while (_queue.Count > 0) {
                 var page = _queue.Dequeue();
                 WebPage foundPage = await _crawler.CrawlSite(page, _regex);
@@ -40,8 +40,8 @@
                 }
                 pages.Add(foundPage);
             }
-            if (callbackMethod is not null) {
-                callbackMethod.Invoke(this);
+            if (updateRepositoryCallback is not null) {
+                updateRepositoryCallback.Invoke(this);
             }
         }
     }
