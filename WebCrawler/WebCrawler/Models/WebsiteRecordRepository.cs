@@ -2,10 +2,10 @@
     public class WebsiteRecordRepository {
         //here are stored all website records in the app
         private IList<WebsiteRecord> _records { get; set; }
-        private Planner _manager;
+        private Planner _planner;
         public int test = 0;
         public WebsiteRecordRepository(Planner manager, IList<WebsiteRecord> records) {
-            _manager = manager;
+            _planner = manager;
             _records = records;
         }
         public IList<WebsiteRecord> GetAll() {
@@ -53,7 +53,7 @@
         }
         public void StartNewExecution(WebsiteRecord record) {
             var execution = record.StartNewExecution();
-            this._manager.PlanNewExecution(execution);
+            this._planner.PlanNewExecution(execution);
         }
     }
 }
