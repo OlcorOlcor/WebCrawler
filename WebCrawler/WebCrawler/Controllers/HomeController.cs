@@ -5,6 +5,7 @@ using WebCrawler.Models;
 
 namespace WebCrawler.Controllers {
     public class HomeController : Controller {
+
         private readonly ILogger<HomeController> _logger;
         protected WebsiteRecordRepository? repo;
         public HomeController(ILogger<HomeController> logger, WebsiteRecordRepository repository) {

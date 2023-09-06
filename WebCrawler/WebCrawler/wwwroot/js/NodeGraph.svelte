@@ -13,6 +13,8 @@
     let height = 800;
     const nodeRadius = 10;
     let offset = 0;
+    let infoBox;
+    let nodeInfoBoxVisible = false;
 
     const padding = { top: 20, right: 40, bottom: 40, left: 25 };
 
@@ -58,8 +60,8 @@
             //
             links.forEach(d => {
                 context.beginPath();
-                //context.setLineDash([8,2]);
-                //context.lineDashOffset = -offset;
+                // context.setLineDash([8,2]);
+                // context.lineDashOffset = -offset;
                 context.moveTo(d.source.x, d.source.y);
                 context.lineTo(d.target.x, d.target.y);
                 context.globalAlpha = 0.6;
@@ -86,17 +88,21 @@
 
         // title
         d3.select(context.canvas)
-            .on("mousemove", (event) => {
-            const d = simulation.find(event.offsetX, event.offsetY, nodeRadius);
-            console.log(event.offsetX, event.offsetY);
-            if (d) {
-                console.log(event.x, event.y, 'title: ', d.id, ' ', d.x, d.y);
-                if (context.canvas.title !== d.id) context.canvas.title = d.id;
-            } else {
-                console.log('cleared')
-                if (delete context.canvas.title !== undefined) delete context.canvas.title;
-            }
-        });
+            .on("click", (event) => {
+                const d = simulation.find(event.offsetX, event.offsetY, nodeRadius);
+                //console.log(event.offsetX, event.offsetY);
+                if (d) {
+                    console.log(event.x, event.y, 'title: ', d.id, ' ', d.x, d.y);
+                    showNodeInfo(d.id, d.x, d.y);
+                }
+            });
+
+        d3.select(context.canvas)
+            .on("mousedown", (event) => {
+                if (nodeInfoBoxVisible) {
+                    hideNodeInfo();
+                }
+            });
 
         d3.select(canvas)
         .call(d3.drag()
@@ -185,7 +191,7 @@
             return;
         }
 
-        simulation.alpha(0.5);
+        simulation.alpha(1);
         simulation.restart();
     }
 
@@ -209,10 +215,49 @@
         setTimeout(march, 10);  
     }
 
+    function hideNodeInfo() {
+        infoBox.style.display = 'none';
+        nodeInfoBoxVisible = false;
+    }
+
+    function showNodeInfo(id, x, y) {
+        //console.log(id, canvas.getBoundingClientRect() ,infoBox);
+        let canvasBounds = canvas.getBoundingClientRect();
+        infoBox.innerText = id;
+        infoBox.style.top = (canvasBounds.top + window.scrollY+ y).toString() + "px";
+        infoBox.style.left = (canvasBounds.left + window.scrollX + x).toString() + "px";
+
+        infoBox.style.display ='block';
+        nodeInfoBoxVisible = true;
+    }
+
 </script>
 
+<style>
+    .nodeInfo { 
+        position: fixed;
+        top: 0;
+        left: 0;
+        border: 3px solid #73AD21;
+    }
+</style>
 
 <!-- <svelte:window on:resize='{resize}'/> -->
 <div class='container'>
     <canvas bind:this={canvas} width={width} height={height}/>
 </div>
+
+
+<div style="
+            display: none; 
+            position: absolute;
+            border: 3px solid darkgrey; 
+            border-radius: 6px;
+            background-color: white;
+            padding: 5px;
+            "
+    class="nodeInfo" bind:this={infoBox}>
+</div>
+
+
+
