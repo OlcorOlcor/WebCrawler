@@ -4,8 +4,8 @@
         private IList<WebsiteRecord> _records { get; set; }
         private Planner _planner;
         public int test = 0;
-        public WebsiteRecordRepository(Planner manager, IList<WebsiteRecord> records) {
-            _planner = manager;
+        public WebsiteRecordRepository(Planner planner, IList<WebsiteRecord> records) {
+            _planner = planner;
             _records = records;
         }
         public IList<WebsiteRecord> GetAll() {
