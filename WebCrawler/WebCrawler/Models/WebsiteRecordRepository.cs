@@ -1,9 +1,14 @@
 ﻿namespace WebCrawler.Models {
     public class WebsiteRecordRepository {
         //here are stored all website records in the app
-        private List<WebsiteRecord> _records { get; set; } = new();
-        private Manager _manager = new();
-        public List<WebsiteRecord> GetAll() {
+        private IList<WebsiteRecord> _records { get; set; }
+        private Manager _manager;
+        public int test = 0;
+        public WebsiteRecordRepository(Manager manager, IList<WebsiteRecord> records) {
+            _manager = manager;
+            _records = records;
+        }
+        public IList<WebsiteRecord> GetAll() {
             return _records;
         }
 

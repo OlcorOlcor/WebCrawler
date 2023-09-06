@@ -1,10 +1,18 @@
+using WebCrawler.Models;
+
 namespace WebCrawler {
     public class Program {
         public static void Main(string[] args) {
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            builder.Services.AddControllersWithViews();
+            var services = builder.Services;
+
+            services.AddControllersWithViews();
+
+            services.AddSingleton<WebsiteRecordRepository>();
+            services.AddSingleton<Manager>();   
+            services.AddSingleton<IList<WebsiteRecord>, List<WebsiteRecord>>();
 
             var app = builder.Build();
 

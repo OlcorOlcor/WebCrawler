@@ -3,10 +3,13 @@ using System.Diagnostics;
 using WebCrawler.Models;
 
 namespace WebCrawler.Controllers {
-    public class ApiController : CrawlerControler {
+    public class ApiController : Controller {
         private readonly ILogger<ApiController> _logger;
-
-
+        protected WebsiteRecordRepository? repo;
+        public ApiController(ILogger<ApiController> logger, WebsiteRecordRepository repo) {
+            this._logger = logger;
+            this.repo = repo;
+        }
         //gets brief data for all website records
         [HttpGet]
         public JsonResult GetMetaData() {
