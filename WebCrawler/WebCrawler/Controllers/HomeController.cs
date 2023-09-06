@@ -11,11 +11,6 @@ namespace WebCrawler.Controllers {
             _logger = logger;
             repo = repository;
         }
-        public IActionResult Test() {
-            repo._records.Add(new());
-            Console.WriteLine(repo._records.Count());
-            return RedirectToAction("AboutProject");
-        }
         public IActionResult Index() {
             this.ViewBag.WRList = repo.GetAll();
             return View();
