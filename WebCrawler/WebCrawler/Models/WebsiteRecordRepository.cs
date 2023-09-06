@@ -2,9 +2,9 @@
     public class WebsiteRecordRepository {
         //here are stored all website records in the app
         private IList<WebsiteRecord> _records { get; set; }
-        private Manager _manager;
+        private Planner _manager;
         public int test = 0;
-        public WebsiteRecordRepository(Manager manager, IList<WebsiteRecord> records) {
+        public WebsiteRecordRepository(Planner manager, IList<WebsiteRecord> records) {
             _manager = manager;
             _records = records;
         }
