@@ -4,12 +4,14 @@ using System.Diagnostics;
 using WebCrawler.Models;
 
 namespace WebCrawler.Controllers {
-    public class HomeController : CrawlerController {
-        private readonly ILogger<HomeController> _logger;
-        public HomeController(ILogger<HomeController> logger) {
-            _logger = logger;
-        }
+    public class HomeController : Controller {
 
+        private readonly ILogger<HomeController> _logger;
+        protected WebsiteRecordRepository? repo;
+        public HomeController(ILogger<HomeController> logger, WebsiteRecordRepository repository) {
+            _logger = logger;
+            repo = repository;
+        }
         public IActionResult Index() {
             this.ViewBag.WRList = repo.GetAll();
             return View();
