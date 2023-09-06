@@ -11,6 +11,8 @@ namespace WebCrawler.Controllers {
             this._logger = logger;
             this.repo = repo;
         }
+
+        private int i = 0;
         //gets brief data for all website records
         [HttpGet]
         public JsonResult GetMetaData() {
@@ -20,7 +22,6 @@ namespace WebCrawler.Controllers {
         //gets all the data for the given website record
         [HttpGet]
         public JsonResult GetFullData(int recordId) {
-
             switch(i) {
                 case 0 :
                     i = 1;
