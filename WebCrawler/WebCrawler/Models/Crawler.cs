@@ -7,9 +7,6 @@ namespace WebCrawler.Models {
         private const string _refString = "<a href=\"" ;
         private const string _quotationMarksString = "\"";
 
-        //TODO add delegate to return List<WebaPage> to
-        //and where crawler updates info: title and time
-
         //list to be filled with found webpages
         public async Task<WebPage> CrawlSite(string url, string regex) {
 
