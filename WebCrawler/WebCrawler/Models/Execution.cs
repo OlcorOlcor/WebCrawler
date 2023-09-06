@@ -33,6 +33,7 @@
                 var page = _queue.Dequeue();
                 WebPage foundPage = await _crawler.CrawlSite(page, _regex);
                 foreach (var outgoingUrl in foundPage.OutgoingUrls) { 
+                    //Console.WriteLine(outgoingUrl);
                     if(!_visited.Contains(outgoingUrl)) {
                         _visited.Add(outgoingUrl);
                         _queue.Enqueue(outgoingUrl);

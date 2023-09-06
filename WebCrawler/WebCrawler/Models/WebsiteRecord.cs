@@ -13,13 +13,13 @@
         public int Minutes { get; set; }
         public string Label { get; set; } = "";
         public string Tags { get; set; } = "";
-        public string[] TagsArray { get; set; }
+        public string[] TagsArray { get; set; } = new string[0];
 
         //last finished execution is saved here, when next one is finished this will be rewrited by it
         public Execution LastFinishedExecution { get; set; }
 
         //list of all running executions of this WebsiteRecord
-        public List<Execution> RunningExecutions { get; set; }
+        public List<Execution> RunningExecutions { get; set; } = new List<Execution>();
 
         public void ParseTags() {
             if (Tags != "" && Tags != null) {

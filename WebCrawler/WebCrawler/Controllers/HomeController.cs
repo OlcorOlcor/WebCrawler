@@ -21,6 +21,17 @@ namespace WebCrawler.Controllers {
             return View();
         }
 
+        public IActionResult TestProject() {
+            var record = new WebsiteRecord() {
+                Url = "http://www.ms.mff.cuni.cz/~zikmundr/",
+                Regex = ""
+            };
+
+            repo!.Add(record);
+            repo.StartNewExecution(record);
+            return RedirectToAction("Index");
+        }
+
         [HttpPost]
         public IActionResult AddRecord(WebsiteRecord record) {
             record.ParseTags();
