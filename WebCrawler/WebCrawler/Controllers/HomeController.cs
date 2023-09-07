@@ -32,6 +32,7 @@ namespace WebCrawler.Controllers {
             return View();
         }
 
+        //this is only for testing crawler and can be removed later
         public IActionResult TestProject() {
             var record = new WebsiteRecord() {
                 Url = "https://cs.wikipedia.org/wiki/Stopa%C5%99%C5%AFv_pr%C5%AFvodce_po_Galaxii",
@@ -39,10 +40,18 @@ namespace WebCrawler.Controllers {
                 Regex = ".*"
             };
 
+            var record2 = new WebsiteRecord() {
+                Url = "https://cs.wikipedia.org/wiki/National_Basketball_Association",
+                Regex = ".*bask.*"
+            };
+
             Console.WriteLine("Test started.");
 
             repo!.Add(record);
+            repo!.Add(record2);
             repo.StartNewExecution(record);
+            Thread.Sleep(1000);
+            repo.StartNewExecution(record2);
             return RedirectToAction("Index");
         }
 
