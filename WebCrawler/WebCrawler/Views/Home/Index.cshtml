@@ -10,6 +10,9 @@
         function clearForm() {
             document.getElementById("webRecordForm").reset();
         }
+        async function startExecution(id) {
+            let response = fetch("/Api/StartNewExecution?recordId=" + id);
+        }
     </script>
 }
 <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#WebRecordForm" aria-expanded="false" aria-controls="WebRecordForm">
@@ -61,7 +64,6 @@
 <hr/>
 
 <div class="list">
-@if(ViewBag.WRList is not null && ViewBag.WRList.Count != 0) {
     <h3>List of current Website Records</h3>
         <table class="table table-striped" id="update">
             <tr>
@@ -74,7 +76,7 @@
                 <td>Tags</td>
                 <td>Crawl now</td>
             </tr>
-            @{ int i = 0; }
+        @{ int i = 0; }
             @foreach (WebsiteRecord record in ViewBag.WRList) {
                 <tr>
                     <td>@record.Url</td>
@@ -87,7 +89,7 @@
                         <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#Tags@(i)" aria-expanded="false" aria-controls="Tags@(i)">Show Tags</button>
                     </td>
                     <td>
-                        <button class="btn btn-primary" type="button">Crawl - placeholder</button>
+                        <button class="btn btn-primary" type="button">Start New Execution</button>
                     </td>
                 </tr>
                 <tr class="collapse" id="Tags@(i)">
@@ -103,9 +105,6 @@
                 i++;
             }
         </table>
-    } else {
-        <p>Website Record has yet to be added.</p>
-    }
 </div>
 
 <h2>Visualisation</h2>
