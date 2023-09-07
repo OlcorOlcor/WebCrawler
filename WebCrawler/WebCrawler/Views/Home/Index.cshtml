@@ -61,7 +61,7 @@
 <hr/>
 
 <div class="list">
-
+@if(ViewBag.WRList is not null && ViewBag.WRList.Count != 0) {
     <h3>List of current Website Records</h3>
         <table class="table table-striped" id="update">
             <tr>
@@ -103,6 +103,9 @@
                 i++;
             }
         </table>
+    } else {
+        <p>Website Record has yet to be added.</p>
+    }
 </div>
 
 <h2>Visualisation</h2>
