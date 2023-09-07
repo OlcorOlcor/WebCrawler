@@ -29,7 +29,6 @@
 
         //does all the crawling
         public async void Execute(object? state) {
-            Console.WriteLine("Crawling " + _url);
             while (_queue.Count > 0) {
                 var page = _queue.Dequeue();
                 string[] foundPages = await _crawler.CrawlSite(page, _regex);
