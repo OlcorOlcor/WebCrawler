@@ -42,11 +42,12 @@
     }
 
     function getFullData() {
-        let json =  fetch(fullDataUri + "/" + currentRecordIndex)
+        let json = fetch(fullDataUri + "/" + currentRecordIndex)
             .then(response => response.json())
             .then(data => data)
             .catch(error => console.error('Unable to get items.', error));
         
+        return json;
     }
 
     function updateExecutionInformationInRecordTable() {
