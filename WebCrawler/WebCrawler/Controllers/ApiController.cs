@@ -29,7 +29,7 @@ namespace WebCrawler.Controllers {
             var record = repo.Find(recordId);
             if (record is null) {
                 return Json("{}");
-            
+            }
 
 			JsonResult result = Json(record.ToStringJson());
             return result;
