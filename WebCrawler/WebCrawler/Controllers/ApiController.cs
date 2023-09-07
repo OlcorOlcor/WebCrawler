@@ -5,10 +5,13 @@ using WebCrawler.Controllers;
 using System.Runtime.CompilerServices;
 
 namespace WebCrawler.Controllers {
-    public class ApiController : CrawlerController {
+  public class ApiController : Controller {
         private readonly ILogger<ApiController> _logger;
-
-
+        protected WebsiteRecordRepository? repo;
+        public ApiController(ILogger<ApiController> logger, WebsiteRecordRepository repo) {
+            this._logger = logger;
+            this.repo = repo;
+        }
         //gets brief data for all website records
         [HttpGet]
         public JsonResult GetMetaData() {
@@ -26,10 +29,11 @@ namespace WebCrawler.Controllers {
             var record = repo.Find(recordId);
             if (record is null) {
                 return Json("{}");
-            }
+            
 
 			JsonResult result = Json(record.ToStringJson());
             return result;
+          
 			/*
             nodes += $",{{\"id\":\"Myriel{i}\",\"group\":1}}";
             links += $",{{\"source\":\"Napoleon\",\"target\":\"Myriel{i}\",\"value\":1}}";

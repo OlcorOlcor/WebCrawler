@@ -7,9 +7,6 @@ namespace WebCrawler.Models {
         private const string _refString = "<a href=\"" ;
         private const string _quotationMarksString = "\"";
 
-        //TODO add delegate to return List<WebaPage> to
-        //and where crawler updates info: title and time
-
         //list to be filled with found webpages
         public async Task<WebPage> CrawlSite(string url, string regex) {
 
@@ -18,8 +15,7 @@ namespace WebCrawler.Models {
             using (var client = new HttpClient()) {
                 try {
                     pageStream = await client.GetStreamAsync(url);
-                } catch (Exception e) {
-                    //log e.Message
+                } catch (Exception) {
                     return new();
                 }
             }
@@ -40,7 +36,7 @@ namespace WebCrawler.Models {
             while ((line = reader.ReadLine()!) is not null) {
                 var foundUrls = FindUrlsInLine(line, urlRegularExpression);
                 foreach (var foundUrl in foundUrls) {
-                    outgoingUrls.Add(url);
+                    outgoingUrls.Add(foundUrl);
                 }
             }
             return new WebPage(url, title, outgoingUrls.ToArray(), crawlTime);

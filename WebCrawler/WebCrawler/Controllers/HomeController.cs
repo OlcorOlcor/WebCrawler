@@ -4,13 +4,14 @@ using System.Diagnostics;
 using WebCrawler.Models;
 
 namespace WebCrawler.Controllers {
-    public class HomeController : CrawlerController {
+    public class HomeController : Controller {
+
         private readonly ILogger<HomeController> _logger;
-        public HomeController(ILogger<HomeController> logger) {
+        protected WebsiteRecordRepository? repo;
+        public HomeController(ILogger<HomeController> logger, WebsiteRecordRepository repository) {
             _logger = logger;
-            _logger.LogInformation("CTOR");
+            repo = repository;
         }
-        [HttpGet]
         public IActionResult Index() {
             this.ViewBag.WRList = repo.GetAll();
 			_logger.LogInformation("INDEX");
@@ -31,12 +32,23 @@ namespace WebCrawler.Controllers {
             return View();
         }
 
-        //[HttpPost]
-        //public void AddRecord(WebsiteRecord record) {
-        //    this._logger.LogInformation("Slithin' my throat from the other side");
-        //    record.ParseTags();
-        //    repo.Add(record);
-        //}
+        public IActionResult TestProject() {
+            var record = new WebsiteRecord() {
+                Url = "http://www.ms.mff.cuni.cz/~zikmundr/",
+                Regex = ""
+            };
+
+            repo!.Add(record);
+            repo.StartNewExecution(record);
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public IActionResult AddRecord(WebsiteRecord record) {
+            record.ParseTags();
+            repo.Add(record);
+            return Redirect("Index"); //No
+        }
 
 
 

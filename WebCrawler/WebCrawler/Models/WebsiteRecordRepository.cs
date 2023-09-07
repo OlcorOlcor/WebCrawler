@@ -1,9 +1,14 @@
 ﻿namespace WebCrawler.Models {
     public class WebsiteRecordRepository {
         //here are stored all website records in the app
-        private List<WebsiteRecord> _records { get; set; } = new();
-        private Manager _manager = new();
-        public List<WebsiteRecord> GetAll() {
+        private IList<WebsiteRecord> _records { get; set; }
+        private Planner _planner;
+        public int test = 0;
+        public WebsiteRecordRepository(Planner planner, IList<WebsiteRecord> records) {
+            _planner = planner;
+            _records = records;
+        }
+        public IList<WebsiteRecord> GetAll() {
             return _records;
         }
 
@@ -48,7 +53,7 @@
         }
         public void StartNewExecution(WebsiteRecord record) {
             var execution = record.StartNewExecution();
-            this._manager.PlanNewExecution(execution);
+            this._planner.PlanNewExecution(execution);
         }
 
         public List<Execution> GetAllExecutions(int recordId) {
