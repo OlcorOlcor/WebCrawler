@@ -34,9 +34,12 @@ namespace WebCrawler.Controllers {
 
         public IActionResult TestProject() {
             var record = new WebsiteRecord() {
-                Url = "http://www.ms.mff.cuni.cz/~zikmundr/",
-                Regex = ""
+                Url = "https://cs.wikipedia.org/wiki/Stopa%C5%99%C5%AFv_pr%C5%AFvodce_po_Galaxii",
+                //Url = "http://www.ms.mff.cuni.cz/~zikmundr/",
+                Regex = ".*"
             };
+
+            Console.WriteLine("Test started.");
 
             repo!.Add(record);
             repo.StartNewExecution(record);
