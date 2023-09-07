@@ -37,7 +37,7 @@ namespace WebCrawler.Controllers {
             var record = new WebsiteRecord() {
                 Url = "https://cs.wikipedia.org/wiki/Stopa%C5%99%C5%AFv_pr%C5%AFvodce_po_Galaxii",
                 //Url = "http://www.ms.mff.cuni.cz/~zikmundr/",
-                Regex = ".*"
+                Regex = ".*dent.*"
             };
 
             var record2 = new WebsiteRecord() {
@@ -46,6 +46,7 @@ namespace WebCrawler.Controllers {
             };
 
             Console.WriteLine("Test started.");
+            Console.WriteLine(record2.Id);
 
             repo!.Add(record);
             repo!.Add(record2);
@@ -59,7 +60,7 @@ namespace WebCrawler.Controllers {
         public IActionResult AddRecord(WebsiteRecord record) {
             record.ParseTags();
             repo.Add(record);
-            return Redirect("Index"); //No
+            return RedirectToAction("Index");
         }
 
 
