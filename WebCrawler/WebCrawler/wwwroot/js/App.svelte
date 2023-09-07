@@ -4,6 +4,7 @@
     
     const metaDataUri = '/Api/GetMetaData';
     const fullDataUri = '/Api/GetFullData';
+    const formUri = '/Home/AddRecord'
     const interval = 3000;
     let currentRecordIndex = 0;
     let metaData;
@@ -18,7 +19,6 @@
     //         chart.update(currentRecordFullData); 
     //     });
     // }, interval);
-
     getData();
 
     function getData() {
@@ -27,7 +27,8 @@
             currentRecordFullData = data; 
             graph.update(currentRecordFullData); 
         });
-        setTimeout(getData, interval)
+        console.log(currentRecordFullData);
+        setTimeout(getData, interval);
     }
 
     function getMetaData() {
@@ -38,11 +39,14 @@
     }
 
     function getFullData() {
-        return fetch(fullDataUri + "/" + currentRecordIndex)
+        let json =  fetch(fullDataUri + "/" + currentRecordIndex)
             .then(response => response.json())
             .then(data => data)
             .catch(error => console.error('Unable to get items.', error));
+        
     }
+
+    
 </script>
 
 <NodeGraph bind:this={graph}></NodeGraph>

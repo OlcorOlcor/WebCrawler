@@ -6,6 +6,11 @@ namespace WebCrawler {
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+
+            builder.Services.AddControllersWithViews();
+            builder.Logging.ClearProviders();
+            builder.Logging.AddConsole();
+
             var services = builder.Services;
 
             services.AddControllersWithViews();
@@ -13,6 +18,7 @@ namespace WebCrawler {
             services.AddSingleton<WebsiteRecordRepository>();
             services.AddSingleton<Planner>();   
             services.AddSingleton<IList<WebsiteRecord>, List<WebsiteRecord>>();
+
 
             var app = builder.Build();
 

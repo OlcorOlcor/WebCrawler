@@ -14,10 +14,21 @@ namespace WebCrawler.Controllers {
         }
         public IActionResult Index() {
             this.ViewBag.WRList = repo.GetAll();
-            return View();
+			_logger.LogInformation("INDEX");
+			return View();
         }
+        [HttpPost]
+		public ContentResult Index(WebsiteRecord record) {
+			record.ParseTags();
+			repo.Add(record);
+            repo.StartNewExecution(record);
+            //VALIDATION
+			this.ViewBag.WRList = repo.GetAll();
+            //TODO fill missing info
+            return Content($"<tr><td>{record.Url}</td><td>{record.Regex}</td><td>{record.Days.ToString()}d {record.Hours.ToString()}h {record.Minutes.ToString()}m</td><td>{record.Label}</td><td>TODO</td><td>TODO</td><td>Tags</td><td>TODO</td></tr>");
+		}
 
-        public IActionResult AboutProject() {
+		public IActionResult AboutProject() {
             return View();
         }
 
