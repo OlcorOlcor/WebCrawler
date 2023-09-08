@@ -141,6 +141,10 @@
     }
 
     export function update(newGraphData) {
+        if (newGraphData.nodes == null && newGraphData.links == null) {
+            return;
+        } 
+        
         let newNodes = newGraphData.nodes.map(d => Object.create(d));
         let newLinks = newGraphData.links.map(d => Object.create(d));
         

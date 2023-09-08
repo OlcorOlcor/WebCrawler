@@ -25,9 +25,17 @@
         getMetaData().then(data => metaData = data);
         getFullData().then(data => { 
             currentRecordFullData = data; 
-            graph.update(JSON.parse(currentRecordFullData).executions[0]); 
+            if (graph != null) {
+                graph.update(JSON.parse(currentRecordFullData).executions[0]); 
+            }
         });
-        console.log(JSON.parse(currentRecordFullData).executions[0]);
+        try {
+            console.log(JSON.parse(currentRecordFullData).executions[0]);
+        }
+        catch(e) {
+            console.log(e);
+        }
+        
         setTimeout(getData, interval);
     }
 
