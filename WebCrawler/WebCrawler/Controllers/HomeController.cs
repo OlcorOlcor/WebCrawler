@@ -34,24 +34,31 @@ namespace WebCrawler.Controllers {
 
         //this is only for testing crawler and can be removed later
         public IActionResult TestProject() {
-            var record = new WebsiteRecord() {
+            var record0 = new WebsiteRecord() {
                 Url = "https://cs.wikipedia.org/wiki/Stopa%C5%99%C5%AFv_pr%C5%AFvodce_po_Galaxii",
                 //Url = "http://www.ms.mff.cuni.cz/~zikmundr/",
                 Regex = ".*cs.*.org.*"
             };
 
-            var record2 = new WebsiteRecord() {
+            var record1 = new WebsiteRecord() {
                 Url = "https://cs.wikipedia.org/wiki/National_Basketball_Association",
                 Regex = ".*bask.*"
             };
 
-            Console.WriteLine("Test started.");
-            Console.WriteLine(record2.Id);
+            var record2 = new WebsiteRecord() {
+                Url = "https://www.afed.cz/",
+                Regex = ".afed\\.cz."
+            };
 
-            repo!.Add(record);
+            Console.WriteLine("Test started.");
+            Console.WriteLine(record1.Id);
+
+            repo!.Add(record0);
+            repo!.Add(record1);
             repo!.Add(record2);
-            repo.StartNewExecution(record);
+            repo.StartNewExecution(record0);
             Thread.Sleep(1000);
+            repo.StartNewExecution(record1);
             repo.StartNewExecution(record2);
             return RedirectToAction("Index");
         }

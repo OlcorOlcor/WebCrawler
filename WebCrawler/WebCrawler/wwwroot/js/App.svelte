@@ -6,7 +6,7 @@
     const fullDataUri = '/Api/GetFullData';
     const formUri = '/Home/AddRecord'
     const interval = 3000;
-    let currentRecordIndex = 2;
+    export let currentRecordIndex = 2;
     let metaData;
     let currentRecordFullData;
     let graph;
@@ -47,7 +47,7 @@
     }
 
     function getFullData() {
-        return fetch(fullDataUri + "/" + currentRecordIndex)
+        return fetch(fullDataUri + "/?recordId=" + currentRecordIndex)
             .then(response => response.json())
             .then(data => data)
             .catch(error => console.error('Unable to get items.', error));
@@ -56,5 +56,7 @@
 
     
 </script>
+
+<input type=range min=0 max=2 bind:value={currentRecordIndex}>
 
 <NodeGraph bind:this={graph}></NodeGraph>
