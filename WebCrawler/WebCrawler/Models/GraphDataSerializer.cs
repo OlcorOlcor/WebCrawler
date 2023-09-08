@@ -10,23 +10,18 @@ namespace WebCrawler.Models {
             sb.Append("\"executions\": {");
 
             int executionNumber = 0;
-            int executionCount = record.RunningExecutions.Count;
-            bool lastFinishedExecution = false;
+            bool firstExecution = true;
             if (websiteRecord.LastFinishedExecution is not null) {
-                SerializeExecution(websiteRecord.LastFinishedExecution, executionNumber++);
-                if (executionCount > 0) {
-                    sb.Append(",");
-                }
-                
-                lastFinishedExecution = true;
+                SerializeExecution(websiteRecord.LastFinishedExecution, executionNumber++);                
+                firstExecution = false;
             }
 
-            int forLastFinishedExecution = lastFinishedExecution ? 1 : 0;
             foreach (var execution in record.RunningExecutions) {
-                SerializeExecution(execution, executionNumber);
-                if (executionNumber < executionCount - 1 + forLastFinishedExecution) {
+                if (!firstExecution) {
                     sb.Append(",");
                 }
+                firstExecution = false;
+                SerializeExecution(execution, executionNumber);
                 executionNumber++;
             }
 
@@ -49,35 +44,39 @@ namespace WebCrawler.Models {
         }
         private void SerializeNodes(WebPage[] webPages) {
             sb.Append("\"nodes\": [");
-            var pageCount = webPages.Length;
-            int runningCount = 0;
+            bool firstPage = true;
             foreach (var page in webPages) {
-                sb.Append($"{{\"id\": \"{page.Url}\", \"group\": 1}}");
-                if (runningCount < pageCount - 1) {
+                if (!firstPage) {
                     sb.Append(",");
                 }
-                runningCount++;
+                firstPage = false;
+                sb.Append($"{{\"id\": \"{page.Url}\", \"group\": 1}}");
+
+                // TODO maybe could check if url already present
+                foreach (var link in page.OutgoingUrls) {
+                    sb.Append($",{{\"id\": \"{link}\", \"group\": 1}}");
+                }
             }
             sb.Append("],");
         }
         private void SerializeLinks(WebPage[] webPages) {
             sb.Append("\"links\": [");
             bool firstPageToOutput = true;
-            foreach (var webPage in webPages) {
-                var outgoingUrlCount = webPage.OutgoingUrls.Length;
-                int runningUrlCount = 0;
+            foreach (var page in webPages) {
+                var outgoingUrlCount = page.OutgoingUrls.Length;
+                int runningOutgoingUrlCount = 0;
 
                 if (!firstPageToOutput && outgoingUrlCount != 0) {
                     sb.Append(",");
                 }
                 firstPageToOutput = false;
 
-                foreach (var link in webPage.OutgoingUrls) {
-                    sb.Append($"{{\"source\": \"{webPage.Url}\", \"target\": \"{link}\", \"value\": 1}}");
-                    if (runningUrlCount < outgoingUrlCount - 1) {
+                foreach (var link in page.OutgoingUrls) {
+                    sb.Append($"{{\"source\": \"{page.Url}\", \"target\": \"{link}\", \"value\": 1}}");
+                    if (runningOutgoingUrlCount < outgoingUrlCount - 1) {
                         sb.Append(",");
                     }
-                    runningUrlCount++;
+                    runningOutgoingUrlCount++;
                 }
             }
             sb.Append("]");

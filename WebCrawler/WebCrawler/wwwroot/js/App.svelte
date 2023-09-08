@@ -6,7 +6,7 @@
     const fullDataUri = '/Api/GetFullData';
     const formUri = '/Home/AddRecord'
     const interval = 3000;
-    let currentRecordIndex = 1;
+    let currentRecordIndex = 2;
     let metaData;
     let currentRecordFullData;
     let graph;
