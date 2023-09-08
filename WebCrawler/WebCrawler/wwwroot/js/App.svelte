@@ -15,7 +15,7 @@
     // setInterval(() => {
     //     getMetaData().then(data => metaData = data);
     //     getFullData().then(data => { 
-    //         currentRecordFullData = data; 
+    //         currentRecordFullData = data;    
     //         chart.update(currentRecordFullData); 
     //     });
     // }, interval);
