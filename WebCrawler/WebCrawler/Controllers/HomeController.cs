@@ -47,7 +47,7 @@ namespace WebCrawler.Controllers {
 
             var record2 = new WebsiteRecord() {
                 Url = "https://www.afed.cz/",
-                Regex = ".afed\\.cz."
+                Regex = ".\\.cz."
             };
 
             Console.WriteLine("Test started.");
@@ -66,7 +66,7 @@ namespace WebCrawler.Controllers {
         [HttpPost]
         public IActionResult AddRecord(WebsiteRecord record) {
             record.ParseTags();
-            repo.Add(record);
+            repo!.Add(record);
             return RedirectToAction("Index");
         }
 

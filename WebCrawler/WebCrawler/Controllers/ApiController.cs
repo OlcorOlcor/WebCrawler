@@ -26,8 +26,8 @@ namespace WebCrawler.Controllers {
 		//gets all the data for the given website record
 		[HttpGet]
         public JsonResult GetFullData(int recordId) {
-            Console.WriteLine(recordId);
-            var record = repo.Find(recordId);
+            Console.WriteLine($"API call: Api/GetFullData/?recordId={recordId}");
+            var record = repo!.Find(recordId);
             if (record is null) {
                 return Json("{}");
             }
