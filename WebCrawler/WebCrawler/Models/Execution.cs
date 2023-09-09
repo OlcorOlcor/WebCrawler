@@ -6,6 +6,8 @@
         private readonly string _regex;
 
         public Status Status { get; set; } = Status.NotRunning;
+        public DateTime? Start { get; set; } = null;
+        public DateTime? End { get; set; } = null;
 
         //Delegate that leads to WebsiteRecordRepository and updates Manager
         public delegate void UpdateRepository(Execution execution);
@@ -34,6 +36,7 @@
         //does all the crawling
         public async void Execute(object? state) {
 
+            Start = DateTime.Now;
             Status = Status.Running;
 
             while (_queue.Count > 0) {
@@ -49,6 +52,7 @@
                 pages.Add(updatedPage);
             }
 
+            End = DateTime.Now;
             Status = Status.Finished;
 
             if (updateRepositoryCallback is not null) {
