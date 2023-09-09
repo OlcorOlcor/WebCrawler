@@ -7,7 +7,7 @@
     const latestExecutionUri = '/Api/GetLatestExecutions'
     const formUri = '/Home/AddRecord'
     const interval = 30000;
-    const executionUpdateInterval = 3000; //30 seconds
+    const executionUpdateInterval = 30000; //30 seconds
     let currentRecordIndex = 0;
     let metaData;
     let currentRecordFullData;
@@ -50,7 +50,7 @@
     }
 
     function updateExecutionInformationInRecordTable() {
-        let json = fetch(latestExecutionUri + "/")
+        fetch(latestExecutionUri + "/")
             .then(res => {
                 if (res.ok) {
                     return res.json()
@@ -58,7 +58,15 @@
                     throw new Error("Unable to fetch latest executions")
                 }
             })
-            .then(json => json)
+            .then(json => JSON.parse(json))
+            .then(jsonData => {
+                jsonData["Executions"].forEach(execution => {
+                    let timeDOM = document.getElementById("ExecutionTime" + execution["RecordId"])
+                    let statusDOM = document.getElementById("ExecutionStatus" + execution["RecordId"])
+                    timeDOM.innerHTML = execution["Time"];
+                    statusDOM.innerHTML = execution["Status"];
+                })
+            })
             .catch(err => console.error(err));
     }
     
