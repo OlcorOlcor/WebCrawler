@@ -32,8 +32,8 @@ namespace WebCrawler.Controllers {
                 $"<td>{record.Regex}</td>" +
                 $"<td>{record.Days.ToString()}d {record.Hours.ToString()}h {record.Minutes.ToString()}m</td>" +
                 $"<td>{record.Label}</td>" +
-                $"<td>YET TO FINISH</td>" +
-                $"<td>RUNNING</td>" +
+                $"<td id=\"ExecutionTime{record.Id}\">YET TO FINISH</td>" +
+                $"<td id=\"ExecutionStatus{record.Id}\">RUNNING</td>" +
                 $"<td>Tags</td>" +
                 $"<td><button class=\"btn btn-primary\" onClick=\"startExecution({record.Id})\">Start New Execution</button></td>" +
                 $"</tr>");
