@@ -57,6 +57,6 @@
     
 </script>
 
-<input type=range min=0 max=2 bind:value={currentRecordIndex}>
+<!--// <input type=range min=0 max=2 bind:value={currentRecordIndex}>  -->
 
 <NodeGraph bind:this={graph}></NodeGraph>
