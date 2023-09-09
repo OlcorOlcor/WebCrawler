@@ -1,6 +1,8 @@
-﻿namespace WebCrawler.Models {
-    public enum Status { NotRunning, Running, Finished }
 
+﻿namespace WebCrawler.Models {
+   
+    public enum Status { NotRunning, Running, Finished }
+    
     public class Execution {
         public readonly string _url;
         private readonly string _regex;
@@ -24,6 +26,8 @@
 
         //Crawler for crawling current website
         private Crawler _crawler = new();
+
+        public TimeSpan ExecutionTime;
         public Execution(string url, string regex) {
             this._url = url;
             this._regex = regex;
