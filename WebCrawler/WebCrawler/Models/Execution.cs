@@ -1,5 +1,5 @@
 ﻿namespace WebCrawler.Models {
-    public enum Status { NotRunning, Running, Finished }
+    public enum Status { NotRunning, Running, Finished, Failed }
 
     public class Execution {
         public readonly string _url;
@@ -33,6 +33,9 @@
 
         //does all the crawling
         public async void Execute(object? state) {
+
+            Status = Status.Running;
+
             while (_queue.Count > 0) {
                 var page = _queue.Dequeue();
                 string[] foundPages = await _crawler.CrawlSite(page, _regex);
@@ -45,7 +48,9 @@
                 }
                 pages.Add(updatedPage);
             }
-            Console.WriteLine("loop ended");
+
+            Status = Status.Finished;
+
             if (updateRepositoryCallback is not null) {
                 updateRepositoryCallback.Invoke(this);
             }
