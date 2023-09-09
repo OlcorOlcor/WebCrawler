@@ -6,7 +6,7 @@
     const fullDataUri = '/Api/GetFullData';
     const formUri = '/Home/AddRecord'
     const interval = 3000;
-    let currentRecordIndex = 0;
+    export let currentRecordIndex = 2;
     let metaData;
     let currentRecordFullData;
     let graph;
@@ -25,9 +25,17 @@
         getMetaData().then(data => metaData = data);
         getFullData().then(data => { 
             currentRecordFullData = data; 
-            graph.update(currentRecordFullData); 
+            if (graph != null) {
+                graph.update(JSON.parse(currentRecordFullData).executions[0]); 
+            }
         });
-        console.log(currentRecordFullData);
+        try {
+            console.log(JSON.parse(currentRecordFullData).executions[0]);
+        }
+        catch(e) {
+            console.log(e);
+        }
+        
         setTimeout(getData, interval);
     }
 
@@ -39,7 +47,7 @@
     }
 
     function getFullData() {
-        let json =  fetch(fullDataUri + "/" + currentRecordIndex)
+        return fetch(fullDataUri + "/?recordId=" + currentRecordIndex)
             .then(response => response.json())
             .then(data => data)
             .catch(error => console.error('Unable to get items.', error));
@@ -48,5 +56,7 @@
 
     
 </script>
+
+<!--// <input type=range min=0 max=2 bind:value={currentRecordIndex}>  -->
 
 <NodeGraph bind:this={graph}></NodeGraph>

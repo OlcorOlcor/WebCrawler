@@ -1,9 +1,9 @@
 ﻿namespace WebCrawler.Models {
     public class WebsiteRecord {
-        private static int LastID { get; set; }
+        private static int _nextID { get; set; }
         public WebsiteRecord() {
-            LastID++;
-            Id = LastID;
+            Id = _nextID;
+            _nextID++;
         }
         public int Id { get; init; }
         public string Url { get; set; } = "";
@@ -16,7 +16,7 @@
         public string[] TagsArray { get; set; } = new string[0];
 
         //last finished execution is saved here, when next one is finished this will be rewrited by it
-        public Execution LastFinishedExecution { get; set; }
+        public Execution? LastFinishedExecution { get; set; } = null;
 
         //list of all running executions of this WebsiteRecord
 

@@ -8,7 +8,9 @@ namespace WebCrawler.Models {
         private const string _quotationMarksString = "\"";
 
         //list to be filled with found webpages
-        public async Task<WebPage> CrawlSite(string url, string regex) {
+        public async Task<string[]> CrawlSite(string url, string regex) {
+
+            Console.WriteLine("Crawling " + url);
 
             //get data from server
             Stream pageStream;
@@ -16,10 +18,9 @@ namespace WebCrawler.Models {
                 try {
                     pageStream = await client.GetStreamAsync(url);
                 } catch (Exception) {
-                    return new();
+                    return new string[0];
                 }
             }
-            DateTime crawlTime = DateTime.Now;
 
             //define constant patterns and regular expressions
             string line;
@@ -39,12 +40,13 @@ namespace WebCrawler.Models {
                     outgoingUrls.Add(foundUrl);
                 }
             }
-            return new WebPage(url, title, outgoingUrls.ToArray(), crawlTime);
+            await Console.Out.WriteLineAsync("Outgoing URLs count: " + outgoingUrls.ToArray().Length.ToString());
+            return outgoingUrls.ToArray();
         }
 
         //returns a reference html component from given line or null if none present
         private List<string> FindRefInLine(string line) {
-            const string regexPattern = "(<a +href=\".*\" +>)|(<a [^<^>]* href=\".*\" [^<]*>)";
+            const string regexPattern = "(<a +href=\"[^<>]*\"[^<]*>)|(<a [^<>]* href=\"[^<>]*\"[^<]+>)";
             Regex linkRegularExpression = new Regex(regexPattern, RegexOptions.Compiled);
 
             List<string> references = new();
@@ -60,7 +62,7 @@ namespace WebCrawler.Models {
 
         //returns href part from given a reference html component or null if none present
         private string? FindHrefInRef(string reference) {
-            const string hrefPattern = "href=\".{3,\"";
+            const string hrefPattern = "href=\"[^\"]{3,}\"";
             Regex hrefRegularExpression = new Regex(hrefPattern, RegexOptions.Compiled);
 
             Match hrefMatch = hrefRegularExpression.Match(reference);
@@ -88,7 +90,7 @@ namespace WebCrawler.Models {
                     if (url is not null) {
                         Match urlMatch = regex.Match(url);
                         if (urlMatch.Success) {
-                            references.Add(url);
+                            urls.Add(url);
                         }
                     }
                 }
@@ -99,7 +101,7 @@ namespace WebCrawler.Models {
         //returns url from given html href section
         private string? FindUrlInHref(string href) {
             int quotationMarksIndex = href.IndexOf(_quotationMarksString);
-            var url = href.Substring(quotationMarksIndex + 1, href.Length - quotationMarksIndex - 1);
+            var url = href.Substring(quotationMarksIndex + 1, href.Length - quotationMarksIndex - 2);
             return url;
         }
 
