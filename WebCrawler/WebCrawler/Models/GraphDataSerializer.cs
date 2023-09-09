@@ -38,17 +38,11 @@ namespace WebCrawler.Models {
             }
 
             sb.Append($"\"{executionNumber}\": {{");
-            sb.Append("\"Status\" : ");
-            sb.Append($"\"{execution.Status.ToString()}\",");
-            sb.Append("\"Start\" : ");
-            sb.Append($"\"{execution.Start}\",");
-            sb.Append("\"End\" : ");
-            sb.Append($"\"{execution.End}\",");
-            sb.Append("\"NumberOfCrawledPages\" : ");
-            sb.Append($"\"{execution.pages.Count}\",");
-            sb.Append("\"Nodes\" : ");
+            sb.Append($"\"status\": \"{execution.Status.ToString()}\",");
+            sb.Append($"\"start-time\": \"{execution.Start}\",");
+            sb.Append($"\"end-time\": \"{execution.End}\",");
+            sb.Append($"\"crawled-page-count\": \"{execution.pages.Count}\",");
             SerializeNodes(webPages);
-            sb.Append("\"Links\" : ");
             SerializeLinks(webPages);
             sb.Append("}");
         }
