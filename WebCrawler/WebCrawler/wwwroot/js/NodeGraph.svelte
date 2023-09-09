@@ -141,10 +141,13 @@
     }
 
     export function update(newGraphData) {
-        newGraphData = JSON.parse(newGraphData);
+        if (newGraphData.nodes == null && newGraphData.links == null) {
+            return;
+        } 
+        
         let newNodes = newGraphData.nodes.map(d => Object.create(d));
         let newLinks = newGraphData.links.map(d => Object.create(d));
-
+        
         let noUpdateNeeded = true;
         
         //both inner forEaches should be replaced with more efficient hashset or something
