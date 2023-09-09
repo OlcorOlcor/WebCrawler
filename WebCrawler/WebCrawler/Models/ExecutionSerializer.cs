@@ -10,7 +10,7 @@ namespace WebCrawler.Models {
             sb.Append($"\"Status\": FINISHED"); //TODO: Change to actual status once implemented
             sb.Append("}");
         }
-        public string SerializeLatestExecutions(List<WebsiteRecord> records) {
+        public string SerializeLatestExecutions(IList<WebsiteRecord> records) {
             sb.Append("{ \"Executions\": [");
             foreach (WebsiteRecord record in records) {
                 SerializeExecution(record.LastFinishedExecution, record.Id);
