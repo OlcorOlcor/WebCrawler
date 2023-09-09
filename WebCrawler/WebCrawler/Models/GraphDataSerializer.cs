@@ -37,8 +37,7 @@ namespace WebCrawler.Models {
                 return;
             }
 
-            sb.Append("\"ExecutionNumber\" : ");
-            sb.Append($"\"{executionNumber}\",");
+            sb.Append($"\"{executionNumber}\": {{");
             sb.Append("\"Status\" : ");
             sb.Append($"\"{execution.Status.ToString()}\",");
             sb.Append("\"Start\" : ");
