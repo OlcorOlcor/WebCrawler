@@ -37,18 +37,20 @@ namespace WebCrawler.Models {
             stopwatch.Start();
             while (_queue.Count > 0) {
                 var page = _queue.Dequeue();
-                WebPage foundPage = await _crawler.CrawlSite(page, _regex);
-                foreach (var outgoingUrl in foundPage.OutgoingUrls) { 
-                    //Console.WriteLine(outgoingUrl);
+                string[] foundPages = await _crawler.CrawlSite(page, _regex);
+                WebPage updatedPage = new WebPage(page, _regex, foundPages, DateTime.Now);
+                foreach (var outgoingUrl in updatedPage.OutgoingUrls) { 
                     if(!_visited.Contains(outgoingUrl)) {
                         _visited.Add(outgoingUrl);
                         _queue.Enqueue(outgoingUrl);
                     }
                 }
-                pages.Add(foundPage);
+                pages.Add(updatedPage);
             }
+          
             stopwatch.Stop();
             this.ExecutionTime = stopwatch.Elapsed;
+          
             if (updateRepositoryCallback is not null) {
                 updateRepositoryCallback.Invoke(this);
             }

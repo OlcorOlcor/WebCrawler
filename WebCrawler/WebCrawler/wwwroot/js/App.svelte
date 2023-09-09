@@ -16,7 +16,7 @@
     // setInterval(() => {
     //     getMetaData().then(data => metaData = data);
     //     getFullData().then(data => { 
-    //         currentRecordFullData = data; 
+    //         currentRecordFullData = data;    
     //         chart.update(currentRecordFullData); 
     //     });
     // }, interval);
@@ -27,9 +27,17 @@
         getMetaData().then(data => metaData = data);
         getFullData().then(data => { 
             currentRecordFullData = data; 
-            graph.update(currentRecordFullData); 
+            if (graph != null) {
+                graph.update(JSON.parse(currentRecordFullData).executions[0]); 
+            }
         });
-        console.log(currentRecordFullData);
+        try {
+            console.log(JSON.parse(currentRecordFullData).executions[0]);
+        }
+        catch(e) {
+            console.log(e);
+        }
+        
         setTimeout(getData, interval);
     }
 
@@ -71,5 +79,7 @@
     }
     
 </script>
+
+<!--// <input type=range min=0 max=2 bind:value={currentRecordIndex}>  -->
 
 <NodeGraph bind:this={graph}></NodeGraph>

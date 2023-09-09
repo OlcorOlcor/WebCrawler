@@ -42,26 +42,13 @@ namespace WebCrawler.Controllers {
 		public IActionResult AboutProject() {
             return View();
         }
-
-        public IActionResult TestProject() {
-            var record = new WebsiteRecord() {
-                Url = "http://www.ms.mff.cuni.cz/~zikmundr/",
-                Regex = ""
-            };
-
-            repo!.Add(record);
-            repo.StartNewExecution(record);
-            return RedirectToAction("Index");
-        }
-
+        
         [HttpPost]
         public IActionResult AddRecord(WebsiteRecord record) {
             record.ParseTags();
-            repo.Add(record);
-            return Redirect("Index"); //No
+            repo!.Add(record);
+            return RedirectToAction("Index");
         }
-
-
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error() {
