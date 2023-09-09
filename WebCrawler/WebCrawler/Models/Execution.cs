@@ -5,7 +5,7 @@
         public readonly string _url;
         private readonly string _regex;
 
-        public Status Status { get; set; }
+        public Status Status { get; set; } = Status.NotRunning;
 
         //Delegate that leads to WebsiteRecordRepository and updates Manager
         public delegate void UpdateRepository(Execution execution);
