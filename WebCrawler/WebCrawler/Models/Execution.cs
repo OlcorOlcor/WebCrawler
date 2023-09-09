@@ -1,9 +1,15 @@
-﻿using System.Diagnostics;
 
-namespace WebCrawler.Models {
+﻿namespace WebCrawler.Models {
+   
+    public enum Status { NotRunning, Running, Finished }
+    
     public class Execution {
         public readonly string _url;
         private readonly string _regex;
+
+        public Status Status { get; set; } = Status.NotRunning;
+        public DateTime? Start { get; set; } = null;
+        public DateTime? End { get; set; } = null;
 
         //Delegate that leads to WebsiteRecordRepository and updates Manager
         public delegate void UpdateRepository(Execution execution);
@@ -33,8 +39,10 @@ namespace WebCrawler.Models {
 
         //does all the crawling
         public async void Execute(object? state) {
-            Stopwatch stopwatch = new Stopwatch();
-            stopwatch.Start();
+
+            Start = DateTime.Now;
+            Status = Status.Running;
+
             while (_queue.Count > 0) {
                 var page = _queue.Dequeue();
 
@@ -52,10 +60,10 @@ namespace WebCrawler.Models {
                     }
                 }
             }
-          
-            stopwatch.Stop();
-            this.ExecutionTime = stopwatch.Elapsed;
-          
+
+            End = DateTime.Now;
+            Status = Status.Finished;
+
             if (updateRepositoryCallback is not null) {
                 updateRepositoryCallback.Invoke(this);
             }

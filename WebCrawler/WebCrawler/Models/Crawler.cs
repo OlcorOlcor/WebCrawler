@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+using System;
 using System.Text.RegularExpressions;
 
 namespace WebCrawler.Models {
@@ -24,7 +25,7 @@ namespace WebCrawler.Models {
                     pageStream = await client.GetStreamAsync(url);
                 } catch (Exception e) {
                     await Console.Out.WriteLineAsync(e.Message);
-                    return new WebPage(url, "", new WebLinks(), DateTime.Now);
+                    return new WebPage(url, "", new WebLinks(), DateTime.Now, false);
                 }
             }
 
@@ -57,7 +58,7 @@ namespace WebCrawler.Models {
                 UrlsMatchingRegex = matchingLinks.ToArray(), 
                 UrlsNotMatchingRegex = notMatchingLinks.ToArray()
             };
-            return new WebPage(url, title, outgoingLinks, DateTime.Now);
+            return new WebPage(url, title, outgoingLinks, DateTime.Now, true);
         }
 
         //returns a reference html component from given line or null if none present

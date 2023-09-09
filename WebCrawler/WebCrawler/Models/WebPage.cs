@@ -6,15 +6,17 @@
 
     public struct WebPage {
         public readonly string Url;
-        public readonly string? Title; 
+        public readonly string Title; 
         public readonly WebLinks OutgoingLinks;
-        public readonly DateTime? CrawlTime;
-       
-        public WebPage(string url, string title, WebLinks OutgoingLinks, DateTime crawlTime) {
+        public readonly DateTime CrawlTime;
+        public readonly bool Active;
+      
+        public WebPage(string url, string title, WebLinks OutgoingLinks, DateTime crawlTime, bool active) {
             this.Url = url;
             this.Title = title;
             this.OutgoingLinks = OutgoingLinks;
             this.CrawlTime = crawlTime;
+            this.Active = active;
         }
     }
 }   
