@@ -37,24 +37,20 @@ namespace WebCrawler.Models {
             stopwatch.Start();
             while (_queue.Count > 0) {
                 var page = _queue.Dequeue();
-                CrawlResponse response;
-                try {
-                    response = await _crawler.CrawlSite(page, _regex);
-                }
-                catch (Exception e){
-                    Console.WriteLine(e.Message);
+
+                WebPage crawledPage = await _crawler.CrawlSite(page, _regex);
+                pages.Add(crawledPage);
+
+                if (crawledPage.OutgoingLinks.UrlsMatchingRegex is null) {
                     continue;
                 }
-                
-                WebPage updatedPage = new WebPage(page, response.PageTitle, response.Links, DateTime.Now);
 
-                foreach (var outgoingLink in updatedPage.OutgoingLinks.UrlsMatchingRegex) { 
+                foreach (var outgoingLink in crawledPage.OutgoingLinks.UrlsMatchingRegex) { 
                     if(!_visited.Contains(outgoingLink)) {
                         _visited.Add(outgoingLink);
                         _queue.Enqueue(outgoingLink);
                     }
                 }
-                pages.Add(updatedPage);
             }
           
             stopwatch.Stop();

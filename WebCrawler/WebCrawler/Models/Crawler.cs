@@ -14,7 +14,7 @@ namespace WebCrawler.Models {
         private const string _quotationMarksString = "\"";
 
         //list to be filled with found webpages
-        public async Task<CrawlResponse> CrawlSite(string url, string regex) {
+        public async Task<WebPage> CrawlSite(string url, string regex) {
             Console.WriteLine("Crawling " + url);
 
             //get data from server
@@ -23,7 +23,8 @@ namespace WebCrawler.Models {
                 try {
                     pageStream = await client.GetStreamAsync(url);
                 } catch (Exception e) {
-                    throw e;
+                    await Console.Out.WriteLineAsync(e.Message);
+                    return new WebPage(url, "", new WebLinks(), DateTime.Now);
                 }
             }
 
@@ -56,7 +57,7 @@ namespace WebCrawler.Models {
                 UrlsMatchingRegex = matchingLinks.ToArray(), 
                 UrlsNotMatchingRegex = notMatchingLinks.ToArray()
             };
-            return new CrawlResponse {PageTitle = title, Links = outgoingLinks};
+            return new WebPage(url, title, outgoingLinks, DateTime.Now);
         }
 
         //returns a reference html component from given line or null if none present
