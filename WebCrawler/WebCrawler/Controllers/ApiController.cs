@@ -57,5 +57,12 @@ namespace WebCrawler.Controllers {
 			    repo.StartNewExecution(record);
 			}
 		}
+        [HttpGet]
+        public JsonResult GetLatestExecutions() {
+            var records = repo.GetAll();
+            ExecutionSerializer serializer = new ExecutionSerializer();
+            string json = serializer.SerializeLatestExecutions(records);
+            return Json(json);
+        }
     }
 }
