@@ -37,12 +37,19 @@ namespace WebCrawler.Models {
                 return;
             }
 
-            sb.Append("ExecutionNumber : ");
+            sb.Append("\"ExecutionNumber\" : ");
             sb.Append($"\"{executionNumber}\",");
-            sb.Append("Status : ");
+            sb.Append("\"Status\" : ");
             sb.Append($"\"{execution.Status.ToString()}\",");
-            sb.Append();
+            sb.Append("\"Start\" : ");
+            sb.Append($"\"{execution.Start}\",");
+            sb.Append("\"End\" : ");
+            sb.Append($"\"{execution.End}\",");
+            sb.Append("\"NumberOfCrawledPages\" : ");
+            sb.Append($"\"{execution.pages.Count}\",");
+            sb.Append("\"Nodes\" : ");
             SerializeNodes(webPages);
+            sb.Append("\"Links\" : ");
             SerializeLinks(webPages);
             sb.Append("}");
         }
