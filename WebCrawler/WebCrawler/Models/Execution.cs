@@ -1,4 +1,6 @@
-﻿namespace WebCrawler.Models {
+﻿using System.Diagnostics;
+
+namespace WebCrawler.Models {
     public class Execution {
         public readonly string _url;
         private readonly string _regex;
@@ -18,6 +20,8 @@
 
         //Crawler for crawling current website
         private Crawler _crawler = new();
+
+        public TimeSpan ExecutionTime;
         public Execution(string url, string regex) {
             this._url = url;
             this._regex = regex;
@@ -29,6 +33,8 @@
 
         //does all the crawling
         public async void Execute(object? state) {
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
             while (_queue.Count > 0) {
                 var page = _queue.Dequeue();
                 WebPage foundPage = await _crawler.CrawlSite(page, _regex);
@@ -41,6 +47,8 @@
                 }
                 pages.Add(foundPage);
             }
+            stopwatch.Stop();
+            this.ExecutionTime = stopwatch.Elapsed;
             if (updateRepositoryCallback is not null) {
                 updateRepositoryCallback.Invoke(this);
             }
