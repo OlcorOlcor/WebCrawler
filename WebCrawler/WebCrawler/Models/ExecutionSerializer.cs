@@ -12,8 +12,14 @@ namespace WebCrawler.Models {
         }
         public string SerializeLatestExecutions(IList<WebsiteRecord> records) {
             sb.Append("{ \"Executions\": [");
+            bool firstRecord = true;
             foreach (WebsiteRecord record in records) {
-                SerializeExecution(record.LastFinishedExecution, record.Id);
+                if (record.LastFinishedExecution is not null) {
+                    if (!firstRecord) {
+                        sb.Append(",");
+                    }
+                    SerializeExecution(record.LastFinishedExecution, record.Id);    
+                }
             }
             sb.Append("]}");
             return sb.ToString();
