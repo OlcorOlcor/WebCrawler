@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+using System;
 using System.Text.RegularExpressions;
 
 namespace WebCrawler.Models {
@@ -8,9 +9,9 @@ namespace WebCrawler.Models {
         private const string _quotationMarksString = "\"";
 
         //list to be filled with found webpages
-        public async Task<string[]> CrawlSite(string url, string regex) {
+        public async Task<WebPage> CrawlSite(string url, string regex) {
 
-            Console.WriteLine("Crawling " + url);
+            //Console.WriteLine("Crawling " + url);
 
             //get data from server
             Stream pageStream;
@@ -18,7 +19,7 @@ namespace WebCrawler.Models {
                 try {
                     pageStream = await client.GetStreamAsync(url);
                 } catch (Exception) {
-                    return new string[0];
+                    return new WebPage(url, null, new string[0], DateTime.Now, false);
                 }
             }
 
@@ -40,8 +41,9 @@ namespace WebCrawler.Models {
                     outgoingUrls.Add(foundUrl);
                 }
             }
-            await Console.Out.WriteLineAsync("Outgoing URLs count: " + outgoingUrls.ToArray().Length.ToString());
-            return outgoingUrls.ToArray();
+            //await Console.Out.WriteLineAsync("Outgoing URLs count: " + outgoingUrls.ToArray().Length.ToString());
+
+            return new WebPage(url, title, outgoingUrls.ToArray(), DateTime.Now, true);
         }
 
         //returns a reference html component from given line or null if none present
