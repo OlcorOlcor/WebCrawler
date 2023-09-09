@@ -21,11 +21,22 @@ namespace WebCrawler.Controllers {
 		public ContentResult Index(WebsiteRecord record) {
 			record.ParseTags();
 			repo.Add(record);
-            repo.StartNewExecution(record);
+            //repo.StartNewExecution(record);
             //VALIDATION
 			this.ViewBag.WRList = repo.GetAll();
             //TODO fill missing info
-            return Content($"<tr><td>{record.Url}</td><td>{record.Regex}</td><td>{record.Days.ToString()}d {record.Hours.ToString()}h {record.Minutes.ToString()}m</td><td>{record.Label}</td><td>TODO</td><td>TODO</td><td>Tags</td><td>TODO</td></tr>");
+            return Content(
+                $"" +
+                $"<tr>" +
+                $"  <td>{record.Url}</td>" +
+                $"<td>{record.Regex}</td>" +
+                $"<td>{record.Days.ToString()}d {record.Hours.ToString()}h {record.Minutes.ToString()}m</td>" +
+                $"<td>{record.Label}</td>" +
+                $"<td id=\"ExecutionTime{record.Id}\">YET TO FINISH</td>" +
+                $"<td id=\"ExecutionStatus{record.Id}\">RUNNING</td>" +
+                $"<td>Tags</td>" +
+                $"<td><button class=\"btn btn-primary\" onClick=\"startExecution({record.Id})\">Start New Execution</button></td>" +
+                $"</tr>");
 		}
 
 		public IActionResult AboutProject() {
