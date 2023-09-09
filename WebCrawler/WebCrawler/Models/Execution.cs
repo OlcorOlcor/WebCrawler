@@ -1,5 +1,5 @@
 ﻿namespace WebCrawler.Models {
-    public enum Status { NotRunning, Running, Finished, Failed }
+    public enum Status { NotRunning, Running, Finished }
 
     public class Execution {
         public readonly string _url;

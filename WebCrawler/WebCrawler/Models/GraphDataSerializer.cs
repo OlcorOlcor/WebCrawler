@@ -36,8 +36,12 @@ namespace WebCrawler.Models {
             else {
                 return;
             }
-            
-            sb.Append($"\"{executionNumber}\": {{");
+
+            sb.Append("ExecutionNumber : ");
+            sb.Append($"\"{executionNumber}\",");
+            sb.Append("Status : ");
+            sb.Append($"\"{execution.Status.ToString()}\",");
+            sb.Append();
             SerializeNodes(webPages);
             SerializeLinks(webPages);
             sb.Append("}");
