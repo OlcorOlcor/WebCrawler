@@ -36,8 +36,12 @@ namespace WebCrawler.Models {
             else {
                 return;
             }
-            
+
             sb.Append($"\"{executionNumber}\": {{");
+            sb.Append($"\"status\": \"{execution.Status.ToString()}\",");
+            sb.Append($"\"start-time\": \"{execution.Start}\",");
+            sb.Append($"\"end-time\": \"{execution.End}\",");
+            sb.Append($"\"crawled-page-count\": \"{execution.pages.Count}\",");
             SerializeNodes(webPages);
             SerializeLinks(webPages);
             sb.Append("}");
