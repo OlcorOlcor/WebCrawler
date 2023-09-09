@@ -1,7 +1,11 @@
 ﻿namespace WebCrawler.Models {
+    public enum Status { NotRunning, Running, Finished }
+
     public class Execution {
         public readonly string _url;
         private readonly string _regex;
+
+        public Status Status { get; set; }
 
         //Delegate that leads to WebsiteRecordRepository and updates Manager
         public delegate void UpdateRepository(Execution execution);
