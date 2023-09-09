@@ -3,11 +3,6 @@ using System;
 using System.Text.RegularExpressions;
 
 namespace WebCrawler.Models {
-    public struct CrawlResponse {
-        public string PageTitle { get; init; }
-        public WebLinks Links { get; init; }
-    }
-
 
     public class Crawler {
         //strings to be found in page for identifiing references
