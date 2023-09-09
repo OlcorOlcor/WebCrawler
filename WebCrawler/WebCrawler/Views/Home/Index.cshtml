@@ -82,8 +82,8 @@
                     <td>@record.Url</td>
                     <td>@record.Regex</td>
                     <td>@record.Days.ToString()d @record.Hours.ToString()h @record.Minutes.ToString()m</td>
-                    <td></td>
-                    <td></td>
+                    <td id="ExecutionTime@(record.Id)"></td>
+                    <td id="ExecutionStatus@(record.Id)"></td>
                     <td>@record.Label</td>
                     <td>
                         <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#Tags@(i)" aria-expanded="false" aria-controls="Tags@(i)">Show Tags</button>
