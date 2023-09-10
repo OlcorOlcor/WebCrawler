@@ -7,7 +7,7 @@ namespace WebCrawler.Models {
             sb.Append("{");
             sb.Append($"\"RecordId\": {recordId},");
             sb.Append($"\"Time\": \"{execution.ExecutionTime}\",");
-            sb.Append($"\"Status\": FINISHED"); //TODO: Change to actual status once implemented
+            sb.Append($"\"Status\": \"FINISHED\""); //TODO: Change to actual status once implemented
             sb.Append("}");
         }
         public string SerializeLatestExecutions(IList<WebsiteRecord> records) {
