@@ -1,8 +1,7 @@
 # frontend build stage
 FROM node:14 AS frontend
 WORKDIR /build
-COPY WebCrawler/WebCrawler/package.json .             
-COPY WebCrawler/WebCrawler/package-lock.json .
+COPY WebCrawler/WebCrawler/package.json .
 RUN npm install
 COPY WebCrawler/WebCrawler/rollup.config.mjs .
 COPY WebCrawler/WebCrawler/wwwroot ./wwwroot
