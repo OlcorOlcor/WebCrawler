@@ -11,7 +11,7 @@ namespace WebCrawler.Models {
         //list to be filled with found webpages
         public async Task<WebPage> CrawlSite(string url, string regex) {
 
-            //Console.WriteLine("Crawling " + url);
+            Console.WriteLine("Crawling " + url);
 
             //get data from server
             Stream pageStream;

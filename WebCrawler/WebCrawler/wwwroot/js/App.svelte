@@ -1,13 +1,12 @@
 <svelte:options tag="svelte-app" />
 <script>
-    import { null_to_empty } from "svelte/internal";
     import NodeGraph from "./NodeGraph.svelte";
     
     const metaDataUri = '/Api/GetMetaData';
     const fullDataUri = '/Api/GetFullData';
     const latestExecutionUri = '/Api/GetLatestExecutions'
     const formUri = '/Home/AddRecord'
-    const interval = 300;
+    const interval = 3000;
     const executionUpdateInterval = 10000; //10 seconds
     let currentRecordIndex = 0;
     let metaData;
@@ -20,12 +19,13 @@
     function getData() {
         getMetaData().then(data => metaData = data);
         getFullData().then(data => {
-            currentRecordFullData = JSON.parse(data); 
-            if (graph != null && currentRecordFullData.execution != undefined) {
-                graph.update(JSON.parse(currentRecordFullData).executions[0]); 
-                console.log(currentRecordFullData.executions[0]);
+            currentRecordFullData = JSON.parse(data);
+            console.log(graph);
+            if (graph != null && currentRecordFullData["executions"] != undefined) {
+                graph.update(currentRecordFullData["executions"][0]); 
+                console.log(currentRecordFullData["executions"][0]);
             }
-
+            console.log(currentRecordFullData);
         });
         
         setTimeout(getData, interval);
@@ -69,7 +69,5 @@
     }
     
 </script>
-
-<!--// <input type=range min=0 max=2 bind:value={currentRecordIndex}>  -->
 
 <NodeGraph bind:this={graph}></NodeGraph>

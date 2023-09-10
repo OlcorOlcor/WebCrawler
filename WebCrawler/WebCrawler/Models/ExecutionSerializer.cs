@@ -6,7 +6,7 @@ namespace WebCrawler.Models {
         private void SerializeExecution(Execution execution, int recordId) {
             sb.Append("{");
             sb.Append($"\"RecordId\": {recordId},");
-            sb.Append($"\"Time\": {execution.ExecutionTime},");
+            sb.Append($"\"Time\": \"{execution.ExecutionTime}\",");
             sb.Append($"\"Status\": FINISHED"); //TODO: Change to actual status once implemented
             sb.Append("}");
         }

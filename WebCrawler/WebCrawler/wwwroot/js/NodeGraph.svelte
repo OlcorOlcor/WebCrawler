@@ -54,7 +54,7 @@
             .force("charge", d3.forceManyBody()
                 .strength(-100)
             )    
-            .force("center", d3.forceCenter(width / 2, height / 2))
+            .force("center", d3.forceCenter(width / 2, height / 2, 100))
             .on("tick", () => {
             context.clearRect(0, 0, context.canvas.width, context.canvas.height);
             //
@@ -79,9 +79,10 @@
                 context.stroke();
                 context.fillStyle = groupColour(d.group);
                 context.fill();
+
                 context.font = "15px Arial";
                 context.fillStyle = "#000";
-                const text = d.title !== "" ? d.title : d.id;
+                const text = d.title != "" ? d.title : d.id;
                 context.fillText(text, d.x - (nodeRadius / 2), d.y + (nodeRadius / 2));
             });
         });
@@ -151,13 +152,16 @@
         
         let noUpdateNeeded = true;
         
-        //both inner forEaches should be replaced with more efficient hashset or something
+        // TODO Both inner forEaches should be replaced with more efficient hashset or something
 
         newNodes.forEach((newNode) => {
             let nodeAlreadyPresent = false;
 
             nodes.forEach((node) => {
                 if (node.id === newNode.id) {
+                    node.title = newNode.title;
+                    node["crawl-time"] = newNode["crawl-time"];
+                    node["crawled-by"] = newNode["crawled-by"];
                     nodeAlreadyPresent = true;
                 }
             });
@@ -224,11 +228,11 @@
         nodeInfoBoxVisible = false;
     }
 
-    function showNodeInfo(id, x, y) {
+    function showNodeInfo(url, x, y) {
         //console.log(id, canvas.getBoundingClientRect() ,infoBox);
         let canvasBounds = canvas.getBoundingClientRect();
-        infoBox.innerText = id;
-        infoBox.style.top = (canvasBounds.top + window.scrollY+ y).toString() + "px";
+        infoBox.innerText = url;
+        infoBox.style.top = (canvasBounds.top + window.scrollY + y).toString() + "px";
         infoBox.style.left = (canvasBounds.left + window.scrollX + x).toString() + "px";
 
         infoBox.style.display ='block';
