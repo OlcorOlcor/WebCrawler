@@ -1,42 +1,32 @@
 <svelte:options tag="svelte-app" />
 <script>
+    import { null_to_empty } from "svelte/internal";
     import NodeGraph from "./NodeGraph.svelte";
     
     const metaDataUri = '/Api/GetMetaData';
     const fullDataUri = '/Api/GetFullData';
     const latestExecutionUri = '/Api/GetLatestExecutions'
     const formUri = '/Home/AddRecord'
-    const interval = 30000;
-    const executionUpdateInterval = 30000; //30 seconds
+    const interval = 300;
+    const executionUpdateInterval = 10000; //10 seconds
     let currentRecordIndex = 0;
     let metaData;
     let currentRecordFullData;
     let graph;
 
-    // setInterval(() => {
-    //     getMetaData().then(data => metaData = data);
-    //     getFullData().then(data => { 
-    //         currentRecordFullData = data;    
-    //         chart.update(currentRecordFullData); 
-    //     });
-    // }, interval);
-    //getData();
+    getData();
     setInterval(() => updateExecutionInformationInRecordTable(), executionUpdateInterval);
 
     function getData() {
         getMetaData().then(data => metaData = data);
-        getFullData().then(data => { 
-            currentRecordFullData = data; 
-            if (graph != null) {
+        getFullData().then(data => {
+            currentRecordFullData = JSON.parse(data); 
+            if (graph != null && currentRecordFullData.execution != undefined) {
                 graph.update(JSON.parse(currentRecordFullData).executions[0]); 
+                console.log(currentRecordFullData.executions[0]);
             }
+
         });
-        try {
-            console.log(JSON.parse(currentRecordFullData).executions[0]);
-        }
-        catch(e) {
-            console.log(e);
-        }
         
         setTimeout(getData, interval);
     }
@@ -49,7 +39,7 @@
     }
 
     function getFullData() {
-        let json = fetch(fullDataUri + "/" + currentRecordIndex)
+        return fetch(fullDataUri + "/?recordId=" + currentRecordIndex)
             .then(response => response.json())
             .then(data => data)
             .catch(error => console.error('Unable to get items.', error));

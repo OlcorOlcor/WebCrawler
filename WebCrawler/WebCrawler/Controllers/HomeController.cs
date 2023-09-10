@@ -13,15 +13,15 @@ namespace WebCrawler.Controllers {
             repo = repository;
         }
         public IActionResult Index() {
-            this.ViewBag.WRList = repo.GetAll();
+            this.ViewBag.WRList = repo!.GetAll();
 			_logger.LogInformation("INDEX");
 			return View();
         }
         [HttpPost]
 		public ContentResult Index(WebsiteRecord record) {
 			record.ParseTags();
-			repo.Add(record);
-            //repo.StartNewExecution(record);
+			repo!.Add(record);
+            repo.StartNewExecution(record);
             //VALIDATION
 			this.ViewBag.WRList = repo.GetAll();
             //TODO fill missing info

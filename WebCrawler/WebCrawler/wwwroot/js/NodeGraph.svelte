@@ -81,7 +81,8 @@
                 context.fill();
                 context.font = "15px Arial";
                 context.fillStyle = "#000";
-                context.fillText(d.id, d.x - (nodeRadius / 2), d.y + (nodeRadius / 2));
+                const text = d.title !== "" ? d.title : d.id;
+                context.fillText(text, d.x - (nodeRadius / 2), d.y + (nodeRadius / 2));
             });
         });
 
