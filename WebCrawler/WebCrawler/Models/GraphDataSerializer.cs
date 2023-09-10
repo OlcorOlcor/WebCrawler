@@ -59,7 +59,7 @@ namespace WebCrawler.Models {
                 SerializeNode(
                     page.Url, 
                     page.Title, 
-                    page.CrawlTime.ToShortTimeString(), 
+                    page.CrawlTime.ToString(), 
                     new string[] {"https://test.net"}, // TODO Add list of sites that crawled this site
                     1
                 );

@@ -94,8 +94,8 @@
                 const d = simulation.find(event.offsetX, event.offsetY, nodeRadius);
                 //console.log(event.offsetX, event.offsetY);
                 if (d) {
-                    console.log(event.x, event.y, 'title: ', d.id, ' ', d.x, d.y);
-                    showNodeInfo(d.id, d.x, d.y);
+                    console.log(event.x, event.y, d.id, d["crawl-time"], d["crawled-by"]);
+                    showNodeInfo(d.x, d.y, d.id, d["crawl-time"], d["crawled-by"]);
                 }
             });
 
@@ -228,15 +228,50 @@
         nodeInfoBoxVisible = false;
     }
 
-    function showNodeInfo(url, x, y) {
-        //console.log(id, canvas.getBoundingClientRect() ,infoBox);
-        let canvasBounds = canvas.getBoundingClientRect();
-        infoBox.innerText = url;
-        infoBox.style.top = (canvasBounds.top + window.scrollY + y).toString() + "px";
-        infoBox.style.left = (canvasBounds.left + window.scrollX + x).toString() + "px";
+    function showNodeInfo(x, y, url, crawlTime, crawledBy) {
+        // Delete old data
+        while (infoBox.firstChild) {
+            infoBox.removeChild(infoBox.lastChild);
+        }
 
+        const urlDiv = document.createElement("div");
+        const urlTextNode = document.createTextNode("Url: " + url);
+        urlDiv.appendChild(urlTextNode);
+
+        infoBox.appendChild(urlDiv);
+        
+        if (crawlTime != "") {
+            const crawlTimeDiv = document.createElement("div");
+            const crawlTimeTextNode = document.createTextNode("Crawl time: " + crawlTime);
+            crawlTimeDiv.appendChild(crawlTimeTextNode);
+
+            infoBox.appendChild(crawlTimeDiv);
+        }
+    
+
+        if (crawledBy.length > 0) {
+            const crawledByDiv = document.createElement("div");
+            const crawledByUList = document.createElement("ul");
+            const crawledByUListTextNode = document.createTextNode("Crawled by: ") 
+            crawledByUList.appendChild(crawledByUListTextNode);
+            for (let i = 0; i < crawledBy.length; i++) {
+                const crawledByItem = document.createElement("li");
+                const crawledByTextNode = document.createTextNode(crawledBy[i]);
+                crawledByItem.appendChild(crawledByTextNode);
+                crawledByUList.appendChild(crawledByItem);
+            }
+            crawledByDiv.appendChild(crawledByUList);
+
+            infoBox.appendChild(crawledByDiv);
+        }
+        
+        let canvasBounds = canvas.getBoundingClientRect();
         infoBox.style.display ='block';
         nodeInfoBoxVisible = true;
+        infoBox.style.top = (canvasBounds.top + window.scrollY + y - infoBox.offsetHeight).toString() + "px";
+        infoBox.style.left = (canvasBounds.left + window.scrollX + x).toString() + "px";
+
+        
     }
 
 </script>
@@ -264,7 +299,7 @@
             background-color: white;
             padding: 5px;
             "
-    class="nodeInfo" bind:this={infoBox}>
+    class="nodeInfo" id="infoBox" bind:this={infoBox}>
 </div>
 
 
