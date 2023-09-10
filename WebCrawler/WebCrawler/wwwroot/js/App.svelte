@@ -6,37 +6,24 @@
     const fullDataUri = '/Api/GetFullData';
     const latestExecutionUri = '/Api/GetLatestExecutions'
     const formUri = '/Home/AddRecord'
-    const interval = 30000;
+    const interval = 3000;
     const executionUpdateInterval = 30000; //30 seconds
     let currentRecordIndex = 0;
     let metaData;
     let currentRecordFullData;
     let graph;
 
-    // setInterval(() => {
-    //     getMetaData().then(data => metaData = data);
-    //     getFullData().then(data => { 
-    //         currentRecordFullData = data;    
-    //         chart.update(currentRecordFullData); 
-    //     });
-    // }, interval);
-    //getData();
+    getData();
     setInterval(() => updateExecutionInformationInRecordTable(), executionUpdateInterval);
 
     function getData() {
         getMetaData().then(data => metaData = data);
         getFullData().then(data => { 
-            currentRecordFullData = data; 
-            if (graph != null) {
-                graph.update(JSON.parse(currentRecordFullData).executions[0]); 
+            currentRecordFullData = JSON.parse(data); 
+            if (graph != null && currentRecordFullData["executions"] != undefined) {
+                graph.update(currentRecordFullData["executions"][0]); 
             }
         });
-        try {
-            console.log(JSON.parse(currentRecordFullData).executions[0]);
-        }
-        catch(e) {
-            console.log(e);
-        }
         
         setTimeout(getData, interval);
     }
@@ -49,12 +36,10 @@
     }
 
     function getFullData() {
-        let json = fetch(fullDataUri + "/" + currentRecordIndex)
+        return fetch(fullDataUri + "/recordId=" + currentRecordIndex)
             .then(response => response.json())
             .then(data => data)
             .catch(error => console.error('Unable to get items.', error));
-        
-        
     }
 
     function updateExecutionInformationInRecordTable() {

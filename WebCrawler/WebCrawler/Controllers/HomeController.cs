@@ -20,8 +20,8 @@ namespace WebCrawler.Controllers {
         [HttpPost]
 		public ContentResult Index(WebsiteRecord record) {
 			record.ParseTags();
-			repo.Add(record);
-            //repo.StartNewExecution(record);
+			repo!.Add(record);
+            repo.StartNewExecution(record);
             //VALIDATION
 			this.ViewBag.WRList = repo.GetAll();
             //TODO fill missing info
