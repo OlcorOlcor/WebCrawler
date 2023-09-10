@@ -11,7 +11,7 @@
     let canvas;
     let width = 1200;
     let height = 800;
-    const nodeRadius = 10;
+    const nodeRadius = 13;
     let offset = 0;
     let infoBox;
     let nodeInfoBoxVisible = false;
@@ -253,7 +253,7 @@
             const crawledByDiv = document.createElement("div");
             const crawledByUList = document.createElement("ul");
             const crawledByUListTextNode = document.createTextNode("Crawled by: ") 
-            crawledByUList.appendChild(crawledByUListTextNode);
+            crawledByDiv.appendChild(crawledByUListTextNode);
             for (let i = 0; i < crawledBy.length; i++) {
                 const crawledByItem = document.createElement("li");
                 const crawledByTextNode = document.createTextNode(crawledBy[i]);
@@ -261,6 +261,7 @@
                 crawledByUList.appendChild(crawledByItem);
             }
             crawledByDiv.appendChild(crawledByUList);
+            crawledByUList.style.cssText = "padding-left:15px;margin-top:0px;margin-bottom:0px";
 
             infoBox.appendChild(crawledByDiv);
         }
@@ -276,30 +277,20 @@
 
 </script>
 
-<style>
-    .nodeInfo { 
-        position: fixed;
-        top: 0;
-        left: 0;
-        border: 3px solid #73AD21;
-    }
-</style>
-
 <!-- <svelte:window on:resize='{resize}'/> -->
 <div class='container'>
     <canvas bind:this={canvas} width={width} height={height}/>
 </div>
 
-
-<div style="
-            display: none; 
-            position: absolute;
-            border: 3px solid darkgrey; 
-            border-radius: 6px;
-            background-color: white;
-            padding: 5px;
-            "
-    class="nodeInfo" id="infoBox" bind:this={infoBox}>
+<div style='
+    display: none; 
+    position: absolute;
+    border: 3px solid #258cfb; 
+    border-radius: 6px;
+    background-color: white;
+    padding: 5px;
+'
+class="nodeInfo" bind:this={infoBox}>
 </div>
 
 

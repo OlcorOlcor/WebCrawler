@@ -1,4 +1,5 @@
 <svelte:options tag="svelte-app" />
+
 <script>
     import NodeGraph from "./NodeGraph.svelte";
     
@@ -12,6 +13,8 @@
     let metaData;
     let currentRecordFullData;
     let graph;
+    let modeButton;
+    let modeIsStatic = false;
 
     getData();
     setInterval(() => updateExecutionInformationInRecordTable(), executionUpdateInterval);
@@ -20,15 +23,14 @@
         getMetaData().then(data => metaData = data);
         getFullData().then(data => {
             currentRecordFullData = JSON.parse(data);
-            console.log(graph);
             if (graph != null && currentRecordFullData["executions"] != undefined) {
                 graph.update(currentRecordFullData["executions"][0]); 
-                console.log(currentRecordFullData["executions"][0]);
             }
-            console.log(currentRecordFullData);
         });
-        
-        setTimeout(getData, interval);
+
+        if (!modeIsStatic) {
+            setTimeout(getData, interval);
+        }
     }
 
     function getMetaData() {
@@ -67,7 +69,21 @@
             })
             .catch(err => console.error(err));
     }
+
+    function SwitchGraphMode() {
+        if (modeIsStatic) {
+            modeButton.textContent = "Make Static";
+            modeIsStatic = false;
+            getData();
+        }
+        else {
+            modeButton.textContent = "Make Active";
+            modeIsStatic = true;
+        }
+    }
     
 </script>
+
+<button bind:this={modeButton} on:click={SwitchGraphMode}>Make Static</button>
 
 <NodeGraph bind:this={graph}></NodeGraph>
