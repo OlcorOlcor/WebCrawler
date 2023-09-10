@@ -45,16 +45,20 @@
 
             while (_queue.Count > 0) {
                 var page = _queue.Dequeue();
-                WebPage foundPage = await _crawler.CrawlSite(page, _regex);
 
-                foreach (var outgoingUrl in foundPage.OutgoingUrls) {
-                    if (!_visited.Contains(outgoingUrl)) {
-                        _visited.Add(outgoingUrl);
-                        _queue.Enqueue(outgoingUrl);
+                WebPage crawledPage = await _crawler.CrawlSite(page, _regex);
+                pages.Add(crawledPage);
+
+                if (crawledPage.OutgoingLinks.UrlsMatchingRegex is null) {
+                    continue;
+                }
+
+                foreach (var outgoingLink in crawledPage.OutgoingLinks.UrlsMatchingRegex) { 
+                    if(!_visited.Contains(outgoingLink)) {
+                        _visited.Add(outgoingLink);
+                        _queue.Enqueue(outgoingLink);
                     }
                 }
-                
-                pages.Add(foundPage);
             }
 
             End = DateTime.Now;

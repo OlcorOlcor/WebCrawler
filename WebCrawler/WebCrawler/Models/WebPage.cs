@@ -1,15 +1,20 @@
 ﻿namespace WebCrawler.Models {
+    public struct WebLinks {
+        public string[] UrlsMatchingRegex { get; init; }
+        public string[] UrlsNotMatchingRegex { get; init; }
+    }
+
     public struct WebPage {
         public readonly string Url;
-        public readonly string? Title; 
-        public readonly string[] OutgoingUrls;
+        public readonly string Title; 
+        public readonly WebLinks OutgoingLinks;
         public readonly DateTime CrawlTime;
         public readonly bool Active;
-       
-        public WebPage(string url, string? title, string[] OutgoingUrls, DateTime crawlTime, bool active) {
+      
+        public WebPage(string url, string title, WebLinks OutgoingLinks, DateTime crawlTime, bool active) {
             this.Url = url;
             this.Title = title;
-            this.OutgoingUrls = OutgoingUrls;
+            this.OutgoingLinks = OutgoingLinks;
             this.CrawlTime = crawlTime;
             this.Active = active;
         }
