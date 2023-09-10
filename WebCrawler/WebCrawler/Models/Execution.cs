@@ -1,9 +1,15 @@
-﻿using System.Diagnostics;
 
-namespace WebCrawler.Models {
+﻿namespace WebCrawler.Models {
+   
+    public enum Status { NotRunning, Running, Finished }
+    
     public class Execution {
         public readonly string _url;
         private readonly string _regex;
+
+        public Status Status { get; set; } = Status.NotRunning;
+        public DateTime? Start { get; set; } = null;
+        public DateTime? End { get; set; } = null;
 
         //Delegate that leads to WebsiteRecordRepository and updates Manager
         public delegate void UpdateRepository(Execution execution);
@@ -33,24 +39,31 @@ namespace WebCrawler.Models {
 
         //does all the crawling
         public async void Execute(object? state) {
-            Stopwatch stopwatch = new Stopwatch();
-            stopwatch.Start();
+
+            Start = DateTime.Now;
+            Status = Status.Running;
+
             while (_queue.Count > 0) {
                 var page = _queue.Dequeue();
-                string[] foundPages = await _crawler.CrawlSite(page, _regex);
-                WebPage updatedPage = new WebPage(page, _regex, foundPages, DateTime.Now);
-                foreach (var outgoingUrl in updatedPage.OutgoingUrls) { 
-                    if(!_visited.Contains(outgoingUrl)) {
-                        _visited.Add(outgoingUrl);
-                        _queue.Enqueue(outgoingUrl);
+
+                WebPage crawledPage = await _crawler.CrawlSite(page, _regex);
+                pages.Add(crawledPage);
+
+                if (crawledPage.OutgoingLinks.UrlsMatchingRegex is null) {
+                    continue;
+                }
+
+                foreach (var outgoingLink in crawledPage.OutgoingLinks.UrlsMatchingRegex) { 
+                    if(!_visited.Contains(outgoingLink)) {
+                        _visited.Add(outgoingLink);
+                        _queue.Enqueue(outgoingLink);
                     }
                 }
-                pages.Add(updatedPage);
             }
-          
-            stopwatch.Stop();
-            this.ExecutionTime = stopwatch.Elapsed;
-          
+
+            End = DateTime.Now;
+            Status = Status.Finished;
+
             if (updateRepositoryCallback is not null) {
                 updateRepositoryCallback.Invoke(this);
             }

@@ -6,7 +6,7 @@
     const fullDataUri = '/Api/GetFullData';
     const latestExecutionUri = '/Api/GetLatestExecutions'
     const formUri = '/Home/AddRecord'
-    const interval = 3000;
+    const graphDataUpdateInterval = 300;
     const executionUpdateInterval = 30000; //30 seconds
     let currentRecordIndex = 0;
     let metaData;
@@ -25,7 +25,7 @@
             }
         });
         
-        setTimeout(getData, interval);
+        setTimeout(getData, graphDataUpdateInterval);
     }
 
     function getMetaData() {
