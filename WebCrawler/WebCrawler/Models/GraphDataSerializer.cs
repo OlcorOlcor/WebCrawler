@@ -28,6 +28,7 @@ namespace WebCrawler.Models {
             sb.Append("}}");
             return sb.ToString();
         }
+
         private void SerializeExecution(Execution execution, int executionNumber) {
             WebPage[] webPages;
             if (execution.pages is not null) {
@@ -46,6 +47,7 @@ namespace WebCrawler.Models {
             SerializeLinks(webPages);
             sb.Append("}");
         }
+
         private void SerializeNodes(WebPage[] webPages) {
             sb.Append("\"nodes\": [");
             bool firstPage = true;
@@ -54,15 +56,40 @@ namespace WebCrawler.Models {
                     sb.Append(",");
                 }
                 firstPage = false;
-                sb.Append($"{{\"id\": \"{page.Url}\", \"group\": 1}}");
+                SerializeNode(
+                    page.Url, 
+                    page.Title, 
+                    page.CrawlTime.ToShortTimeString(), 
+                    new string[] {"https://test.net"}, // TODO Add list of sites that crawled this site
+                    1
+                );
 
                 // TODO maybe could check if url already present
                 foreach (var link in page.OutgoingUrls) {
-                    sb.Append($",{{\"id\": \"{link}\", \"group\": 1}}");
+                    sb.Append(",");
+                    SerializeNode(link, "", "", new string[0], 1);
                 }
             }
             sb.Append("],");
         }
+
+        private void SerializeNode(string id, string title, string crawlTime, string[] crawledBy, int group) {
+            sb.Append($"{{\"id\": \"{id}\"");
+            sb.Append($",\"title\": \"{title}\"");
+            sb.Append($",\"crawl-time\": \"{crawlTime}\"");
+            sb.Append($",\"crawled-by\": [");
+            bool firstUrl = true;
+            foreach (string url in crawledBy) {
+                if (!firstUrl) {
+                    sb.Append(",");
+                }
+                firstUrl = false;
+                sb.Append($"\"{url}\"");
+            }
+            sb.Append($"]");
+            sb.Append($",\"group\": {group}}}");
+        }
+
         private void SerializeLinks(WebPage[] webPages) {
             sb.Append("\"links\": [");
             bool firstPageToOutput = true;

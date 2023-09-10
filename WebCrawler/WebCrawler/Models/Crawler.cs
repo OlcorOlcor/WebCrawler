@@ -19,7 +19,7 @@ namespace WebCrawler.Models {
                 try {
                     pageStream = await client.GetStreamAsync(url);
                 } catch (Exception) {
-                    return new WebPage(url, null, new string[0], DateTime.Now, false);
+                    return new WebPage(url, "", new string[0], DateTime.Now, false);
                 }
             }
 
