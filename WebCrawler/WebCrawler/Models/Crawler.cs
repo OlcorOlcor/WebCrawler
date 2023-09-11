@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
+using System.Reflection.Metadata;
 using System.Text.RegularExpressions;
 
 namespace WebCrawler.Models {
@@ -8,6 +9,16 @@ namespace WebCrawler.Models {
         //strings to be found in page for identifiing references
         private const string _refString = "<a href=\"" ;
         private const string _quotationMarksString = "\"";
+
+        private static readonly HashSet<string> _resourceFileExtentions = new HashSet<string> {
+            "jpeg", "jpg",
+            "png",
+            "svg",
+            "json",
+            "pdf",
+
+            // TODO ADD MORE!!!!
+        };
 
         //list to be filled with found webpages
         public async Task<WebPage> CrawlSite(string url, string regex) {
@@ -41,6 +52,12 @@ namespace WebCrawler.Models {
                     if (IsRelativeUrl(foundLink)) {
                         link = url + foundLink;
                     }
+
+                    if (IsResource(link)) {
+                        Console.WriteLine(link);
+                        continue;
+                    }
+
                     Match match = linkRegex.Match(link);
                     if (match.Success) {
                         matchingLinks.Add(link);
@@ -61,7 +78,14 @@ namespace WebCrawler.Models {
         }
 
         private bool IsRelativeUrl(string url) {
-            return url[0].ToString() == "/" || url[0].ToString() == "?";
+            return url[0].ToString() == "/" || url[0].ToString() == "?" || url[0].ToString() == "#";
+        }
+
+        private bool IsResource(string url) {
+            var splitUrl = url.Split('.');
+            var potentialExtention = splitUrl[splitUrl.Length - 1];
+
+            return _resourceFileExtentions.Contains(potentialExtention);
         }
 
         //returns a reference html component from given line or null if none present
