@@ -36,7 +36,11 @@ namespace WebCrawler.Models {
             //parse each line
             while ((line = reader.ReadLine()!) is not null) {
                 var linksFound = FindLinksInLine(line);
-                foreach (var link in linksFound) {
+                foreach (var foundLink in linksFound) {
+                    string link = foundLink;
+                    if (IsRelativeUrl(foundLink)) {
+                        link = url + foundLink;
+                    }
                     Match match = linkRegex.Match(link);
                     if (match.Success) {
                         matchingLinks.Add(link);
@@ -54,6 +58,10 @@ namespace WebCrawler.Models {
                 UrlsNotMatchingRegex = notMatchingLinks.ToArray()
             };
             return new WebPage(url, title, outgoingLinks, DateTime.Now, true);
+        }
+
+        private bool IsRelativeUrl(string url) {
+            return url[0].ToString() == "/" || url[0].ToString() == "?";
         }
 
         //returns a reference html component from given line or null if none present
@@ -85,8 +93,6 @@ namespace WebCrawler.Models {
             return null;
         }
 
-        //finds url in given line in a reference if it matches given regex
-        //returns null if none such url is present
         private List<string> FindLinksInLine(string line) {
             List<string> links = new();
             List<string> references = FindRefInLine(line);
