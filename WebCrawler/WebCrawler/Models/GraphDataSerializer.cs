@@ -56,12 +56,16 @@ namespace WebCrawler.Models {
                 sb.Append($"{{\"id\": \"{page.Url}\", \"group\": 2, \"match\": \"true\"}}");
 
                 // TODO maybe could check if url already present
-                foreach (var link in page.OutgoingLinks.UrlsMatchingRegex) {
-                    sb.Append($",{{\"id\": \"{link}\", \"group\": 2, \"match\": \"true\"}}");
+                if (page.OutgoingLinks.UrlsMatchingRegex is not null) {
+                    foreach (var link in page.OutgoingLinks.UrlsMatchingRegex) {
+                        sb.Append($",{{\"id\": \"{link}\", \"group\": 2, \"match\": \"true\"}}");
+                    }
                 }
-
-                foreach (var link in page.OutgoingLinks.UrlsNotMatchingRegex) {
-                    sb.Append($",{{\"id\": \"{link}\", \"group\": 1, \"match\": \"false\"}}");
+                
+                if (page.OutgoingLinks.UrlsNotMatchingRegex is not null) {
+                    foreach (var link in page.OutgoingLinks.UrlsNotMatchingRegex) {
+                        sb.Append($",{{\"id\": \"{link}\", \"group\": 1, \"match\": \"false\"}}");
+                    }
                 }
             }
             sb.Append("],");
@@ -70,23 +74,24 @@ namespace WebCrawler.Models {
             sb.Append("\"links\": [");
             bool firstPageToOutput = true;
             foreach (var page in webPages) {
-                var outgoingMatchUrlCount = page.OutgoingLinks.UrlsMatchingRegex.Length;
-                var outgoingNotMatchUrlCount = page.OutgoingLinks.UrlsNotMatchingRegex.Length;
-
-                foreach (var link in page.OutgoingLinks.UrlsMatchingRegex) {
-                    if (!firstPageToOutput) {
-                        sb.Append(",");
+                if (page.OutgoingLinks.UrlsMatchingRegex is not null) {
+                    foreach (var link in page.OutgoingLinks.UrlsMatchingRegex) {
+                        if (!firstPageToOutput) {
+                            sb.Append(",");
+                        }
+                        firstPageToOutput = false;
+                        sb.Append($"{{\"source\": \"{page.Url}\", \"target\": \"{link}\", \"value\": 1}}");
                     }
-                    firstPageToOutput = false;
-                    sb.Append($"{{\"source\": \"{page.Url}\", \"target\": \"{link}\", \"value\": 1}}");
                 }
 
-                foreach (var link in page.OutgoingLinks.UrlsNotMatchingRegex) {
-                    if (!firstPageToOutput) {
-                        sb.Append(",");
+                if (page.OutgoingLinks.UrlsMatchingRegex is not null) {
+                    foreach (var link in page.OutgoingLinks.UrlsNotMatchingRegex) {
+                        if (!firstPageToOutput) {
+                            sb.Append(",");
+                        }
+                        firstPageToOutput = false;
+                        sb.Append($"{{\"source\": \"{page.Url}\", \"target\": \"{link}\", \"value\": 1}}");
                     }
-                    firstPageToOutput = false;
-                    sb.Append($"{{\"source\": \"{page.Url}\", \"target\": \"{link}\", \"value\": 1}}");
                 }
             }
             sb.Append("]");
