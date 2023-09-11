@@ -26,10 +26,26 @@
     let websiteGraph;
     let domainGraph;
 
-    
+    let regexInput = document.getElementById("regex");
+    let form = document.getElementById("WebRecordForm");
+
     getData();
     setInterval(() => updateExecutionInformationInRecordTable(), executionUpdateInterval);
 
+    form.addEventListener("submit", (event) => {
+        let regex;
+        try {
+            console.log("checking");
+            regex = new RegExp(regexInput.value);
+            regexInput.setCustomValidity("");
+        }
+        catch(e) {
+            console.log("checking failed");
+            regexInput.setCustomValidity("Invalid Regular Expression");
+        }
+    });
+
+    // Data retrieval
     function getData() {
         getMetaData().then(data => metaData = data);
         getFullData(currentRecordIndex).then(data => {
@@ -204,7 +220,7 @@
             }
         }
     }
-    
+  
 </script>
 
 <button bind:this={modeButton} on:click={switchGraphMode}>Make Static</button>

@@ -25,34 +25,36 @@
         <form id="webRecordForm"  method="post" data-ajax-success="clearForm()" data-ajax="true" data-ajax-method="post" data-ajax-mode="after" data-ajax-update="#update">
             <div class="form-group">
                 <label asp-for="Url">Page URL:</label>
-                <input asp-for="Url" class="form-control" placeholder="https://example.com" id="url" name="Url">
+                <input asp-for="Url" class="form-control" placeholder="https://example.com" id="url" name="Url" required>
+                <span class="text-danger field-validation-valid" asp-validation-for="Url"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Regex">Boundary Regular Expresion:</label>
-                <input id="regex" class="form-control" asp-for="Regex">
+                <input asp-for="Regex" class="form-control" id="regex" name="Regex" required>
+                <span class="text-danger field-validation-valid" asp-validation-for="Regex" required></span>
             </div>
             <label for="time">Periodicity:</label>
             <div id="time" class="form-group row">
                 <div class="col-sm">
                     <small><label for="days">Days</label></small>
-                    <input class="form-control" type="number" min="0" max="1000" id="days" asp-for="Days" value="">
+                    <input class="form-control" type="number" min="0" max="1000" id="days" asp-for="Days" value="0" name="Days" required>
                 </div>
                 <div class="col-sm">
                     <small><label for="hours">Hours</label></small>
-                    <input class="form-control" type="number" min="0" max="59" id="hours" asp-for="Hours" value="">
+                    <input class="form-control" type="number" min="0" max="23" id="hours" asp-for="Hours" value="0" name="Hours" required>
                 </div>
                 <div class="col-sm">
                     <small><label for="minutes">Minutes</label></small>
-                    <input class="form-control" type="number" min="0" max="59" id="minutes" asp-for="Minutes" value="">
+                    <input class="form-control" type="number" min="0" max="59" id="minutes" asp-for="Minutes" value="1" name="Minutes" required>
                 </div>
             </div>
             <div class="form-group">
                 <label asp-for="Label">Label:</label>
-                <input class="form-control" type="text" id="label" asp-for="Label" value="">
+                <input class="form-control" type="text" id="label" asp-for="Label" value="" name="Label" required>
             </div>
             <div class="form-group">
                 <label asp-for="Tags">Tags:</label>
-                <input class="form-control" typeof="text" id="tags" name="Tags">
+                <input class="form-control" asp-for="Tags" typeof="text" id="tags" name="Tags">
                 <small>Add tags seperated by a comma</small>
             </div>
             <div style="width: 100%">

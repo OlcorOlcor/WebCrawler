@@ -3,6 +3,7 @@ using System;
 using System.Text.RegularExpressions;
 
 namespace WebCrawler.Models {
+
     public class Crawler {
         //strings to be found in page for identifiing references
         private const string _refString = "<a href=\"" ;
@@ -10,7 +11,6 @@ namespace WebCrawler.Models {
 
         //list to be filled with found webpages
         public async Task<WebPage> CrawlSite(string url, string regex) {
-
             Console.WriteLine("Crawling " + url);
 
             //get data from server
@@ -18,32 +18,42 @@ namespace WebCrawler.Models {
             using (var client = new HttpClient()) {
                 try {
                     pageStream = await client.GetStreamAsync(url);
-                } catch (Exception) {
-                    return new WebPage(url, "", new string[0], DateTime.Now, false);
+                } catch (Exception e) {
+                    await Console.Out.WriteLineAsync(e.Message);
+                    return new WebPage(url, "", new WebLinks(), DateTime.Now, false);
                 }
             }
 
             //define constant patterns and regular expressions
-            string line;
-
             StreamReader reader = new StreamReader(pageStream);
+            Regex linkRegex = new Regex(regex);
 
             string title = GetPageTitle(reader);
 
-            Regex urlRegularExpression = new Regex(regex);
-
-            var outgoingUrls = new List<string>();
-
+            var matchingLinks = new List<string>();
+            var notMatchingLinks = new List<string>();
+            string line;
             //parse each line
             while ((line = reader.ReadLine()!) is not null) {
-                var foundUrls = FindUrlsInLine(line, urlRegularExpression);
-                foreach (var foundUrl in foundUrls) {
-                    outgoingUrls.Add(foundUrl);
+                var linksFound = FindLinksInLine(line);
+                foreach (var link in linksFound) {
+                    Match match = linkRegex.Match(link);
+                    if (match.Success) {
+                        matchingLinks.Add(link);
+                    }
+                    else {
+                        notMatchingLinks.Add(link);
+                    }
                 }
             }
-            //await Console.Out.WriteLineAsync("Outgoing URLs count: " + outgoingUrls.ToArray().Length.ToString());
 
-            return new WebPage(url, title, outgoingUrls.ToArray(), DateTime.Now, true);
+            await Console.Out.WriteLineAsync("Matching outgoing URLs count: " + matchingLinks.ToArray().Length.ToString());
+
+            var outgoingLinks = new WebLinks() {
+                UrlsMatchingRegex = matchingLinks.ToArray(), 
+                UrlsNotMatchingRegex = notMatchingLinks.ToArray()
+            };
+            return new WebPage(url, title, outgoingLinks, DateTime.Now, true);
         }
 
         //returns a reference html component from given line or null if none present
@@ -77,31 +87,28 @@ namespace WebCrawler.Models {
 
         //finds url in given line in a reference if it matches given regex
         //returns null if none such url is present
-        private List<string> FindUrlsInLine(string line, Regex regex) {
-            List<string> urls = new();
+        private List<string> FindLinksInLine(string line) {
+            List<string> links = new();
             List<string> references = FindRefInLine(line);
 
             foreach (var reference in references) { 
                 string? href;
                 href = FindHrefInRef(reference);
 
-                if(href is not null) {
-                    string? url;
-                    url = FindUrlInHref(href);
+                if (href is not null) {
+                    string? link;
+                    link = FindLinkInHref(href);
 
-                    if (url is not null) {
-                        Match urlMatch = regex.Match(url);
-                        if (urlMatch.Success) {
-                            urls.Add(url);
-                        }
+                    if (link is not null) {
+                        links.Add(link);
                     }
                 }
             }
-            return urls;
+            return links;
         }
 
         //returns url from given html href section
-        private string? FindUrlInHref(string href) {
+        private string? FindLinkInHref(string href) {
             int quotationMarksIndex = href.IndexOf(_quotationMarksString);
             var url = href.Substring(quotationMarksIndex + 1, href.Length - quotationMarksIndex - 2);
             return url;
@@ -119,7 +126,7 @@ namespace WebCrawler.Models {
                     }
                 }
             }
-            //cannot happen but c# neads this
+            //cannot happen but c# needs this
             return string.Empty;
         }
 

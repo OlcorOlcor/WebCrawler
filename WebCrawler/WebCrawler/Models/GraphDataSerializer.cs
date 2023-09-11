@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
 
 namespace WebCrawler.Models {
     public class GraphDataSerializer {
@@ -56,24 +55,35 @@ namespace WebCrawler.Models {
                     sb.Append(",");
                 }
                 firstPage = false;
+              
                 SerializeNode(
                     page.Url, 
                     page.Title, 
                     page.CrawlTime.ToString(), 
                     new string[] {"https://test.net"}, // TODO Add list of sites that crawled this site
-                    1
+                    1,
+                    true
                 );
 
                 // TODO maybe could check if url already present
-                foreach (var link in page.OutgoingUrls) {
-                    sb.Append(",");
-                    SerializeNode(link, "", "", new string[0], 1);
+                if (page.OutgoingLinks.UrlsMatchingRegex is not null) {
+                    foreach (var link in page.OutgoingLinks.UrlsMatchingRegex) {
+                        sb.Append(",");
+                        SerializeNode(link, "", "", new string[0], 1, true);
+                    }
+                }
+                
+                if (page.OutgoingLinks.UrlsNotMatchingRegex is not null) {
+                    foreach (var link in page.OutgoingLinks.UrlsNotMatchingRegex) {
+                        sb.Append(",");
+                        SerializeNode(link, "", "", new string[0], 1, false);
+                    }
                 }
             }
             sb.Append("],");
         }
 
-        private void SerializeNode(string id, string title, string crawlTime, string[] crawledBy, int group) {
+        private void SerializeNode(string id, string title, string crawlTime, string[] crawledBy, int group, bool match) {
             sb.Append($"{{\"id\": \"{id}\"");
             sb.Append($",\"title\": \"{title}\"");
             sb.Append($",\"crawl-time\": \"{crawlTime}\"");
@@ -87,27 +97,32 @@ namespace WebCrawler.Models {
                 sb.Append($"\"{url}\"");
             }
             sb.Append($"]");
-            sb.Append($",\"group\": {group}}}");
+            sb.Append($",\"group\": {group}");
+            sb.Append($",\"match\": {match}}}");
         }
 
         private void SerializeLinks(WebPage[] webPages) {
             sb.Append("\"links\": [");
             bool firstPageToOutput = true;
             foreach (var page in webPages) {
-                var outgoingUrlCount = page.OutgoingUrls.Length;
-                int runningOutgoingUrlCount = 0;
-
-                if (!firstPageToOutput && outgoingUrlCount != 0) {
-                    sb.Append(",");
-                }
-                firstPageToOutput = false;
-
-                foreach (var link in page.OutgoingUrls) {
-                    sb.Append($"{{\"source\": \"{page.Url}\", \"target\": \"{link}\", \"value\": 1}}");
-                    if (runningOutgoingUrlCount < outgoingUrlCount - 1) {
-                        sb.Append(",");
+                if (page.OutgoingLinks.UrlsMatchingRegex is not null) {
+                    foreach (var link in page.OutgoingLinks.UrlsMatchingRegex) {
+                        if (!firstPageToOutput) {
+                            sb.Append(",");
+                        }
+                        firstPageToOutput = false;
+                        sb.Append($"{{\"source\": \"{page.Url}\", \"target\": \"{link}\", \"value\": 1}}");
                     }
-                    runningOutgoingUrlCount++;
+                }
+
+                if (page.OutgoingLinks.UrlsMatchingRegex is not null) {
+                    foreach (var link in page.OutgoingLinks.UrlsNotMatchingRegex) {
+                        if (!firstPageToOutput) {
+                            sb.Append(",");
+                        }
+                        firstPageToOutput = false;
+                        sb.Append($"{{\"source\": \"{page.Url}\", \"target\": \"{link}\", \"value\": 1}}");
+                    }
                 }
             }
             sb.Append("]");
