@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 using WebCrawler.Models;
 
 namespace WebCrawler.Controllers {
@@ -18,23 +19,60 @@ namespace WebCrawler.Controllers {
 			_logger.LogInformation("INDEX");
 			return View();
         }
+
+        private bool ValidateWebRecord(WebsiteRecord record) {
+            bool valid = true;
+            //Validation of defined attributes
+            if (!ModelState.IsValid) {
+                var errors = ModelState.Values.SelectMany(v => v.Errors);
+                _logger.Log(LogLevel.Information, "WebRecord validation failed:");
+                foreach (var error in errors) {
+                    _logger.Log(LogLevel.Error, error.ErrorMessage);
+                }
+                valid = false;
+            }
+            //Validation of periodicity
+            if (record.Days + record.Hours + record.Minutes <= 0) {
+                _logger.Log(LogLevel.Error, "Periodicy is not set");
+                valid = false;
+            }
+            //URI validation
+            if (Uri.IsWellFormedUriString(record.Url, UriKind.Absolute)) {
+                _logger.Log(LogLevel.Error, "URL is not well formated");
+                valid = false;
+            }
+            try {
+                Regex regex = new Regex(record.Regex!);
+            } catch (ArgumentException) {
+                _logger.Log(LogLevel.Error, "Regex is not well formated");
+                valid = false;
+            }
+            return valid;
+        }
         [HttpPost]
 		public ContentResult Index(WebsiteRecord record) {
-			record.ParseTags();
+            if (!ValidateWebRecord(record)) { 
+                return Content("");
+            }
+
+
+            record.ParseTags();
 			repo!.Add(record);
             repo.StartNewExecution(record);
 
             //VALIDATION
-            var context = new ValidationContext(record, serviceProvider: null, items: null);
-            var results = new List<ValidationResult>();
-            var isValid = Validator.TryValidateObject(record, context, results, true);
+            //var context = new ValidationContext(record, serviceProvider: null, items: null);
+            //var results = new List<ValidationResult>();
+            //var isValid = Validator.TryValidateObject(record, context, results, true);
 
-            if (!isValid) {
-                /*foreach (var validationResult in results) {
-                    Response.Write(validationResult.ErrorMessage.ToString());
-                }*/
-                return Content("");
-            }
+            //if (!isValid) {
+            //    /*foreach (var validationResult in results) {
+            //        Response.Write(validationResult.ErrorMessage.ToString());
+            //    }*/
+            //    return Content("");
+            //}
+
+            
 
             this.ViewBag.WRList = repo.GetAll();
             //TODO fill missing info
