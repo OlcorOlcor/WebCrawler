@@ -28,7 +28,7 @@ namespace WebCrawler.Models {
         public int? Hours { get; set; }
 
         [Required]
-        [Range(1,59)]
+        [Range(0,59)]
         public int? Minutes { get; set; }
 
         [Required]
