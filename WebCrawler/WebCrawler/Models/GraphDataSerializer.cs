@@ -98,7 +98,7 @@ namespace WebCrawler.Models {
             }
             sb.Append($"]");
             sb.Append($",\"group\": {group}");
-            sb.Append($",\"match\": {match}}}");
+            sb.Append($",\"match\": \"{match.ToString().ToLower()}\"}}");
         }
 
         private void SerializeLinks(WebPage[] webPages) {
