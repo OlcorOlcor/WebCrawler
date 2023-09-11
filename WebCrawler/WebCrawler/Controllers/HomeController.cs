@@ -36,11 +36,12 @@ namespace WebCrawler.Controllers {
                 _logger.Log(LogLevel.Error, "Periodicy is not set");
                 valid = false;
             }
-            //URI validation
+            //Validation of URI
             if (Uri.IsWellFormedUriString(record.Url, UriKind.Absolute)) {
                 _logger.Log(LogLevel.Error, "URL is not well formated");
                 valid = false;
             }
+            //Validation of Regular Expression
             try {
                 Regex regex = new Regex(record.Regex!);
             } catch (ArgumentException) {
