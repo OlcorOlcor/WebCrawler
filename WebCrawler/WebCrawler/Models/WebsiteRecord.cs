@@ -15,7 +15,6 @@ namespace WebCrawler.Models {
         [Required(ErrorMessage = "URL is required.")]
         public string? Url { get; set; }
 
-        [RegularExpression(@"a.*b")]
         [Required(ErrorMessage = "Regex is required.")]
         public string? Regex { get; set; }
 

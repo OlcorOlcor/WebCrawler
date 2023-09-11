@@ -12,12 +12,25 @@
     let metaData;
     let currentRecordFullData;
     let graph;
+    
+    let regexInput = document.getElementById("regex");
+    let form = document.getElementById("WebRecordForm");
 
     getData();
     setInterval(() => updateExecutionInformationInRecordTable(), executionUpdateInterval);
-    
-    let form = document.getElementById("webRecordForm");
-    form.addEventListener("submit", () => validateWebrecordForm());
+
+    form.addEventListener("submit", (event) => {
+        let regex;
+        try {
+            console.log("checking");
+            regex = new RegExp(regexInput.value);
+            regexInput.setCustomValidity("");
+        }
+        catch(e) {
+            console.log("checking failed");
+            regexInput.setCustomValidity("Invalid Regular Expression");
+        }
+    });
 
     // Data retrieval
     function getData() {
