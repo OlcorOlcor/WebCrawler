@@ -12,10 +12,27 @@
     let metaData;
     let currentRecordFullData;
     let graph;
+    
+    let regexInput = document.getElementById("regex");
+    let form = document.getElementById("WebRecordForm");
 
     getData();
     setInterval(() => updateExecutionInformationInRecordTable(), executionUpdateInterval);
 
+    form.addEventListener("submit", (event) => {
+        let regex;
+        try {
+            console.log("checking");
+            regex = new RegExp(regexInput.value);
+            regexInput.setCustomValidity("");
+        }
+        catch(e) {
+            console.log("checking failed");
+            regexInput.setCustomValidity("Invalid Regular Expression");
+        }
+    });
+
+    // Data retrieval
     function getData() {
         getMetaData().then(data => metaData = data);
         getFullData().then(data => { 
@@ -63,6 +80,11 @@
             .catch(err => console.error(err));
     }
     
+    //Form Validation
+
+    function validateWebrecordForm() {
+
+    }
 </script>
 
 <!--// <input type=range min=0 max=2 bind:value={currentRecordIndex}>  -->
