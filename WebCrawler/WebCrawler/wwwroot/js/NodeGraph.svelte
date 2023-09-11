@@ -11,7 +11,7 @@
     let canvas;
     let width = 1200;
     let height = 800;
-    const nodeRadius = 13;
+    const nodeRadius = 12;
     let offset = 0;
     let infoBox;
     let nodeInfoBoxVisible = false;

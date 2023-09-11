@@ -7,29 +7,52 @@
     const fullDataUri = '/Api/GetFullData';
     const latestExecutionUri = '/Api/GetLatestExecutions'
     const formUri = '/Home/AddRecord'
-    const interval = 3000;
+
+    // TODO We could possibly update this interval dynamicaly
+    const graphUpdateInterval = 3000;
     const executionUpdateInterval = 10000; //10 seconds
+
     let currentRecordIndex = 0;
+    let currentExecutionIndex = 0;
     let metaData;
     let currentRecordFullData;
-    let graph;
-    let modeButton;
-    let modeIsStatic = false;
+    let currentRecordDomainData;
 
+    let modeButton;
+    let staticMode = false;
+    let viewButton;
+    let websiteView = true;
+
+    let websiteGraph;
+    let domainGraph;
+
+    
     getData();
     setInterval(() => updateExecutionInformationInRecordTable(), executionUpdateInterval);
 
     function getData() {
         getMetaData().then(data => metaData = data);
-        getFullData().then(data => {
+        getFullData(currentRecordIndex).then(data => {
             currentRecordFullData = JSON.parse(data);
-            if (graph != null && currentRecordFullData["executions"] != undefined) {
-                graph.update(currentRecordFullData["executions"][0]); 
+            if (currentRecordFullData["executions"] == undefined) {
+                return;
+            }
+
+            currentRecordDomainData = getDomainData(currentRecordFullData["executions"][currentExecutionIndex]);
+
+            if (websiteView && websiteGraph != null && websiteGraph !== undefined) {
+                websiteGraph.update(currentRecordFullData["executions"][currentExecutionIndex]); 
+                return;
+            }
+
+            if (!websiteView && domainGraph != null && domainGraph !== undefined) {
+                domainGraph.update(currentRecordDomainData);
+                return;
             }
         });
 
-        if (!modeIsStatic) {
-            setTimeout(getData, interval);
+        if (!staticMode) {
+            setTimeout(getData, graphUpdateInterval);
         }
     }
 
@@ -37,16 +60,14 @@
         return fetch(metaDataUri)
             .then(response => response.json())
             .then(data => data)
-            .catch(error => console.error('Unable to get items.', error));
+            .catch(error => console.error('Unable to get metaData.', error));
     }
 
-    function getFullData() {
-        return fetch(fullDataUri + "/?recordId=" + currentRecordIndex)
+    function getFullData(id) {
+        return fetch(fullDataUri + "/?recordId=" + id)
             .then(response => response.json())
             .then(data => data)
-            .catch(error => console.error('Unable to get items.', error));
-        
-        
+            .catch(error => console.error("Unable to getFullData for recordId" + id + ".", error));
     }
 
     function updateExecutionInformationInRecordTable() {
@@ -70,20 +91,129 @@
             .catch(err => console.error(err));
     }
 
-    function SwitchGraphMode() {
-        if (modeIsStatic) {
+    function getDomainData(websiteData) {
+        let websiteNodes = websiteData["nodes"];
+        let websiteLinks = websiteData["links"];
+        let domainNodes = getDomainNodes(websiteNodes);
+        let domainLinks = getDomainLinks(websiteLinks, domainNodes);
+
+        return {"nodes": domainNodes, "links": domainLinks};
+    }
+
+    function getDomainLinks(websiteLinks, domainNodes) {
+        let domainLinks = [];
+        for (let i = 0; i < websiteLinks.length; i++) {
+            let findDomainLink = domainLinks.find((domainLink) => {
+                domainLink.source === getDomain(websiteLinks[i].source) &&
+                domainLink.target === getDomain(websiteLinks[i].target)
+            });
+
+            if (findDomainLink === undefined) {
+                domainLinks[domainLinks.length] = {
+                    "source": getDomain(websiteLinks[i].source),
+                    "target": getDomain(websiteLinks[i].target),
+                    "value": 1
+                }
+            }
+        }
+
+        return domainLinks;
+    }
+
+    function getDomainNodes(websiteNodes) {
+        let domainNodes = [];
+        for (let i = 0; i < websiteNodes.length; i++) {
+            let nodeDomain = getDomain(websiteNodes[i].id);
+            let nodeMatchIndex = domainNodes.findIndex((node) => node.id === nodeDomain);
+
+            if (nodeMatchIndex === -1) {
+                domainNodes[domainNodes.length] = {
+                    "id": nodeDomain, 
+                    "title": "",
+                    "crawl-time": websiteNodes[i]["crawl-time"],
+                    "crawled-by": websiteNodes[i]["crawled-by"],
+                    "group": domainNodes.length
+                }
+            }
+            else {
+                let websiteCrawlers = websiteNodes[i]["crawled-by"];
+                let domainCrawlers = domainNodes[nodeMatchIndex]["crawled-by"];
+
+                websiteCrawlers.forEach((websiteCrawlerUrl) => {
+                    let domainCrawler = domainCrawlers.find((crawler) => crawler === websiteCrawlerUrl);
+                    if (domainCrawler === undefined) {
+                        domainCrawlers[domainCrawlers.length] = websiteCrawlerUrl;
+                    }
+                });
+
+                domainNodes[nodeMatchIndex]["crawled-by"] = domainCrawlers;
+            }
+        }
+
+        return domainNodes;
+    }
+
+    function getDomain(urlString) {
+        const url = new URL(urlString);
+        return url.hostname;
+    }
+
+    function switchGraphMode() {
+        if (staticMode) {
             modeButton.textContent = "Make Static";
-            modeIsStatic = false;
+            staticMode = false;
             getData();
         }
         else {
             modeButton.textContent = "Make Active";
-            modeIsStatic = true;
+            staticMode = true;
+        }
+    }
+
+    function updateDomainGraph() {
+        if (domainGraph !== undefined && domainGraph !== null && currentRecordDomainData !== undefined) {
+            domainGraph.update(currentRecordDomainData);
+        }
+        else {
+            setTimeout(updateDomainGraph, 500);
+        }
+    }
+
+    function updateWebsiteGraph() {
+        if (websiteGraph !== undefined && websiteGraph !== null && currentRecordFullData["executions"] !== undefined) {
+            websiteGraph.update(currentRecordFullData["executions"][currentExecutionIndex]);
+        }
+        else {
+            setTimeout(updateWebsiteGraph, 500);
+        }
+    }
+
+    function switchGraphView() {
+        if (websiteView) {
+            viewButton.textContent = "View Websites"
+            websiteView = false;
+            if (staticMode) {
+                updateDomainGraph();
+            }
+        }
+        else {
+            viewButton.textContent = "View Domains"
+            websiteView = true;
+            if (staticMode) {
+                updateWebsiteGraph();
+            }
         }
     }
     
 </script>
 
-<button bind:this={modeButton} on:click={SwitchGraphMode}>Make Static</button>
+<button bind:this={modeButton} on:click={switchGraphMode}>Make Static</button>
+<button bind:this={viewButton} on:click={switchGraphView}>View Domains</button>
 
-<NodeGraph bind:this={graph}></NodeGraph>
+
+<!-- TODO Could be only one NodeGraph with changing data for performace reasons -->
+{#if websiteView}
+    <NodeGraph bind:this={websiteGraph}></NodeGraph>
+{:else}
+    <NodeGraph bind:this={domainGraph}></NodeGraph>
+{/if}
