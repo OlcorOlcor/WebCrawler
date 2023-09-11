@@ -1,4 +1,7 @@
-﻿namespace WebCrawler.Models {
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace WebCrawler.Models {
     public class WebsiteRecord {
         private static int _nextID { get; set; }
         public WebsiteRecord() {
@@ -6,7 +9,10 @@
             _nextID++;
         }
         public int Id { get; init; }
-        public string Url { get; set; } = "";
+
+        [StringLength(60, MinimumLength = 3)]
+        [Required(ErrorMessage = "URL is required")]
+        public string? Url { get; set; }
         public string Regex { get; set; } = "";
         public int Days { get; set; }
         public int Hours { get; set; }

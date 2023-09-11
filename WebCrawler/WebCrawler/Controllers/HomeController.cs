@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using WebCrawler.Models;
 
@@ -22,8 +23,20 @@ namespace WebCrawler.Controllers {
 			record.ParseTags();
 			repo!.Add(record);
             repo.StartNewExecution(record);
+
             //VALIDATION
-			this.ViewBag.WRList = repo.GetAll();
+            var context = new ValidationContext(record, serviceProvider: null, items: null);
+            var results = new List<ValidationResult>();
+            var isValid = Validator.TryValidateObject(record, context, results, true);
+
+            if (!isValid) {
+                /*foreach (var validationResult in results) {
+                    Response.Write(validationResult.ErrorMessage.ToString());
+                }*/
+                return Content("");
+            }
+
+            this.ViewBag.WRList = repo.GetAll();
             //TODO fill missing info
             return Content(
                 $"" +
