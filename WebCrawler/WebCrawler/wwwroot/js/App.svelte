@@ -15,7 +15,11 @@
 
     getData();
     setInterval(() => updateExecutionInformationInRecordTable(), executionUpdateInterval);
+    
+    let form = document.getElementById("webRecordForm");
+    form.addEventListener("submit", () => validateWebrecordForm());
 
+    // Data retrieval
     function getData() {
         getMetaData().then(data => metaData = data);
         getFullData().then(data => { 
@@ -63,6 +67,11 @@
             .catch(err => console.error(err));
     }
     
+    //Form Validation
+
+    function validateWebrecordForm() {
+
+    }
 </script>
 
 <!--// <input type=range min=0 max=2 bind:value={currentRecordIndex}>  -->
