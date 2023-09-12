@@ -2,9 +2,8 @@
 
 namespace WebCrawler.Models.Serializers {
     public class WebsiteRecordSerializer : ISerializer<WebsiteRecord> {
-        private StringBuilder? sb;
         public string Serialize(WebsiteRecord record) {
-            sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
             
             sb.Append("{");
             sb.Append($"\"Id\": {record.Id}");
@@ -23,6 +22,24 @@ namespace WebCrawler.Models.Serializers {
                     first = false;
                 } else {
                     sb.Append($",\"{tag}\"");
+                }
+            }
+            sb.Append("]");
+            sb.Append("}");
+            return sb.ToString();
+        }
+
+        public string SerializeWebsiteRecords(List<WebsiteRecord> records) {
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append("{");
+            sb.Append("\"WebsiteRecords\": [");
+            bool first = true;
+            foreach (var record in records) {
+                if (first) {
+                    sb.Append(Serialize(record));
+                } else {
+                    sb.Append("," + Serialize(record));
                 }
             }
             sb.Append("]");
