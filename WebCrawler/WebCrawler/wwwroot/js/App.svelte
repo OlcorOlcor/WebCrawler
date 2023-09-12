@@ -9,7 +9,7 @@
     const formUri = '/Home/AddRecord'
 
     // TODO We could possibly update this interval dynamicaly
-    const graphUpdateInterval = 3000;
+    const graphUpdateInterval = 5000;
     const executionUpdateInterval = 10000; //10 seconds
 
     let currentRecordIndex = 0;

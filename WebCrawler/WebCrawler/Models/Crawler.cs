@@ -54,7 +54,12 @@ namespace WebCrawler.Models {
                     }
 
                     if (IsResource(link)) {
-                        Console.WriteLine(link);
+                        Console.WriteLine($"Ommited resource link: {link}");
+                        continue;
+                    }
+                    //link = Uri.EscapeDataString(link);
+                    if (!Uri.IsWellFormedUriString(link, UriKind.Absolute)) {
+                        Console.WriteLine($"Ommited corrupted link: {link}");
                         continue;
                     }
 
