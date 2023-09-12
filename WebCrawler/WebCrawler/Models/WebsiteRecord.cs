@@ -32,16 +32,14 @@ namespace WebCrawler.Models {
 
         [Required]
         public string? Label { get; set; }
-
-        [Required]
         public string? Tags { get; set; }
         public string[] TagsArray { get; set; } = new string[0];
+        public bool Active { get; set; } = true;
 
         //last finished execution is saved here, when next one is finished this will be rewrited by it
         public Execution? LastFinishedExecution { get; set; } = null;
 
         //list of all running executions of this WebsiteRecord
-
         public List<Execution> RunningExecutions { get; set; } = new List<Execution>();
 
         public void ParseTags() {
@@ -52,12 +50,14 @@ namespace WebCrawler.Models {
                 TagsArray = new string[0];
             }
         }
+
         public Execution StartNewExecution() {
             Execution execution = new Execution(this.Url, this.Regex);
             execution.updateRepositoryCallback = ExecutionFinished;
             this.RunningExecutions.Add(execution);
             return execution;
         }
+
         private void ExecutionFinished(Execution execution) {
             //the exectuion in the parameter is from another thread so the following line might not word :c
             var executionIndex = RunningExecutions.IndexOf(execution);
