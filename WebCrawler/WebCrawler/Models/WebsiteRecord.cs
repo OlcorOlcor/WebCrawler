@@ -52,6 +52,10 @@ namespace WebCrawler.Models {
         }
 
         public Execution StartNewExecution() {
+            if (Url is null || Regex is null) {
+                throw new InvalidOperationException();
+            } 
+            
             Execution execution = new Execution(this.Url, this.Regex);
             execution.updateRepositoryCallback = ExecutionFinished;
             this.RunningExecutions.Add(execution);
@@ -63,6 +67,11 @@ namespace WebCrawler.Models {
             var executionIndex = RunningExecutions.IndexOf(execution);
             RunningExecutions.Remove(RunningExecutions[executionIndex]);
             this.LastFinishedExecution = execution;
+
+            if (RunningExecutions.Count == 0 && Active == true) {
+                StartNewExecution();
+                return;
+            }
         }
 
         public List<Execution> GetAllExecutions() {
