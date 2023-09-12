@@ -3,7 +3,7 @@
         //here are stored all website records in the app
         private IList<WebsiteRecord> _records { get; set; }
         private Planner _planner;
-        public int test = 0;
+        
         public WebsiteRecordRepository(Planner planner, IList<WebsiteRecord> records) {
             _planner = planner;
             _records = records;
