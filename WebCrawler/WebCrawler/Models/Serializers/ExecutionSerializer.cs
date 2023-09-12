@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using Microsoft.AspNetCore.Mvc.Filters;
+using System.Text;
 
 namespace WebCrawler.Models.Serializers {
     public class ExecutionSerializer {
@@ -7,11 +8,10 @@ namespace WebCrawler.Models.Serializers {
             if (sb is null) {
                 return;
             }
-
             sb.Append("{");
             sb.Append($"\"RecordId\": {recordId},");
             sb.Append($"\"Time\": \"{execution.ExecutionTime}\",");
-            sb.Append($"\"Status\": \"FINISHED\""); //TODO: Change to actual status once implemented
+            sb.Append($"\"Status\": \"{execution.Status}\"");
             sb.Append("}");
         }
         public string SerializeLatestExecutions(IList<WebsiteRecord> records) {
