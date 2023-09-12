@@ -54,7 +54,11 @@ function getWebRecords() {
             </tr>
         </thead>
         <tbody>
-            <!--foreach-->      
+            {#each WebsiteRecords as record (record.Url)}
+                <tr>
+                    <td>{record.Url}</td>
+                </tr>
+            {/each}
         </tbody>
     </table>  
 </div>
