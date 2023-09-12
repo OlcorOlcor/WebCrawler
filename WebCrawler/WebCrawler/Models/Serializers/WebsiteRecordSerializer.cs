@@ -24,6 +24,14 @@ namespace WebCrawler.Models.Serializers {
                     sb.Append($",\"{tag}\"");
                 }
             }
+            if (record.LastFinishedExecution is not null) {
+                sb.Append($",\"LastExecutionTime\": \"{record.LastFinishedExecution.ExecutionTime}\"");
+                sb.Append($",\"LastExecutionStatus\": \"{record.LastFinishedExecution.Status}\"");
+            } else {
+                sb.Append($",\"LastExecutionTime\": \"No record has finished\"");
+                sb.Append($",\"LastExecutionStatus\": \"running\"");
+            }
+
             sb.Append("]");
             sb.Append("}");
             return sb.ToString();
