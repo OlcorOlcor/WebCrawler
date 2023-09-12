@@ -2,8 +2,9 @@
 
 namespace WebCrawler.Models.Serializers {
     public class GraphDataSerializer : ISerializer<WebsiteRecord> {
-        private StringBuilder sb = new StringBuilder();
+        private StringBuilder? sb;
         public string Serialize(WebsiteRecord record) {
+            sb = new StringBuilder();
             WebsiteRecord websiteRecord = record;
             sb.Append("{");
             sb.Append("\"executions\": {");

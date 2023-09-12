@@ -2,7 +2,7 @@
 
 namespace WebCrawler.Models.Serializers {
     public class ExecutionSerializer {
-        private StringBuilder sb = new StringBuilder();
+        private StringBuilder? sb;
         private void SerializeExecution(Execution execution, int recordId) {
             sb.Append("{");
             sb.Append($"\"RecordId\": {recordId},");
@@ -11,6 +11,7 @@ namespace WebCrawler.Models.Serializers {
             sb.Append("}");
         }
         public string SerializeLatestExecutions(IList<WebsiteRecord> records) {
+            sb = new StringBuilder();
             sb.Append("{ \"Executions\": [");
             bool firstRecord = true;
             foreach (WebsiteRecord record in records) {
