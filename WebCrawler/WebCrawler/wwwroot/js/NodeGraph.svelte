@@ -101,8 +101,7 @@ svelte example: https://github.com/happybeing/d3-fdg-svelte
         
         links.forEach(d => {
             context.beginPath();
-            context.moveTo(d.source.x, d.source.y);
-            context.lineTo(d.target.x, d.target.y);
+            drawArrow(context, d.source.x, d.source.y, d.target.x, d.target.y, nodeRadius);
             context.globalAlpha = 0.6;
             context.strokeStyle = "#999";
             context.lineWidth = 2; //Math.sqrt(d.value);
@@ -126,6 +125,23 @@ svelte example: https://github.com/happybeing/d3-fdg-svelte
         });
 
         context.restore();
+    }
+
+    function drawArrow(context, fromx, fromy, tox, toy, nodeRadius) {
+        var headlen = nodeRadius * 0.70; // length of head in pixels
+        var dx = tox - fromx;
+        var dy = toy - fromy;
+        var angle = Math.atan2(dy, dx);
+        
+        // Calculate the adjusted end point
+        var adjustedTox = tox - nodeRadius * Math.cos(angle);
+        var adjustedToy = toy - nodeRadius * Math.sin(angle);
+
+        context.moveTo(fromx, fromy);
+        context.lineTo(adjustedTox, adjustedToy);
+        context.lineTo(adjustedTox - headlen * Math.cos(angle - Math.PI / 7), adjustedToy - headlen * Math.sin(angle - Math.PI / 6));
+        context.moveTo(adjustedTox, adjustedToy);
+        context.lineTo(adjustedTox - headlen * Math.cos(angle + Math.PI / 7), adjustedToy - headlen * Math.sin(angle + Math.PI / 6));
     }
 
     function zoomed(event) {
