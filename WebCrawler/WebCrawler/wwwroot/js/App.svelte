@@ -2,7 +2,8 @@
 
 <script>
     import NodeGraph from "./NodeGraph.svelte";
-    
+    import WebRecordTable from "./WebRecordTable.svelte";
+
     const metaDataUri = '/Api/GetMetaData';
     const fullDataUri = '/Api/GetFullData';
     const latestExecutionUri = '/Api/GetLatestExecutions'
@@ -222,6 +223,8 @@
     }
   
 </script>
+
+<WebRecordTable></WebRecordTable>
 
 <button bind:this={modeButton} on:click={switchGraphMode}>Make Static</button>
 <button bind:this={viewButton} on:click={switchGraphView}>View Domains</button>
