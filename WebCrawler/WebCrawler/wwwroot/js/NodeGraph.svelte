@@ -18,6 +18,7 @@ svelte example: https://github.com/happybeing/d3-fdg-svelte
     let width = 1200;
     let height = 800;
     const nodeRadius = 11;
+    const maxNodeTextLength = 37;
     let infoBox;
     let nodeInfoBoxVisible = false;
 
@@ -120,7 +121,10 @@ svelte example: https://github.com/happybeing/d3-fdg-svelte
 
             context.font = "15px Arial";
             context.fillStyle = "#000";
-            const text = d.title != "" ? d.title : d.id;
+            let text = d.title != "" ? d.title : d.id;
+            if (text.length > maxNodeTextLength) {
+                text = text.substring(0, 37) + "...";
+            }
             context.fillText(text, d.x - (nodeRadius / 2), d.y + (nodeRadius / 2));
         });
 
