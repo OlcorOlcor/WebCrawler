@@ -76,7 +76,7 @@ namespace WebCrawler.Models {
                 if (page.OutgoingLinks.UrlsNotMatchingRegex is not null) {
                     foreach (var link in page.OutgoingLinks.UrlsNotMatchingRegex) {
                         sb.Append(",");
-                        SerializeNode(link, "", "", new string[0], 1, false);
+                        SerializeNode(link, "", "", new string[0], 2, false);
                     }
                 }
             }
@@ -115,7 +115,7 @@ namespace WebCrawler.Models {
                     }
                 }
 
-                if (page.OutgoingLinks.UrlsMatchingRegex is not null) {
+                if (page.OutgoingLinks.UrlsNotMatchingRegex is not null) {
                     foreach (var link in page.OutgoingLinks.UrlsNotMatchingRegex) {
                         if (!firstPageToOutput) {
                             sb.Append(",");
