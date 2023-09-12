@@ -27,6 +27,7 @@ namespace WebCrawler.Models {
             sb.Append("}}");
             return sb.ToString();
         }
+
         private void SerializeExecution(Execution execution, int executionNumber) {
             WebPage[] webPages;
             if (execution.pages is not null) {
@@ -45,6 +46,7 @@ namespace WebCrawler.Models {
             SerializeLinks(webPages);
             sb.Append("}");
         }
+
         private void SerializeNodes(WebPage[] webPages) {
             sb.Append("\"nodes\": [");
             bool firstPage = true;
@@ -53,23 +55,52 @@ namespace WebCrawler.Models {
                     sb.Append(",");
                 }
                 firstPage = false;
-                sb.Append($"{{\"id\": \"{page.Url}\", \"group\": 2, \"match\": \"true\"}}");
+              
+                SerializeNode(
+                    page.Url, 
+                    page.Title, 
+                    page.CrawlTime.ToString(), 
+                    new string[] {"https://test.net"}, // TODO Add list of sites that crawled this site
+                    1,
+                    true
+                );
 
                 // TODO maybe could check if url already present
                 if (page.OutgoingLinks.UrlsMatchingRegex is not null) {
                     foreach (var link in page.OutgoingLinks.UrlsMatchingRegex) {
-                        sb.Append($",{{\"id\": \"{link}\", \"group\": 2, \"match\": \"true\"}}");
+                        sb.Append(",");
+                        SerializeNode(link, "", "", new string[0], 1, true);
                     }
                 }
                 
                 if (page.OutgoingLinks.UrlsNotMatchingRegex is not null) {
                     foreach (var link in page.OutgoingLinks.UrlsNotMatchingRegex) {
-                        sb.Append($",{{\"id\": \"{link}\", \"group\": 1, \"match\": \"false\"}}");
+                        sb.Append(",");
+                        SerializeNode(link, "", "", new string[0], 2, false);
                     }
                 }
             }
             sb.Append("],");
         }
+
+        private void SerializeNode(string id, string title, string crawlTime, string[] crawledBy, int group, bool match) {
+            sb.Append($"{{\"id\": \"{id}\"");
+            sb.Append($",\"title\": \"{title}\"");
+            sb.Append($",\"crawl-time\": \"{crawlTime}\"");
+            sb.Append($",\"crawled-by\": [");
+            bool firstUrl = true;
+            foreach (string url in crawledBy) {
+                if (!firstUrl) {
+                    sb.Append(",");
+                }
+                firstUrl = false;
+                sb.Append($"\"{url}\"");
+            }
+            sb.Append($"]");
+            sb.Append($",\"group\": {group}");
+            sb.Append($",\"match\": \"{match.ToString().ToLower()}\"}}");
+        }
+
         private void SerializeLinks(WebPage[] webPages) {
             sb.Append("\"links\": [");
             bool firstPageToOutput = true;
@@ -84,7 +115,7 @@ namespace WebCrawler.Models {
                     }
                 }
 
-                if (page.OutgoingLinks.UrlsMatchingRegex is not null) {
+                if (page.OutgoingLinks.UrlsNotMatchingRegex is not null) {
                     foreach (var link in page.OutgoingLinks.UrlsNotMatchingRegex) {
                         if (!firstPageToOutput) {
                             sb.Append(",");

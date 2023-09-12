@@ -12,6 +12,7 @@ namespace WebCrawler.Controllers {
             this._logger = logger;
             this.repo = repo;
         }
+
         //gets brief data for all website records
         [HttpGet]
         public JsonResult GetMetaData() {
@@ -30,6 +31,7 @@ namespace WebCrawler.Controllers {
 			JsonResult result = Json(record.ToStringJson());
             return result;
         }
+
         [HttpGet]
         public void StartNewExecution(int recordId) {
             var record = repo!.Find(recordId);
@@ -37,9 +39,10 @@ namespace WebCrawler.Controllers {
 			    repo.StartNewExecution(record);
 			}
 		}
+
         [HttpGet]
         public JsonResult GetLatestExecutions() {
-            var records = repo.GetAll();
+            var records = repo!.GetAll();
             ExecutionSerializer serializer = new ExecutionSerializer();
             string json = serializer.SerializeLatestExecutions(records);
             return Json(json);
