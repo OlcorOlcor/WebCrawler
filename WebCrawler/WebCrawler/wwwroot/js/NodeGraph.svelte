@@ -1,5 +1,11 @@
 <svelte:options tag="node-graph" />
 
+<!-- 
+Modified example of the D3 Force Directed Graph example.
+example: https://observablehq.com/@d3/force-directed-graph
+svelte example: https://github.com/happybeing/d3-fdg-svelte 
+-->
+
 <script>
     import { onMount } from 'svelte';
 
@@ -11,8 +17,7 @@
     let canvas;
     let width = 1200;
     let height = 800;
-    const nodeRadius = 12;
-    let offset = 0;
+    const nodeRadius = 11;
     let infoBox;
     let nodeInfoBoxVisible = false;
 
@@ -43,9 +48,9 @@
 
     const groupColour = d3.scaleOrdinal(d3.schemeCategory10);
 
+    let transform = d3.zoomIdentity;
     let simulation, context;
     onMount(() => {
-        //march();
         context = canvas.getContext('2d');
         resize()
         
@@ -55,47 +60,17 @@
                 .strength(-100)
             )    
             .force("center", d3.forceCenter(width / 2, height / 2, 100))
-            .on("tick", () => {
-            context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-            //
-            links.forEach(d => {
-                context.beginPath();
-                // context.setLineDash([8,2]);
-                // context.lineDashOffset = -offset;
-                context.moveTo(d.source.x, d.source.y);
-                context.lineTo(d.target.x, d.target.y);
-                context.globalAlpha = 0.6;
-                context.strokeStyle = "#999";
-                context.lineWidth = 2; //Math.sqrt(d.value);
-                context.stroke();
-                context.globalAlpha = 1;
-            });
-            
-            nodes.forEach((d, i) => {
-                context.beginPath();
-                context.arc(d.x, d.y, nodeRadius, 0, 2*Math.PI);
-                context.strokeStyle = "#fff";
-                context.lineWidth = 1.5;
-                context.stroke();
-                context.fillStyle = groupColour(d.group);
-                context.fill();
-
-                context.font = "15px Arial";
-                context.fillStyle = "#000";
-                const text = d.title != "" ? d.title : d.id;
-                context.fillText(text, d.x - (nodeRadius / 2), d.y + (nodeRadius / 2));
-            });
-        });
+            .on("tick", simulationUpdate);
 
 
-        // title
+        // infoBox
         d3.select(context.canvas)
             .on("click", (event) => {
-                const d = simulation.find(event.offsetX, event.offsetY, nodeRadius);
+                const d = simulation.find(transform.invertX(event.offsetX), transform.invertY(event.offsetY), nodeRadius);
                 //console.log(event.offsetX, event.offsetY);
                 if (d) {
                     console.log(event.x, event.y, d.id, d["crawl-time"], d["crawled-by"]);
-                    showNodeInfo(d.x, d.y, d.id, d["crawl-time"], d["crawled-by"]);
+                    showNodeInfo(event.offsetX, event.offsetY, d.id, d["crawl-time"], d["crawled-by"]);
                 }
             });
 
@@ -112,12 +87,50 @@
             .subject(dragsubject)
             .on("start", dragstarted)
             .on("drag", dragged)
-            .on("end", dragended));
+            .on("end", dragended))
+        .call(d3.zoom()
+          .scaleExtent([1 / 10, 8])
+          .on('zoom', zoomed));
     });
 
-    // Use the d3-force simulation to locate the node
-    function dragsubject(event) {
-        return simulation.find(event.x, event.y, nodeRadius);
+    function simulationUpdate() {
+        context.save();
+        context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+        context.translate(transform.x, transform.y);
+        context.scale(transform.k, transform.k);
+        
+        links.forEach(d => {
+            context.beginPath();
+            context.moveTo(d.source.x, d.source.y);
+            context.lineTo(d.target.x, d.target.y);
+            context.globalAlpha = 0.6;
+            context.strokeStyle = "#999";
+            context.lineWidth = 2; //Math.sqrt(d.value);
+            context.stroke();
+            context.globalAlpha = 1;
+        });
+        
+        nodes.forEach((d, i) => {
+            context.beginPath();
+            context.arc(d.x, d.y, nodeRadius, 0, 2*Math.PI);
+            context.strokeStyle = "#fff";
+            context.lineWidth = 1.5;
+            context.stroke();
+            context.fillStyle = groupColour(d.group);
+            context.fill();
+
+            context.font = "15px Arial";
+            context.fillStyle = "#000";
+            const text = d.title != "" ? d.title : d.id;
+            context.fillText(text, d.x - (nodeRadius / 2), d.y + (nodeRadius / 2));
+        });
+
+        context.restore();
+    }
+
+    function zoomed(event) {
+        transform = event.transform;
+        simulationUpdate();
     }
 
     function resize() {
@@ -125,15 +138,25 @@
         console.log('resize()', width, height)
     }
 
+    // Use the d3-force simulation to locate the node
+    function dragsubject(event) {
+        const node = simulation.find(transform.invertX(event.x), transform.invertY(event.y), nodeRadius);
+        if (node) {
+            node.x = transform.applyX(node.x);
+            node.y = transform.applyY(node.y);
+        }
+        return node;
+    }
+
     function dragstarted(event) {
         if (!event.active) simulation.alphaTarget(0.3).restart();
-        event.subject.fx = event.subject.x;
-        event.subject.fy = event.subject.y;
+        event.subject.fx = transform.invertX(event.subject.x);
+        event.subject.fy = transform.invertY(event.subject.y);
     }
 
     function dragged(event) {
-        event.subject.fx = event.x;
-        event.subject.fy = event.y;
+        event.subject.fx = transform.invertX(event.x);
+        event.subject.fy = transform.invertY(event.y);
     }
 
     function dragended(event) {
@@ -142,7 +165,7 @@
         event.subject.fy = null;
     }
 
-    export function update(newGraphData) {
+    export function updateData(newGraphData) {
         if (newGraphData.nodes == null && newGraphData.links == null) {
             return;
         } 
@@ -201,26 +224,6 @@
 
         simulation.alpha(1);
         simulation.restart();
-    }
-
-    let i = 0;
-    export function addNode(node) {
-        console.log(node);
-        nodes.push({id: "idk" + i, group: 2, x: width/2, y:height/2});
-        links.push({source: "idk" + i, target: "Bahorel", "value": 1});
-        links.push({source: "idk" + i, target: "Valjean", "value": 1});
-        simulation.nodes(nodes);
-        simulation.alpha(0.2);
-        simulation.restart();
-        i++;
-    }
-
-    function march() {
-        offset += 1;
-        if (offset > 16) {
-            offset = 0;
-        }
-        setTimeout(march, 10);  
     }
 
     function hideNodeInfo() {

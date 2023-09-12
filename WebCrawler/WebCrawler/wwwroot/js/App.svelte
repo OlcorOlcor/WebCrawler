@@ -57,12 +57,12 @@
             currentRecordDomainData = getDomainData(currentRecordFullData["executions"][currentExecutionIndex]);
 
             if (websiteView && websiteGraph != null && websiteGraph !== undefined) {
-                websiteGraph.update(currentRecordFullData["executions"][currentExecutionIndex]); 
+                websiteGraph.updateData(currentRecordFullData["executions"][currentExecutionIndex]); 
                 return;
             }
 
             if (!websiteView && domainGraph != null && domainGraph !== undefined) {
-                domainGraph.update(currentRecordDomainData);
+                domainGraph.updateData(currentRecordDomainData);
                 return;
             }
         });
@@ -188,7 +188,7 @@
 
     function updateDomainGraph() {
         if (domainGraph !== undefined && domainGraph !== null && currentRecordDomainData !== undefined) {
-            domainGraph.update(currentRecordDomainData);
+            domainGraph.updateData(currentRecordDomainData);
         }
         else {
             setTimeout(updateDomainGraph, 500);
@@ -197,7 +197,7 @@
 
     function updateWebsiteGraph() {
         if (websiteGraph !== undefined && websiteGraph !== null && currentRecordFullData["executions"] !== undefined) {
-            websiteGraph.update(currentRecordFullData["executions"][currentExecutionIndex]);
+            websiteGraph.updateData(currentRecordFullData["executions"][currentExecutionIndex]);
         }
         else {
             setTimeout(updateWebsiteGraph, 500);
