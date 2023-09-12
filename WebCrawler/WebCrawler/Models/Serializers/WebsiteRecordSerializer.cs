@@ -12,7 +12,7 @@ namespace WebCrawler.Models.Serializers {
             sb.Append($",\"Days\": {record.Days}");
             sb.Append($",\"Hours\": {record.Hours}");
             sb.Append($",\"Minutes\": {record.Minutes}");
-            sb.Append($",\"Label\": {record.Label}");
+            sb.Append($",\"Label\": \"{record.Label}\"");
 
             sb.Append(",\"Tags\": [");
             bool first = true;
@@ -24,6 +24,8 @@ namespace WebCrawler.Models.Serializers {
                     sb.Append($",\"{tag}\"");
                 }
             }
+            sb.Append("]");
+
             if (record.LastFinishedExecution is not null) {
                 sb.Append($",\"LastExecutionTime\": \"{record.LastFinishedExecution.ExecutionTime}\"");
                 sb.Append($",\"LastExecutionStatus\": \"{record.LastFinishedExecution.Status}\"");
@@ -31,8 +33,6 @@ namespace WebCrawler.Models.Serializers {
                 sb.Append($",\"LastExecutionTime\": \"No record has finished\"");
                 sb.Append($",\"LastExecutionStatus\": \"running\"");
             }
-
-            sb.Append("]");
             sb.Append("}");
             return sb.ToString();
         }
@@ -46,6 +46,7 @@ namespace WebCrawler.Models.Serializers {
             foreach (var record in records) {
                 if (first) {
                     sb.Append(Serialize(record));
+                    first = false;
                 } else {
                     sb.Append("," + Serialize(record));
                 }
