@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.RegularExpressions;
+using System.Timers;
 
 namespace WebCrawler.Models {
     public class WebsiteRecord {
@@ -51,15 +52,24 @@ namespace WebCrawler.Models {
             }
         }
 
-        public Execution StartNewExecution() {
-            if (Url is null || Regex is null) {
-                throw new InvalidOperationException();
+        public void StartNewExecution() {
+            if (this.Url is null || this.Regex is null) {
+                throw new InvalidDataException();
             } 
-            
+
             Execution execution = new Execution(this.Url, this.Regex);
             execution.updateRepositoryCallback = ExecutionFinished;
             this.RunningExecutions.Add(execution);
-            return execution;
+            ThreadPool.QueueUserWorkItem(execution.Execute);
+        }
+
+        public List<Execution> GetAllExecutions() {
+            List<Execution> list = new List<Execution>();
+            if (LastFinishedExecution is not null) {
+                list.Add(LastFinishedExecution);
+            }
+            list.AddRange(this.RunningExecutions);
+            return list;
         }
 
         private void ExecutionFinished(Execution execution) {
@@ -72,15 +82,42 @@ namespace WebCrawler.Models {
                 StartNewExecution();
                 return;
             }
+            else if (Active == true) {
+                double interval = GetPeriodicityInMiliseconds();
+                System.Timers.Timer timer = new System.Timers.Timer(interval);
+                
+                timer.Elapsed += CheckAndStartNewExecution;
+
+                // Do not repeat
+                timer.AutoReset = false;
+
+                // Start the timer
+                timer.Enabled = true;
+            }
         }
 
-        public List<Execution> GetAllExecutions() {
-            List<Execution> list = new List<Execution>();
-            if (LastFinishedExecution is not null) {
-                list.Add(LastFinishedExecution);
+        private void CheckAndStartNewExecution(object? source, System.Timers.ElapsedEventArgs e) {
+            if (!Active) {
+                return;
             }
-            list.AddRange(this.RunningExecutions);
-            return list;
+            Console.WriteLine("Elapsed");
+            StartNewExecution();
+        }
+
+        private double GetPeriodicityInMiliseconds() {
+            if (this.Days is null || this.Hours is null || this.Minutes is null) {
+                throw new InvalidDataException();
+            }
+
+            double daysInMiliseconds = (double)(this.Days * 24 * 60 * 60 * 1000);
+            double hoursInMiliseconds = (double)(this.Hours * 60 * 60 * 1000);
+            double minutesInMiliseconds = (double)(this.Minutes * 60 * 1000);
+
+            var milis = daysInMiliseconds + hoursInMiliseconds + minutesInMiliseconds;
+            if (milis == 0) {
+                return 1d;
+            }
+            return milis;
         }
     }
 }
