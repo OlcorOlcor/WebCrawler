@@ -1,9 +1,9 @@
 ﻿using System.Text;
 
 namespace WebCrawler.Models.Serializers {
-    public class GraphDataSerializer {
+    public class GraphDataSerializer : ISerializer<WebsiteRecord> {
         private StringBuilder sb = new StringBuilder();
-        public string SerializeRecord(WebsiteRecord record) {
+        public string Serialize(WebsiteRecord record) {
             WebsiteRecord websiteRecord = record;
             sb.Append("{");
             sb.Append("\"executions\": {");
