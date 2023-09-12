@@ -2,9 +2,14 @@
 using System.Text;
 
 namespace WebCrawler.Models.Serializers {
-    public class ExecutionSerializer {
+    public class ExecutionSerializer : ISerializer<Execution> {
         private StringBuilder? sb;
-        private void SerializeExecution(Execution execution, int recordId) {
+
+        public string Serialize(Execution execution) {
+            //TODO: Serialize Execution for Execution table (maybe could merge/reuse SerializeExecutionForWebsiteRecordTable method
+            throw new NotImplementedException();
+        }
+        private void SerializeExecutionForWebsiteRecordTable(Execution execution, int recordId) {
             if (sb is null) {
                 return;
             }
@@ -23,7 +28,7 @@ namespace WebCrawler.Models.Serializers {
                     if (!firstRecord) {
                         sb.Append(",");
                     }
-                    SerializeExecution(record.LastFinishedExecution, record.Id);
+                    SerializeExecutionForWebsiteRecordTable(record.LastFinishedExecution, record.Id);
                 }
             }
             sb.Append("]}");
