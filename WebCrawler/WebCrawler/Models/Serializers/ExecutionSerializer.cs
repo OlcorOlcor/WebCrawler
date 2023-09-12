@@ -4,6 +4,10 @@ namespace WebCrawler.Models.Serializers {
     public class ExecutionSerializer {
         private StringBuilder? sb;
         private void SerializeExecution(Execution execution, int recordId) {
+            if (sb is null) {
+                return;
+            }
+
             sb.Append("{");
             sb.Append($"\"RecordId\": {recordId},");
             sb.Append($"\"Time\": \"{execution.ExecutionTime}\",");
