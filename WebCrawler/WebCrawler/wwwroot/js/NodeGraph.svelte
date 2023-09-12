@@ -1,5 +1,11 @@
 <svelte:options tag="node-graph" />
 
+<!-- 
+Modified example of the D3 Force Directed Graph example.
+example: https://observablehq.com/@d3/force-directed-graph
+svelte example: https://github.com/happybeing/d3-fdg-svelte 
+-->
+
 <script>
     import { onMount } from 'svelte';
 
@@ -11,8 +17,7 @@
     let canvas;
     let width = 1200;
     let height = 800;
-    const nodeRadius = 10;
-    let offset = 0;
+    const nodeRadius = 11;
     let infoBox;
     let nodeInfoBoxVisible = false;
 
@@ -43,9 +48,9 @@
 
     const groupColour = d3.scaleOrdinal(d3.schemeCategory10);
 
+    let transform = d3.zoomIdentity;
     let simulation, context;
     onMount(() => {
-        //march();
         context = canvas.getContext('2d');
         resize()
         
@@ -54,46 +59,18 @@
             .force("charge", d3.forceManyBody()
                 .strength(-100)
             )    
-            .force("center", d3.forceCenter(width / 2, height / 2))
-            .on("tick", () => {
-            context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-            //
-            links.forEach(d => {
-                context.beginPath();
-                // context.setLineDash([8,2]);
-                // context.lineDashOffset = -offset;
-                context.moveTo(d.source.x, d.source.y);
-                context.lineTo(d.target.x, d.target.y);
-                context.globalAlpha = 0.6;
-                context.strokeStyle = "#999";
-                context.lineWidth = 2; //Math.sqrt(d.value);
-                context.stroke();
-                context.globalAlpha = 1;
-            });
-            
-            nodes.forEach((d, i) => {
-                context.beginPath();
-                context.arc(d.x, d.y, nodeRadius, 0, 2*Math.PI);
-                context.strokeStyle = "#fff";
-                context.lineWidth = 1.5;
-                context.stroke();
-                context.fillStyle = groupColour(d.group);
-                context.fill();
-                context.font = "15px Arial";
-                context.fillStyle = "#000";
-                context.fillText(d.id, d.x - (nodeRadius / 2), d.y + (nodeRadius / 2));
-            });
-        });
+            .force("center", d3.forceCenter(width / 2, height / 2, 100))
+            .on("tick", simulationUpdate);
 
 
-        // title
+        // infoBox
         d3.select(context.canvas)
             .on("click", (event) => {
-                const d = simulation.find(event.offsetX, event.offsetY, nodeRadius);
+                const d = simulation.find(transform.invertX(event.offsetX), transform.invertY(event.offsetY), nodeRadius);
                 //console.log(event.offsetX, event.offsetY);
                 if (d) {
-                    console.log(event.x, event.y, 'title: ', d.id, ' ', d.x, d.y);
-                    showNodeInfo(d.id, d.x, d.y);
+                    console.log(event.x, event.y, d.id, d["crawl-time"], d["crawled-by"]);
+                    showNodeInfo(event.offsetX, event.offsetY, d.id, d["crawl-time"], d["crawled-by"]);
                 }
             });
 
@@ -110,12 +87,50 @@
             .subject(dragsubject)
             .on("start", dragstarted)
             .on("drag", dragged)
-            .on("end", dragended));
+            .on("end", dragended))
+        .call(d3.zoom()
+          .scaleExtent([1 / 10, 8])
+          .on('zoom', zoomed));
     });
 
-    // Use the d3-force simulation to locate the node
-    function dragsubject(event) {
-        return simulation.find(event.x, event.y, nodeRadius);
+    function simulationUpdate() {
+        context.save();
+        context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+        context.translate(transform.x, transform.y);
+        context.scale(transform.k, transform.k);
+        
+        links.forEach(d => {
+            context.beginPath();
+            context.moveTo(d.source.x, d.source.y);
+            context.lineTo(d.target.x, d.target.y);
+            context.globalAlpha = 0.6;
+            context.strokeStyle = "#999";
+            context.lineWidth = 2; //Math.sqrt(d.value);
+            context.stroke();
+            context.globalAlpha = 1;
+        });
+        
+        nodes.forEach((d, i) => {
+            context.beginPath();
+            context.arc(d.x, d.y, nodeRadius, 0, 2*Math.PI);
+            context.strokeStyle = "#fff";
+            context.lineWidth = 1.5;
+            context.stroke();
+            context.fillStyle = groupColour(d.group);
+            context.fill();
+
+            context.font = "15px Arial";
+            context.fillStyle = "#000";
+            const text = d.title != "" ? d.title : d.id;
+            context.fillText(text, d.x - (nodeRadius / 2), d.y + (nodeRadius / 2));
+        });
+
+        context.restore();
+    }
+
+    function zoomed(event) {
+        transform = event.transform;
+        simulationUpdate();
     }
 
     function resize() {
@@ -123,15 +138,25 @@
         console.log('resize()', width, height)
     }
 
+    // Use the d3-force simulation to locate the node
+    function dragsubject(event) {
+        const node = simulation.find(transform.invertX(event.x), transform.invertY(event.y), nodeRadius);
+        if (node) {
+            node.x = transform.applyX(node.x);
+            node.y = transform.applyY(node.y);
+        }
+        return node;
+    }
+
     function dragstarted(event) {
         if (!event.active) simulation.alphaTarget(0.3).restart();
-        event.subject.fx = event.subject.x;
-        event.subject.fy = event.subject.y;
+        event.subject.fx = transform.invertX(event.subject.x);
+        event.subject.fy = transform.invertY(event.subject.y);
     }
 
     function dragged(event) {
-        event.subject.fx = event.x;
-        event.subject.fy = event.y;
+        event.subject.fx = transform.invertX(event.x);
+        event.subject.fy = transform.invertY(event.y);
     }
 
     function dragended(event) {
@@ -140,7 +165,7 @@
         event.subject.fy = null;
     }
 
-    export function update(newGraphData) {
+    export function updateData(newGraphData) {
         if (newGraphData.nodes == null && newGraphData.links == null) {
             return;
         } 
@@ -150,13 +175,16 @@
         
         let noUpdateNeeded = true;
         
-        //both inner forEaches should be replaced with more efficient hashset or something
+        // TODO Both inner forEaches should be replaced with more efficient hashset or something
 
         newNodes.forEach((newNode) => {
             let nodeAlreadyPresent = false;
 
             nodes.forEach((node) => {
                 if (node.id === newNode.id) {
+                    node.title = newNode.title;
+                    node["crawl-time"] = newNode["crawl-time"];
+                    node["crawled-by"] = newNode["crawled-by"];
                     nodeAlreadyPresent = true;
                 }
             });
@@ -198,68 +226,74 @@
         simulation.restart();
     }
 
-    let i = 0;
-    export function addNode(node) {
-        console.log(node);
-        nodes.push({id: "idk" + i, group: 2, x: width/2, y:height/2});
-        links.push({source: "idk" + i, target: "Bahorel", "value": 1});
-        links.push({source: "idk" + i, target: "Valjean", "value": 1});
-        simulation.nodes(nodes);
-        simulation.alpha(0.2);
-        simulation.restart();
-        i++;
-    }
-
-    function march() {
-        offset += 1;
-        if (offset > 16) {
-            offset = 0;
-        }
-        setTimeout(march, 10);  
-    }
-
     function hideNodeInfo() {
         infoBox.style.display = 'none';
         nodeInfoBoxVisible = false;
     }
 
-    function showNodeInfo(id, x, y) {
-        //console.log(id, canvas.getBoundingClientRect() ,infoBox);
-        let canvasBounds = canvas.getBoundingClientRect();
-        infoBox.innerText = id;
-        infoBox.style.top = (canvasBounds.top + window.scrollY+ y).toString() + "px";
-        infoBox.style.left = (canvasBounds.left + window.scrollX + x).toString() + "px";
+    function showNodeInfo(x, y, url, crawlTime, crawledBy) {
+        // Delete old data
+        while (infoBox.firstChild) {
+            infoBox.removeChild(infoBox.lastChild);
+        }
 
+        const urlDiv = document.createElement("div");
+        const urlTextNode = document.createTextNode("Url: " + url);
+        urlDiv.appendChild(urlTextNode);
+
+        infoBox.appendChild(urlDiv);
+        
+        if (crawlTime != "") {
+            const crawlTimeDiv = document.createElement("div");
+            const crawlTimeTextNode = document.createTextNode("Crawl time: " + crawlTime);
+            crawlTimeDiv.appendChild(crawlTimeTextNode);
+
+            infoBox.appendChild(crawlTimeDiv);
+        }
+    
+
+        if (crawledBy.length > 0) {
+            const crawledByDiv = document.createElement("div");
+            const crawledByUList = document.createElement("ul");
+            const crawledByUListTextNode = document.createTextNode("Crawled by: ") 
+            crawledByDiv.appendChild(crawledByUListTextNode);
+            for (let i = 0; i < crawledBy.length; i++) {
+                const crawledByItem = document.createElement("li");
+                const crawledByTextNode = document.createTextNode(crawledBy[i]);
+                crawledByItem.appendChild(crawledByTextNode);
+                crawledByUList.appendChild(crawledByItem);
+            }
+            crawledByDiv.appendChild(crawledByUList);
+            crawledByUList.style.cssText = "padding-left:15px;margin-top:0px;margin-bottom:0px";
+
+            infoBox.appendChild(crawledByDiv);
+        }
+        
+        let canvasBounds = canvas.getBoundingClientRect();
         infoBox.style.display ='block';
         nodeInfoBoxVisible = true;
+        infoBox.style.top = (canvasBounds.top + window.scrollY + y - infoBox.offsetHeight).toString() + "px";
+        infoBox.style.left = (canvasBounds.left + window.scrollX + x).toString() + "px";
+
+        
     }
 
 </script>
-
-<style>
-    .nodeInfo { 
-        position: fixed;
-        top: 0;
-        left: 0;
-        border: 3px solid #73AD21;
-    }
-</style>
 
 <!-- <svelte:window on:resize='{resize}'/> -->
 <div class='container'>
     <canvas bind:this={canvas} width={width} height={height}/>
 </div>
 
-
-<div style="
-            display: none; 
-            position: absolute;
-            border: 3px solid darkgrey; 
-            border-radius: 6px;
-            background-color: white;
-            padding: 5px;
-            "
-    class="nodeInfo" bind:this={infoBox}>
+<div style='
+    display: none; 
+    position: absolute;
+    border: 3px solid #258cfb; 
+    border-radius: 6px;
+    background-color: white;
+    padding: 5px;
+'
+class="nodeInfo" bind:this={infoBox}>
 </div>
 
 

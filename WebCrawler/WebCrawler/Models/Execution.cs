@@ -1,5 +1,5 @@
 
-﻿namespace WebCrawler.Models {
+namespace WebCrawler.Models {
    
     public enum Status { NotRunning, Running, Finished }
     

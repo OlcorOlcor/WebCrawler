@@ -33,7 +33,6 @@ namespace WebCrawler.Models {
         [Required]
         public string? Label { get; set; }
 
-        [Required]
         public string? Tags { get; set; }
         public string[] TagsArray { get; set; } = new string[0];
 
