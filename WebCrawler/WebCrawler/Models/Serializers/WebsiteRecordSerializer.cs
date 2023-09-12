@@ -37,7 +37,7 @@ namespace WebCrawler.Models.Serializers {
             return sb.ToString();
         }
 
-        public string SerializeWebsiteRecords(List<WebsiteRecord> records) {
+        public string SerializeWebsiteRecords(IList<WebsiteRecord> records) {
             StringBuilder sb = new StringBuilder();
 
             sb.Append("{");
