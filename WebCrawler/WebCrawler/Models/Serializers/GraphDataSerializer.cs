@@ -1,22 +1,28 @@
 ﻿using System.Text;
 
-namespace WebCrawler.Models {
-    public class GraphDataSerializer {
+namespace WebCrawler.Models.Serializers
+{
+    public class GraphDataSerializer
+    {
         private StringBuilder sb = new StringBuilder();
-        public string SerializeRecord(WebsiteRecord record) {
+        public string SerializeRecord(WebsiteRecord record)
+        {
             WebsiteRecord websiteRecord = record;
             sb.Append("{");
             sb.Append("\"executions\": {");
 
             int executionNumber = 0;
             bool firstExecution = true;
-            if (websiteRecord.LastFinishedExecution is not null) {
-                SerializeExecution(websiteRecord.LastFinishedExecution, executionNumber++);                
+            if (websiteRecord.LastFinishedExecution is not null)
+            {
+                SerializeExecution(websiteRecord.LastFinishedExecution, executionNumber++);
                 firstExecution = false;
             }
 
-            foreach (var execution in record.RunningExecutions) {
-                if (!firstExecution) {
+            foreach (var execution in record.RunningExecutions)
+            {
+                if (!firstExecution)
+                {
                     sb.Append(",");
                 }
                 firstExecution = false;
@@ -28,12 +34,15 @@ namespace WebCrawler.Models {
             return sb.ToString();
         }
 
-        private void SerializeExecution(Execution execution, int executionNumber) {
+        private void SerializeExecution(Execution execution, int executionNumber)
+        {
             WebPage[] webPages;
-            if (execution.pages is not null) {
+            if (execution.pages is not null)
+            {
                 webPages = execution.pages.ToArray();
             }
-            else {
+            else
+            {
                 return;
             }
 
@@ -47,34 +56,41 @@ namespace WebCrawler.Models {
             sb.Append("}");
         }
 
-        private void SerializeNodes(WebPage[] webPages) {
+        private void SerializeNodes(WebPage[] webPages)
+        {
             sb.Append("\"nodes\": [");
             bool firstPage = true;
-            foreach (var page in webPages) {
-                if (!firstPage) {
+            foreach (var page in webPages)
+            {
+                if (!firstPage)
+                {
                     sb.Append(",");
                 }
                 firstPage = false;
-              
+
                 SerializeNode(
-                    page.Url, 
-                    page.Title, 
-                    page.CrawlTime.ToString(), 
-                    new string[] {"https://test.net"}, // TODO Add list of sites that crawled this site
+                    page.Url,
+                    page.Title,
+                    page.CrawlTime.ToString(),
+                    new string[] { "https://test.net" }, // TODO Add list of sites that crawled this site
                     1,
                     true
                 );
 
                 // TODO maybe could check if url already present
-                if (page.OutgoingLinks.UrlsMatchingRegex is not null) {
-                    foreach (var link in page.OutgoingLinks.UrlsMatchingRegex) {
+                if (page.OutgoingLinks.UrlsMatchingRegex is not null)
+                {
+                    foreach (var link in page.OutgoingLinks.UrlsMatchingRegex)
+                    {
                         sb.Append(",");
                         SerializeNode(link, "", "", new string[0], 1, true);
                     }
                 }
-                
-                if (page.OutgoingLinks.UrlsNotMatchingRegex is not null) {
-                    foreach (var link in page.OutgoingLinks.UrlsNotMatchingRegex) {
+
+                if (page.OutgoingLinks.UrlsNotMatchingRegex is not null)
+                {
+                    foreach (var link in page.OutgoingLinks.UrlsNotMatchingRegex)
+                    {
                         sb.Append(",");
                         SerializeNode(link, "", "", new string[0], 2, false);
                     }
@@ -83,14 +99,17 @@ namespace WebCrawler.Models {
             sb.Append("],");
         }
 
-        private void SerializeNode(string id, string title, string crawlTime, string[] crawledBy, int group, bool match) {
+        private void SerializeNode(string id, string title, string crawlTime, string[] crawledBy, int group, bool match)
+        {
             sb.Append($"{{\"id\": \"{id}\"");
             sb.Append($",\"title\": \"{title}\"");
             sb.Append($",\"crawl-time\": \"{crawlTime}\"");
             sb.Append($",\"crawled-by\": [");
             bool firstUrl = true;
-            foreach (string url in crawledBy) {
-                if (!firstUrl) {
+            foreach (string url in crawledBy)
+            {
+                if (!firstUrl)
+                {
                     sb.Append(",");
                 }
                 firstUrl = false;
@@ -101,13 +120,18 @@ namespace WebCrawler.Models {
             sb.Append($",\"match\": \"{match.ToString().ToLower()}\"}}");
         }
 
-        private void SerializeLinks(WebPage[] webPages) {
+        private void SerializeLinks(WebPage[] webPages)
+        {
             sb.Append("\"links\": [");
             bool firstPageToOutput = true;
-            foreach (var page in webPages) {
-                if (page.OutgoingLinks.UrlsMatchingRegex is not null) {
-                    foreach (var link in page.OutgoingLinks.UrlsMatchingRegex) {
-                        if (!firstPageToOutput) {
+            foreach (var page in webPages)
+            {
+                if (page.OutgoingLinks.UrlsMatchingRegex is not null)
+                {
+                    foreach (var link in page.OutgoingLinks.UrlsMatchingRegex)
+                    {
+                        if (!firstPageToOutput)
+                        {
                             sb.Append(",");
                         }
                         firstPageToOutput = false;
@@ -115,9 +139,12 @@ namespace WebCrawler.Models {
                     }
                 }
 
-                if (page.OutgoingLinks.UrlsNotMatchingRegex is not null) {
-                    foreach (var link in page.OutgoingLinks.UrlsNotMatchingRegex) {
-                        if (!firstPageToOutput) {
+                if (page.OutgoingLinks.UrlsNotMatchingRegex is not null)
+                {
+                    foreach (var link in page.OutgoingLinks.UrlsNotMatchingRegex)
+                    {
+                        if (!firstPageToOutput)
+                        {
                             sb.Append(",");
                         }
                         firstPageToOutput = false;

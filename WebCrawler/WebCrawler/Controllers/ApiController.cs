@@ -3,9 +3,11 @@ using System.Diagnostics;
 using WebCrawler.Models;
 using WebCrawler.Controllers;
 using System.Runtime.CompilerServices;
+using WebCrawler.Models.Serializers;
 
-namespace WebCrawler.Controllers {
-  public class ApiController : Controller {
+namespace WebCrawler.Controllers
+{
+    public class ApiController : Controller {
         private readonly ILogger<ApiController> _logger;
         protected WebsiteRecordRepository? repo;
         public ApiController(ILogger<ApiController> logger, WebsiteRecordRepository repo) {
