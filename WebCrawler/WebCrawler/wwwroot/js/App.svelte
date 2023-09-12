@@ -226,6 +226,8 @@
 
 <WebRecordTable></WebRecordTable>
 
+<h2>Visualisation</h2>
+
 <button bind:this={modeButton} on:click={switchGraphMode}>Make Static</button>
 <button bind:this={viewButton} on:click={switchGraphView}>View Domains</button>
 
