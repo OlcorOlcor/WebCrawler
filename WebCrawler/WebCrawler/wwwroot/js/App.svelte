@@ -31,7 +31,7 @@
     let form = document.getElementById("WebRecordForm");
 
     getData();
-    setInterval(() => updateExecutionInformationInRecordTable(), executionUpdateInterval);
+    //setInterval(() => updateExecutionInformationInRecordTable(), executionUpdateInterval);
 
     form.addEventListener("submit", (event) => {
         let regex;
