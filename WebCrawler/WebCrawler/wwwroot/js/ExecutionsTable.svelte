@@ -12,8 +12,6 @@
 
   $: allExecutions = [];
 
-  let table;
-
   const url = "./Api/GetExecutions/";
 
   var fetchDataRepeatedly = setInterval( fetchData, 1000 );
@@ -45,7 +43,7 @@
 
 <div class="list">
     <h3>List of current Executions</h3>
-    <table class="table table-striped" id="update" bind:this={table}>
+    <table class="table table-striped" id="update">
         <tr>
             <th>Record's label</th>
             <th>Execution status</th>
