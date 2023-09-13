@@ -3,6 +3,7 @@
 <script>
     import NodeGraph from "./NodeGraph.svelte";
     import WebRecordTable from "./WebRecordTable.svelte";
+    import ExecutionsTable from "./ExecutionsTable.svelte";
 
     const metaDataUri = '/Api/GetMetaData';
     const fullDataUri = '/Api/GetFullData';
@@ -225,6 +226,8 @@
 </script>
 
 <WebRecordTable></WebRecordTable>
+
+<ExecutionsTable></ExecutionsTable>
 
 <h2>Visualisation</h2>
 
