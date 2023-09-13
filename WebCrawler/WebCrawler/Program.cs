@@ -15,8 +15,7 @@ namespace WebCrawler {
 
             services.AddControllersWithViews();
 
-            services.AddSingleton<WebsiteRecordRepository>();
-            services.AddSingleton<Planner>();   
+            services.AddSingleton<WebsiteRecordRepository>();   
             services.AddSingleton<IList<WebsiteRecord>, List<WebsiteRecord>>();
 
 
@@ -34,7 +33,7 @@ namespace WebCrawler {
 
             app.UseRouting();
 
-            app.UseAuthorization();
+            // app.UseAuthorization();
 
             app.MapControllerRoute(
                 name: "default",
