@@ -31,7 +31,6 @@
     let form = document.getElementById("WebRecordForm");
 
     getData();
-    //setInterval(() => updateExecutionInformationInRecordTable(), executionUpdateInterval);
 
     form.addEventListener("submit", (event) => {
         let regex;
@@ -85,27 +84,6 @@
             .then(response => response.json())
             .then(data => data)
             .catch(error => console.error("Unable to getFullData for recordId" + id + ".", error));
-    }
-
-    function updateExecutionInformationInRecordTable() {
-        fetch(latestExecutionUri + "/")
-            .then(res => {
-                if (res.ok) {
-                    return res.json()
-                } else {
-                    throw new Error("Unable to fetch latest executions")
-                }
-            })
-            .then(json => JSON.parse(json))
-            .then(jsonData => {
-                jsonData["Executions"].forEach(execution => {
-                    let timeDOM = document.getElementById("ExecutionTime" + execution["RecordId"])
-                    let statusDOM = document.getElementById("ExecutionStatus" + execution["RecordId"])
-                    timeDOM.innerHTML = execution["Time"];
-                    statusDOM.innerHTML = execution["Status"];
-                })
-            })
-            .catch(err => console.error(err));
     }
 
     function getDomainData(websiteData) {
