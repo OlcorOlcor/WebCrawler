@@ -1,12 +1,45 @@
 <svelte:options tag="execution-table" />
 <script>
 
+  class execution {
+    constructor(label, status, time, nmbrOfSites){
+      this.label = label;
+      this.status = status;
+      this.time = time;
+      this.nmbrOfSites = nmbrOfSites;
+    }
+  }
+
   let executions = [
     {label: "asdf", status: "ok", time: "12:00", nmbrOfSites: 12},
     {label: "df", status: "not ok", time: "14:00", nmbrOfSites: 42}
   ];
 
+  const url = "./Api/GetExecutions/";
 
+  var fetchDataRepeatedly = setInterval( fetchData, 1000 );
+
+  function fetchData() {
+    fetch(url)
+    .then(result => {
+      if (result.ok) {
+        return result.json()
+      } else {
+        throw new Error("Unable to fetch executions")
+      }
+    })
+    .then(json => {
+      console.log(json);
+      JSON.parse(json);
+    })
+    .then(jsonData => {
+      if( typeof jsonData["Executions"] !== 'undefined'){
+        jsonData["Executions"].forEach(execution => {
+        executions.push(new execution(execution.RecordLabel, execution.Status, execution.Time, execution.NumberOfSitesCrawled));
+      })
+    }
+  })
+}
 
 </script>
 

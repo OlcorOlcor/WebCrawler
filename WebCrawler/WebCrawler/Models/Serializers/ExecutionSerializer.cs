@@ -33,10 +33,10 @@ namespace WebCrawler.Models.Serializers {
             StringBuilder sb2 = new StringBuilder();
             sb2.Append("{");
             sb2.Append($"\"RecordId\": {recordId},"); //probably should not be displayed for user
-            sb2.Append($"\"RecordLabel\": {recordLabel},");
+            sb2.Append($"\"RecordLabel\": \"{recordLabel}\",");
             sb2.Append($"\"Time\": \"{execution.ExecutionTime}\",");
-            sb2.Append($"\"Status\": {execution.Status.ToString()},");
-            sb2.Append($"\"NumberOfSitesCrawled\": {execution.pages.Count}");
+            sb2.Append($"\"Status\": \"{execution.Status.ToString()}\",");
+            sb2.Append($"\"NumberOfSitesCrawled\": \"{execution.pages.Count}\"");
             sb2.Append("}");
             return sb2.ToString();
         }
