@@ -14,6 +14,7 @@ class WebsiteRecord {
 }
 
 const fullDataUri = "./Api/GetWebsiteRecords"
+const startNewExecutionUri = "./Api/StartNewExecution"
 $: WebsiteRecords = [];
 
 getWebRecords();
@@ -38,6 +39,9 @@ function getWebRecords() {
     })
 }
 
+function startNewExecution(recordId) {
+    fetch(startNewExecutionUri + "/?recordId=" + recordId);
+}
 </script>
 
 <div class="list">
@@ -69,7 +73,7 @@ function getWebRecords() {
                             <div contenteditable="false" bind:innerHTML={tag} />
                         {/each}
                     </td>
-                    <td>TODO: BTN</td>
+                    <td><button type="button" class="btn btn-primary" on:click={startNewExecution(record.recordId)} >Start New Execution</button></td>
                 </tr>
             {/each}
         </tbody>
