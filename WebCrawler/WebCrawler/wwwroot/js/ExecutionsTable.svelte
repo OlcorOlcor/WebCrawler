@@ -80,20 +80,6 @@
     stopButton.disabled = true;
   }
 
-  function testNextFilter(){
-    if(filteredId === false){
-      filteredId = 0;
-      stopButton.disabled = false;
-    }
-    else if (filteredId === 3){
-      filteredId = false;
-    }
-    else{
-      filteredId++;
-      stopButton.disabled = false;
-    }
-  }
-
   function updateButtons(){
     if ((numberOfExecutions <= numberOfItemsOnPage) || (((pageNumber + 1) * numberOfItemsOnPage) >= numberOfExecutions)) {
       nextButton.disabled = true;
@@ -150,7 +136,3 @@
 <button disabled=true bind:this={previousButton} on:click={previousPage}>Previous Page</button>
 <button disabled=true bind:this={nextButton} on:click={nextPage}>Next Page</button>
 <button disabled=true bind:this={stopButton} on:click={stopFilter}>Stop Filtering</button>
-
-<button on:click={testNextFilter}>TestNextFilter</button>
-<p>Current filter:</p>
-<p contenteditable="false" bind:innerHTML={filteredId}></p>
