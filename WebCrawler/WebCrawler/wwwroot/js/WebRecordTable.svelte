@@ -1,15 +1,15 @@
 <svelte:options tag="web-record-table" />
 <script>
 class WebsiteRecord {
-    constructor(Id, Url, Regex, Days, Hours, Minutes, Label, Tags) {
+    constructor(Id, Url, Regex, Periodicity, Label, Tags, LastExecutionTime, LastExecutionStatus) {
         this.Id = Id;
         this.Url = Url;
         this.Regex = Regex;
-        this.Days = Days;
-        this.Hours = Hours;
-        this.Minutes = Minutes;
+        this.Periodicity = Periodicity;
         this.Label = Label;
         this.Tags = Tags;
+        this.LastExecutionTime = LastExecutionStatus;
+        this.LastExecutionStatus = LastExecutionStatus;
     }
 }
 
@@ -17,6 +17,7 @@ const fullDataUri = "./Api/GetWebsiteRecords"
 $: WebsiteRecords = [];
 
 getWebRecords();
+setInterval(() => getWebRecords(), 1000);
 
 function getWebRecords() {
     fetch(fullDataUri + "/")
@@ -29,10 +30,11 @@ function getWebRecords() {
     })
     .then(json => JSON.parse(json))
     .then(jsonData => {
+        WebsiteRecords = [];
         jsonData["WebsiteRecords"].forEach(record => {
-            WebsiteRecords.push(new WebsiteRecord(record.Id, record.Url, record.Regex, record.Days, record.Hours, record.Minutes, record.Label, record.Tags));
+            let periodicity = "" + record.Days + ":" + record.Hours + ":" + record.Minutes;
+            WebsiteRecords.push(new WebsiteRecord(record.Id, record.Url, record.Regex, periodicity, record.Label, record.Tags, record.LastExecutionTime, record.LastExecutionStatus));
         });
-        console.log(WebsiteRecords);
     })
 }
 
@@ -54,9 +56,20 @@ function getWebRecords() {
             </tr>
         </thead>
         <tbody>
-            {#each WebsiteRecords as record (record.Url)}
+            {#each WebsiteRecords as record}
                 <tr>
-                    <td>{record.Url}</td>
+                    <td contenteditable="false" bind:innerHTML={record.Url}/>
+                    <td contenteditable="false" bind:innerHTML={record.Regex}/>
+                    <td contenteditable="false" bind:innerHTML={record.Periodicity}/>
+                    <td contenteditable="false" bind:innerHTML={record.Label}/>
+                    <td contenteditable="false" bind:innerHTML={record.LastExecutionTime}/>
+                    <td contenteditable="false" bind:innerHTML={record.LastExecutionStatus}/>
+                    <td>
+                        {#each record.Tags as tag}
+                            <div contenteditable="false" bind:innerHTML={tag} />
+                        {/each}
+                    </td>
+                    <td>TODO: BTN</td>
                 </tr>
             {/each}
         </tbody>
