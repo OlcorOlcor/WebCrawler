@@ -10,6 +10,13 @@
     }
   }
 
+  let pageNumber = 0;
+  const numberOfItemsOnPage = 6;
+  let previousButton;
+  let nextButton;
+  let numberOfExecutions = 0;
+  let executions;
+
   $: allExecutions = [];
 
   const url = "./Api/GetExecutions/";
@@ -29,14 +36,52 @@
       let jsonData = JSON.parse(json);
       console.log(jsonData);
       if( typeof jsonData["Executions"] !== undefined){
-        let executions = jsonData["Executions"];
+        executions = jsonData["Executions"];
         allExecutions = [];
-        for(let i = 0; i < executions.length; i++){
-          let exec = executions[i];
-          allExecutions.push(new execution(exec["RecordLabel"], exec["Status"], exec["Time"], exec["NumberOfSitesCrawled"]));
-        }
+        numberOfExecutions = 0;
+        updatePage();
       }
+      updateButtons();
     })
+  }
+
+  function updatePage(){
+    for(let i = 0; i < executions.length; i++){
+      if(((((pageNumber) * numberOfItemsOnPage)) <= i) && (i < ((pageNumber + 1) * numberOfItemsOnPage))) {
+        let exec = executions[i];
+        allExecutions.push(new execution(exec["RecordLabel"], exec["Status"], exec["Time"], exec["NumberOfSitesCrawled"]));
+      }
+      numberOfExecutions++;
+    }
+  }
+
+  function updateButtons(){
+    if ((numberOfExecutions <= numberOfItemsOnPage) || (((pageNumber + 1) * numberOfItemsOnPage) >= numberOfExecutions)) {
+      nextButton.disabled = true;
+    }
+    else {
+      nextButton.disabled = false;
+    }
+    if (pageNumber == 0) {
+      previousButton.disabled = true;
+    }
+    else {
+      previousButton.disabled = false;
+    }
+  }
+
+  function nextPage(){
+    if(pageNumber < (numberOfExecutions / numberOfItemsOnPage)){
+      pageNumber++;
+      updatePage();
+    }
+  }
+
+  function previousPage(){
+    if(pageNumber > 0){
+      pageNumber--;
+      updatePage();
+    }
   }
 
 </script>
@@ -62,3 +107,6 @@
       {/each}
     </table>
 </div>
+
+<button disabled=true bind:this={previousButton} on:click={previousPage}>Previous Page</button>
+<button disabled=true bind:this={nextButton} on:click={nextPage}>Next Page</button>
