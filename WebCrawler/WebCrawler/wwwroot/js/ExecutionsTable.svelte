@@ -17,7 +17,8 @@
   let nextButton;
   let numberOfExecutions = 0;
   let executions;
-
+  
+  let stopButton;
   let filteredId = false;
 
   $: allExecutions = [];
@@ -70,17 +71,26 @@
   // will be used for changing filter -> WebSiteRecord
   export function filterExecutionsById(id){
     filteredId = id;
+    updatePage();
+    stopButton.disabled = false;
+  }
+
+  function stopFilter(){
+    filterExecutionsById(false);
+    stopButton.disabled = true;
   }
 
   function testNextFilter(){
     if(filteredId === false){
       filteredId = 0;
+      stopButton.disabled = false;
     }
     else if (filteredId === 3){
       filteredId = false;
     }
     else{
       filteredId++;
+      stopButton.disabled = false;
     }
   }
 
@@ -139,6 +149,8 @@
 
 <button disabled=true bind:this={previousButton} on:click={previousPage}>Previous Page</button>
 <button disabled=true bind:this={nextButton} on:click={nextPage}>Next Page</button>
+<button disabled=true bind:this={stopButton} on:click={stopFilter}>Stop Filtering</button>
+
 <button on:click={testNextFilter}>TestNextFilter</button>
 <p>Current filter:</p>
 <p contenteditable="false" bind:innerHTML={filteredId}></p>
