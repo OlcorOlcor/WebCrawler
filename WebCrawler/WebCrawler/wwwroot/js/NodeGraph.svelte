@@ -116,7 +116,12 @@ svelte example: https://github.com/happybeing/d3-fdg-svelte
             context.strokeStyle = "#fff";
             context.lineWidth = 1.5;
             context.stroke();
-            context.fillStyle = groupColour(d.group);
+            if (d["match"] == "true") {
+                context.fillStyle = groupColour(d.group);
+            }
+            else {
+                context.fillStyle = "#dadada";
+            }
             context.fill();
 
             context.font = "15px Arial";
@@ -131,21 +136,21 @@ svelte example: https://github.com/happybeing/d3-fdg-svelte
         context.restore();
     }
 
-    function drawArrow(context, fromx, fromy, tox, toy, nodeRadius) {
+    function drawArrow(context, fromX, fromY, toX, toY, nodeRadius) {
         var headlen = nodeRadius * 0.70; // length of head in pixels
-        var dx = tox - fromx;
-        var dy = toy - fromy;
+        var dx = toX - fromX;
+        var dy = toY - fromY;
         var angle = Math.atan2(dy, dx);
         
         // Calculate the adjusted end point
-        var adjustedTox = tox - nodeRadius * Math.cos(angle);
-        var adjustedToy = toy - nodeRadius * Math.sin(angle);
+        var adjustedToX = toX - nodeRadius * Math.cos(angle);
+        var adjustedToY = toY - nodeRadius * Math.sin(angle);
 
-        context.moveTo(fromx, fromy);
-        context.lineTo(adjustedTox, adjustedToy);
-        context.lineTo(adjustedTox - headlen * Math.cos(angle - Math.PI / 7), adjustedToy - headlen * Math.sin(angle - Math.PI / 6));
-        context.moveTo(adjustedTox, adjustedToy);
-        context.lineTo(adjustedTox - headlen * Math.cos(angle + Math.PI / 7), adjustedToy - headlen * Math.sin(angle + Math.PI / 6));
+        context.moveTo(fromX, fromY);
+        context.lineTo(adjustedToX, adjustedToY);
+        context.lineTo(adjustedToX - headlen * Math.cos(angle - Math.PI / 7), adjustedToY - headlen * Math.sin(angle - Math.PI / 7));
+        context.moveTo(adjustedToX, adjustedToY);
+        context.lineTo(adjustedToX - headlen * Math.cos(angle + Math.PI / 7), adjustedToY - headlen * Math.sin(angle + Math.PI / 7));
     }
 
     function zoomed(event) {
