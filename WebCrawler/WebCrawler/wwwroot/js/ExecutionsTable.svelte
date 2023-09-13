@@ -2,11 +2,12 @@
 <script>
 
   class execution {
-    constructor(label, status, time, nmbrOfSites){
+    constructor(recordId, label, status, time, nmbrOfSites){
       this.label = label;
       this.status = status;
       this.time = time;
       this.nmbrOfSites = nmbrOfSites;
+      this.recordId = recordId;
     }
   }
 
@@ -16,6 +17,8 @@
   let nextButton;
   let numberOfExecutions = 0;
   let executions;
+
+  let filteredId = false;
 
   $: allExecutions = [];
 
@@ -49,9 +52,30 @@
     for(let i = 0; i < executions.length; i++){
       if(((((pageNumber) * numberOfItemsOnPage)) <= i) && (i < ((pageNumber + 1) * numberOfItemsOnPage))) {
         let exec = executions[i];
-        allExecutions.push(new execution(exec["RecordLabel"], exec["Status"], exec["Time"], exec["NumberOfSitesCrawled"]));
+        //only if not filtered show all executions
+        if(filteredId === false){
+          allExecutions.push(new execution(exec["RecordId"], exec["RecordLabel"], exec["Status"], exec["Time"], exec["NumberOfSitesCrawled"]));
+        }
+        else{
+          //if filtered show only executions with given id
+          if(filteredId === exec["RecordId"]){
+            allExecutions.push(new execution(exec["RecordId"], exec["RecordLabel"], exec["Status"], exec["Time"], exec["NumberOfSitesCrawled"]));
+          }
+        }
       }
       numberOfExecutions++;
+    }
+  }
+
+  function testNextFilter(){
+    if(filteredId === false){
+      filteredId = 0;
+    }
+    else if (filteredId === 3){
+      filteredId = false;
+    }
+    else{
+      filteredId++;
     }
   }
 
@@ -110,3 +134,6 @@
 
 <button disabled=true bind:this={previousButton} on:click={previousPage}>Previous Page</button>
 <button disabled=true bind:this={nextButton} on:click={nextPage}>Next Page</button>
+<button on:click={testNextFilter}>TestNextFilter</button>
+<p>Current filter:</p>
+<p contenteditable="false" bind:innerHTML={filteredId}></p>
