@@ -67,6 +67,11 @@
     }
   }
 
+  // will be used for changing filter -> WebSiteRecord
+  export function filterExecutionsById(id){
+    filteredId = id;
+  }
+
   function testNextFilter(){
     if(filteredId === false){
       filteredId = 0;
