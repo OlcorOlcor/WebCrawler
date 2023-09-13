@@ -10,10 +10,12 @@
     }
   }
 
-  let executions = [
+  $: allExecutions = [
     {label: "asdf", status: "ok", time: "12:00", nmbrOfSites: 12},
     {label: "df", status: "not ok", time: "14:00", nmbrOfSites: 42}
   ];
+
+  let table;
 
   const url = "./Api/GetExecutions/";
 
@@ -29,23 +31,24 @@
       }
     })
     .then(json => {
-      console.log(json);
-      JSON.parse(json);
+      let jsonData = JSON.parse(json);
+      console.log(jsonData);
+      if( typeof jsonData["Executions"] !== undefined){
+        let executions = jsonData["Executions"];
+        allExecutions = [];
+        for(let i = 0; i < executions.length; i++){
+          let exec = executions[i];
+          allExecutions.push(new execution(exec["RecordLabel"], exec["Status"], exec["Time"], exec["NumberOfSitesCrawled"]));
+        }
+      }
     })
-    .then(jsonData => {
-      if( typeof jsonData["Executions"] !== 'undefined'){
-        jsonData["Executions"].forEach(execution => {
-        executions.push(new execution(execution.RecordLabel, execution.Status, execution.Time, execution.NumberOfSitesCrawled));
-      })
-    }
-  })
-}
+  }
 
 </script>
 
 <div class="list">
     <h3>List of current Executions</h3>
-    <table class="table table-striped" id="update">
+    <table class="table table-striped" id="update" bind:this={table}>
         <tr>
             <th>Record's label</th>
             <th>Execution status</th>
@@ -53,12 +56,12 @@
             <th>Number of sites crawled</th>
             <th>Show Execution</th>
         </tr>
-      {#each executions as execution}
+      {#each allExecutions as oneExecution}
         <tr>
-          <td>{execution.label}</td>
-          <td>{execution.status}</td>
-          <td>{execution.time}</td>
-          <td>{execution.nmbrOfSites}</td>
+          <td contenteditable="true" bind:innerHTML={oneExecution.label}/>
+          <td contenteditable="false" bind:innerHTML={oneExecution.status}/>
+          <td contenteditable="false" bind:innerHTML={oneExecution.time}/>
+          <td contenteditable="false" bind:innerHTML={oneExecution.nmbrOfSites}/>
           <td>NOT YET</td>
         </tr>
       {/each}

@@ -36,7 +36,7 @@ namespace WebCrawler.Models.Serializers {
             sb2.Append($"\"RecordLabel\": \"{recordLabel}\",");
             sb2.Append($"\"Time\": \"{execution.ExecutionTime}\",");
             sb2.Append($"\"Status\": \"{execution.Status.ToString()}\",");
-            sb2.Append($"\"NumberOfSitesCrawled\": \"{execution.pages.Count}\"");
+            sb2.Append($"\"NumberOfSitesCrawled\": {execution.pages.Count}");
             sb2.Append("}");
             return sb2.ToString();
         }
