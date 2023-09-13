@@ -28,6 +28,7 @@ namespace WebCrawler.Models {
         private Crawler _crawler = new();
 
         public TimeSpan ExecutionTime;
+
         public Execution(string url, string regex) {
             this._url = url;
             this._regex = regex;

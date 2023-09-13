@@ -2,12 +2,13 @@
 <script>
 
   class execution {
-    constructor(recordId, label, status, time, nmbrOfSites){
+    constructor(recordId, label, status, starttime, endtime, nmbrOfSites){
+      this.recordId = recordId;
       this.label = label;
       this.status = status;
-      this.time = time;
+      this.starttime = starttime;
+      this.endtime = endtime;
       this.nmbrOfSites = nmbrOfSites;
-      this.recordId = recordId;
     }
   }
 
@@ -55,12 +56,12 @@
         let exec = executions[i];
         //only if not filtered show all executions
         if(filteredId === false){
-          allExecutions.push(new execution(exec["RecordId"], exec["RecordLabel"], exec["Status"], exec["Time"], exec["NumberOfSitesCrawled"]));
+          allExecutions.push(new execution(exec["RecordId"], exec["RecordLabel"], exec["Status"], exec["StartTime"], exec["EndTime"], exec["NumberOfSitesCrawled"]));
         }
         else{
           //if filtered show only executions with given id
           if(filteredId === exec["RecordId"]){
-            allExecutions.push(new execution(exec["RecordId"], exec["RecordLabel"], exec["Status"], exec["Time"], exec["NumberOfSitesCrawled"]));
+            allExecutions.push(new execution(exec["RecordId"], exec["RecordLabel"], exec["Status"], exec["StartTime"], exec["EndTime"], exec["NumberOfSitesCrawled"]));
           }
         }
       }
@@ -117,7 +118,8 @@
         <tr>
             <th>Record's label</th>
             <th>Execution status</th>
-            <th>Time of start</th>
+            <th>Start time</th>
+            <th>End time</th>
             <th>Number of sites crawled</th>
             <th>Show Execution</th>
         </tr>
@@ -125,7 +127,8 @@
         <tr>
           <td contenteditable="false" bind:innerHTML={oneExecution.label}/>
           <td contenteditable="false" bind:innerHTML={oneExecution.status}/>
-          <td contenteditable="false" bind:innerHTML={oneExecution.time}/>
+          <td contenteditable="false" bind:innerHTML={oneExecution.starttime}/>
+          <td contenteditable="false" bind:innerHTML={oneExecution.endtime}/>
           <td contenteditable="false" bind:innerHTML={oneExecution.nmbrOfSites}/>
           <td>NOT YET</td>
         </tr>

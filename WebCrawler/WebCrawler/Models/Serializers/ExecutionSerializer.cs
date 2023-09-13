@@ -34,7 +34,13 @@ namespace WebCrawler.Models.Serializers {
             sb2.Append("{");
             sb2.Append($"\"RecordId\": {recordId},"); //is not displayed to user, but important for filtering
             sb2.Append($"\"RecordLabel\": \"{recordLabel}\",");
-            sb2.Append($"\"Time\": \"{execution.ExecutionTime}\",");
+            sb2.Append($"\"StartTime\": \"{execution.Start}\",");
+            if(execution.End == null) {
+                sb2.Append($"\"EndTime\": \"-\",");
+            }
+            else {
+                sb2.Append($"\"EndTime\": \"{execution.End}\",");
+            }
             sb2.Append($"\"Status\": \"{execution.Status.ToString()}\",");
             sb2.Append($"\"NumberOfSitesCrawled\": {execution.pages.Count}");
             sb2.Append("}");
@@ -47,6 +53,7 @@ namespace WebCrawler.Models.Serializers {
             }
             sb.Append("{");
             sb.Append($"\"RecordId\": {recordId},");
+            //TODO execution time does nothing right now, Execution table uses Start/End time instead
             sb.Append($"\"Time\": \"{execution.ExecutionTime}\",");
             sb.Append($"\"Status\": \"{execution.Status}\"");
             sb.Append("}");
