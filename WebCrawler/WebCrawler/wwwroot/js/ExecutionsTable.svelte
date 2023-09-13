@@ -10,10 +10,7 @@
     }
   }
 
-  $: allExecutions = [
-    {label: "asdf", status: "ok", time: "12:00", nmbrOfSites: 12},
-    {label: "df", status: "not ok", time: "14:00", nmbrOfSites: 42}
-  ];
+  $: allExecutions = [];
 
   let table;
 
@@ -58,7 +55,7 @@
         </tr>
       {#each allExecutions as oneExecution}
         <tr>
-          <td contenteditable="true" bind:innerHTML={oneExecution.label}/>
+          <td contenteditable="false" bind:innerHTML={oneExecution.label}/>
           <td contenteditable="false" bind:innerHTML={oneExecution.status}/>
           <td contenteditable="false" bind:innerHTML={oneExecution.time}/>
           <td contenteditable="false" bind:innerHTML={oneExecution.nmbrOfSites}/>
