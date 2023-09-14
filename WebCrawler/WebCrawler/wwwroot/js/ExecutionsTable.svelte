@@ -39,7 +39,6 @@
     })
     .then(json => {
       let jsonData = JSON.parse(json);
-      console.log(jsonData);
       if( typeof jsonData["Executions"] !== undefined){
         executions = jsonData["Executions"];
         allExecutions = [];
