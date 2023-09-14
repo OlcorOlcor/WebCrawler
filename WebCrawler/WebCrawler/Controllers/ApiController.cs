@@ -49,11 +49,19 @@ namespace WebCrawler.Controllers
             string json = serializer.SerializeLatestExecutions(records);
             return Json(json);
         }
+
         [HttpGet]
         public JsonResult GetWebsiteRecords() {
             var records = repo!.GetAll();
             WebsiteRecordSerializer serializer = new WebsiteRecordSerializer();
             string json = serializer.SerializeWebsiteRecords(records);
+            return Json(json);
+        }
+
+        [HttpGet]
+        public JsonResult GetExecutions() { 
+            ExecutionSerializer es = new ExecutionSerializer();
+            string json = es.SerializeAllExecutions(repo!);
             return Json(json);
         }
     }
