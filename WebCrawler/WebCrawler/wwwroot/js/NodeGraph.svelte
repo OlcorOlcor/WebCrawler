@@ -18,6 +18,7 @@ svelte example: https://github.com/happybeing/d3-fdg-svelte
     let width = 1200;
     let height = 800;
     const nodeRadius = 11;
+    const maxNodeTextLength = 37;
     let infoBox;
     let nodeInfoBoxVisible = false;
 
@@ -101,8 +102,7 @@ svelte example: https://github.com/happybeing/d3-fdg-svelte
         
         links.forEach(d => {
             context.beginPath();
-            context.moveTo(d.source.x, d.source.y);
-            context.lineTo(d.target.x, d.target.y);
+            drawArrow(context, d.source.x, d.source.y, d.target.x, d.target.y, nodeRadius);
             context.globalAlpha = 0.6;
             context.strokeStyle = "#999";
             context.lineWidth = 2; //Math.sqrt(d.value);
@@ -116,16 +116,41 @@ svelte example: https://github.com/happybeing/d3-fdg-svelte
             context.strokeStyle = "#fff";
             context.lineWidth = 1.5;
             context.stroke();
-            context.fillStyle = groupColour(d.group);
+            if (d["match"] == "true") {
+                context.fillStyle = groupColour(d.group);
+            }
+            else {
+                context.fillStyle = "#dadada";
+            }
             context.fill();
 
             context.font = "15px Arial";
             context.fillStyle = "#000";
-            const text = d.title != "" ? d.title : d.id;
+            let text = d.title != "" ? d.title : d.id;
+            if (text.length > maxNodeTextLength) {
+                text = text.substring(0, 37) + "...";
+            }
             context.fillText(text, d.x - (nodeRadius / 2), d.y + (nodeRadius / 2));
         });
 
         context.restore();
+    }
+
+    function drawArrow(context, fromX, fromY, toX, toY, nodeRadius) {
+        var headlen = nodeRadius * 0.70; // length of head in pixels
+        var dx = toX - fromX;
+        var dy = toY - fromY;
+        var angle = Math.atan2(dy, dx);
+        
+        // Calculate the adjusted end point
+        var adjustedToX = toX - nodeRadius * Math.cos(angle);
+        var adjustedToY = toY - nodeRadius * Math.sin(angle);
+
+        context.moveTo(fromX, fromY);
+        context.lineTo(adjustedToX, adjustedToY);
+        context.lineTo(adjustedToX - headlen * Math.cos(angle - Math.PI / 7), adjustedToY - headlen * Math.sin(angle - Math.PI / 7));
+        context.moveTo(adjustedToX, adjustedToY);
+        context.lineTo(adjustedToX - headlen * Math.cos(angle + Math.PI / 7), adjustedToY - headlen * Math.sin(angle + Math.PI / 7));
     }
 
     function zoomed(event) {

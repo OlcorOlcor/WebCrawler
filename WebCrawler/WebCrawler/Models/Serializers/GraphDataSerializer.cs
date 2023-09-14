@@ -58,11 +58,11 @@ namespace WebCrawler.Models.Serializers {
                 firstPage = false;
 
                 SerializeNode(
-                    page.Url,
-                    page.Title,
-                    page.CrawlTime.ToString(),
-                    new string[] { "https://test.net" }, // TODO Add list of sites that crawled this site
-                    1,
+                    page.Url, 
+                    page.Title, 
+                    page.CrawlTime.ToString(), 
+                    new string[] {"https://test.net"}, // TODO Add list of sites that crawled this site
+                    2,
                     true
                 );
 
@@ -70,14 +70,14 @@ namespace WebCrawler.Models.Serializers {
                 if (page.OutgoingLinks.UrlsMatchingRegex is not null) {
                     foreach (var link in page.OutgoingLinks.UrlsMatchingRegex) {
                         sb.Append(",");
-                        SerializeNode(link, "", "", new string[0], 1, true);
+                        SerializeNode(link, "", "", new string[0], 2, true);
                     }
                 }
 
                 if (page.OutgoingLinks.UrlsNotMatchingRegex is not null) {
                     foreach (var link in page.OutgoingLinks.UrlsNotMatchingRegex) {
                         sb.Append(",");
-                        SerializeNode(link, "", "", new string[0], 2, false);
+                        SerializeNode(link, "", "", new string[0], 1, false);
                     }
                 }
             }

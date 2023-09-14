@@ -16,6 +16,7 @@
         }
     </script>
 }
+
 <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#WebRecordForm" aria-expanded="false" aria-controls="WebRecordForm">
     Add Website
 </button>
@@ -47,6 +48,10 @@
                     <small><label for="minutes">Minutes</label></small>
                     <input class="form-control" type="number" min="0" max="59" id="minutes" asp-for="Minutes" value="1" name="Minutes" required>
                 </div>
+            </div>
+            <div>
+                <label asp-for="Active">Active</label>
+                <input type="checkbox" name="Active" asp-for="Active" checked="true" id="active">
             </div>
             <div class="form-group">
                 <label asp-for="Label">Label:</label>

@@ -36,12 +36,10 @@
     form.addEventListener("submit", (event) => {
         let regex;
         try {
-            console.log("checking");
             regex = new RegExp(regexInput.value);
             regexInput.setCustomValidity("");
         }
         catch(e) {
-            console.log("checking failed");
             regexInput.setCustomValidity("Invalid Regular Expression");
         }
     });
@@ -91,23 +89,26 @@
         let websiteNodes = websiteData["nodes"];
         let websiteLinks = websiteData["links"];
         let domainNodes = getDomainNodes(websiteNodes);
-        let domainLinks = getDomainLinks(websiteLinks, domainNodes);
+        let domainLinks = getDomainLinks(websiteLinks);
 
         return {"nodes": domainNodes, "links": domainLinks};
     }
 
-    function getDomainLinks(websiteLinks, domainNodes) {
+    function getDomainLinks(websiteLinks) {
         let domainLinks = [];
         for (let i = 0; i < websiteLinks.length; i++) {
+            const source = getDomain(websiteLinks[i].source);
+            const target = getDomain(websiteLinks[i].target);
+
             let findDomainLink = domainLinks.find((domainLink) => {
-                domainLink.source === getDomain(websiteLinks[i].source) &&
-                domainLink.target === getDomain(websiteLinks[i].target)
+                domainLink.source === source &&
+                domainLink.target === target
             });
 
-            if (findDomainLink === undefined) {
+            if (findDomainLink === undefined && source != target) {
                 domainLinks[domainLinks.length] = {
-                    "source": getDomain(websiteLinks[i].source),
-                    "target": getDomain(websiteLinks[i].target),
+                    "source": source,
+                    "target": target,
                     "value": 1
                 }
             }
@@ -117,10 +118,13 @@
     }
 
     function getDomainNodes(websiteNodes) {
+
         let domainNodes = [];
         for (let i = 0; i < websiteNodes.length; i++) {
             let nodeDomain = getDomain(websiteNodes[i].id);
             let nodeMatchIndex = domainNodes.findIndex((node) => node.id === nodeDomain);
+
+            const websiteNodeMatch = websiteNodes[i]["match"];
 
             if (nodeMatchIndex === -1) {
                 domainNodes[domainNodes.length] = {
@@ -128,7 +132,8 @@
                     "title": "",
                     "crawl-time": websiteNodes[i]["crawl-time"],
                     "crawled-by": websiteNodes[i]["crawled-by"],
-                    "group": domainNodes.length
+                    "group": domainNodes.length,
+                    "match": websiteNodeMatch
                 }
             }
             else {
@@ -143,6 +148,10 @@
                 });
 
                 domainNodes[nodeMatchIndex]["crawled-by"] = domainCrawlers;
+
+                if (domainNodes[nodeMatchIndex]["match"] == "false" && websiteNodeMatch == "true") {
+                    domainNodes[nodeMatchIndex]["match"] = websiteNodeMatch;
+                }
             }
         }
 
@@ -150,8 +159,15 @@
     }
 
     function getDomain(urlString) {
-        const url = new URL(urlString);
-        return url.hostname;
+        let url;
+        try {
+            url = new URL(urlString);
+            return url.hostname;
+        }
+        catch(e) {
+            console.log("Error", e);
+            return url;
+        }
     }
 
     function switchGraphMode() {
@@ -215,7 +231,6 @@
 
 <button class="btn btn-secondary" bind:this={modeButton} on:click={switchGraphMode}>Make Static</button>
 <button class="btn btn-secondary" bind:this={viewButton} on:click={switchGraphView}>View Domains</button>
-
 
 <!-- TODO Could be only one NodeGraph with changing data for performace reasons -->
 {#if websiteView}
