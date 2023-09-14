@@ -25,9 +25,10 @@ namespace WebCrawler.Models {
         private HashSet<string> _visited;
 
         //Crawler for crawling current website
-        private Crawler _crawler = new();
-
+        private Crawler _crawler = new(); 
+        //TODO this is not filled anywhere but used in one serialization
         public TimeSpan ExecutionTime;
+
         public Execution(string url, string regex) {
             this._url = url;
             this._regex = regex;

@@ -2,7 +2,9 @@
 
 <script>
     import NodeGraph from "./NodeGraph.svelte";
-    
+    import WebRecordTable from "./WebRecordTable.svelte";
+    import ExecutionsTable from "./ExecutionsTable.svelte";
+
     const metaDataUri = '/Api/GetMetaData';
     const fullDataUri = '/Api/GetFullData';
     const latestExecutionUri = '/Api/GetLatestExecutions'
@@ -30,7 +32,6 @@
     let form = document.getElementById("WebRecordForm");
 
     getData();
-    setInterval(() => updateExecutionInformationInRecordTable(), executionUpdateInterval);
 
     form.addEventListener("submit", (event) => {
         let regex;
@@ -82,27 +83,6 @@
             .then(response => response.json())
             .then(data => data)
             .catch(error => console.error("Unable to getFullData for recordId" + id + ".", error));
-    }
-
-    function updateExecutionInformationInRecordTable() {
-        fetch(latestExecutionUri + "/")
-            .then(res => {
-                if (res.ok) {
-                    return res.json()
-                } else {
-                    throw new Error("Unable to fetch latest executions")
-                }
-            })
-            .then(json => JSON.parse(json))
-            .then(jsonData => {
-                jsonData["Executions"].forEach(execution => {
-                    let timeDOM = document.getElementById("ExecutionTime" + execution["RecordId"])
-                    let statusDOM = document.getElementById("ExecutionStatus" + execution["RecordId"])
-                    timeDOM.innerHTML = execution["Time"];
-                    statusDOM.innerHTML = execution["Status"];
-                })
-            })
-            .catch(err => console.error(err));
     }
 
     function getDomainData(websiteData) {
@@ -236,13 +216,21 @@
             }
         }
     }
-
-    const buttonStyle = "display: inline-block;font-weight: 400;line-height: 1.5;color: #212529;text-align: center;text-decoration: none;vertical-align: middle;cursor: pointer;user-select: none;background-color: transparent;border: 1px solid transparent;padding: 0.375rem 0.75rem;font-size: 1rem;border-radius: 0.25rem;transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;color: #fff;background-color: #6c757d;border-color: #6c757d;";
   
 </script>
 
-<button style={buttonStyle} class="btn btn-primary" bind:this={modeButton} on:click={switchGraphMode}>Make Static</button>
-<button style={buttonStyle} class="btn btn-primary" bind:this={viewButton} on:click={switchGraphView}>View Domains</button>
+<style>
+    @import '../lib/bootstrap/dist/css/bootstrap.min.css';
+</style>
+
+<WebRecordTable></WebRecordTable>
+
+<ExecutionsTable></ExecutionsTable>
+
+<h2>Visualisation</h2>
+
+<button class="btn btn-secondary" bind:this={modeButton} on:click={switchGraphMode}>Make Static</button>
+<button class="btn btn-secondary" bind:this={viewButton} on:click={switchGraphView}>View Domains</button>
 
 <!-- TODO Could be only one NodeGraph with changing data for performace reasons -->
 {#if websiteView}

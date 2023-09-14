@@ -61,5 +61,9 @@
             List<Execution> list = record.GetAllExecutions();
             return list;
         }
+
+        public List<WebsiteRecord> GetAllRecords() {
+            return (List<WebsiteRecord>) _records;
+        }
     }
 }

@@ -3,9 +3,11 @@ using System.Diagnostics;
 using WebCrawler.Models;
 using WebCrawler.Controllers;
 using System.Runtime.CompilerServices;
+using WebCrawler.Models.Serializers;
 
-namespace WebCrawler.Controllers {
-  public class ApiController : Controller {
+namespace WebCrawler.Controllers
+{
+    public class ApiController : Controller {
         private readonly ILogger<ApiController> _logger;
         protected WebsiteRecordRepository? repo;
         public ApiController(ILogger<ApiController> logger, WebsiteRecordRepository repo) {
@@ -45,6 +47,21 @@ namespace WebCrawler.Controllers {
             var records = repo!.GetAll();
             ExecutionSerializer serializer = new ExecutionSerializer();
             string json = serializer.SerializeLatestExecutions(records);
+            return Json(json);
+        }
+
+        [HttpGet]
+        public JsonResult GetWebsiteRecords() {
+            var records = repo!.GetAll();
+            WebsiteRecordSerializer serializer = new WebsiteRecordSerializer();
+            string json = serializer.SerializeWebsiteRecords(records);
+            return Json(json);
+        }
+
+        [HttpGet]
+        public JsonResult GetExecutions() { 
+            ExecutionSerializer es = new ExecutionSerializer();
+            string json = es.SerializeAllExecutions(repo!);
             return Json(json);
         }
     }
