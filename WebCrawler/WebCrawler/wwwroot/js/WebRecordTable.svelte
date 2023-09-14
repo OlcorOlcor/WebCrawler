@@ -1,5 +1,6 @@
 <svelte:options tag="web-record-table" />
 <script>
+import { filterExecutionsByIdExport } from "./ExecutionsTable.svelte";
 class WebsiteRecord {
     constructor(Id, Url, Regex, Periodicity, Label, Tags, LastExecutionTime, LastExecutionStatus) {
         this.Id = Id;
@@ -54,7 +55,7 @@ function startNewExecution(recordId) {
 }
 
 function filterExecutions(recordId) {
-//TODO
+    filterExecutionsByIdExport(recordId);
 }
 
 function updatePage() {

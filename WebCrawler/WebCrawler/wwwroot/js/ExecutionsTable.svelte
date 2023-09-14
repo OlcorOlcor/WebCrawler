@@ -67,9 +67,11 @@
       numberOfExecutions++;
     }
   }
-
+  export function filterExecutionsByIdExport(id) {
+    filterExecutionsById(id);
+  }
   // will be used for changing filter -> WebSiteRecord
-  export function filterExecutionsById(id){
+  function filterExecutionsById(id){
     filteredId = id;
     updatePage();
     stopButton.disabled = false;
