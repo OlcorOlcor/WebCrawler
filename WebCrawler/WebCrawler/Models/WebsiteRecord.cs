@@ -75,11 +75,16 @@ namespace WebCrawler.Models {
 
         private void ExecutionFinished(Execution execution) {
             //the exectuion in the parameter is from another thread so the following line might not word :c
+            
+            foreach( var ex in RunningExecutions) {
+                Console.WriteLine(ex);
+            }
+
             var executionIndex = RunningExecutions.IndexOf(execution);
             RunningExecutions.Remove(RunningExecutions[executionIndex]);
             this.LastFinishedExecution = execution;
 
-            if (RunningExecutions.Count == 0 && Active == true) {
+            if (RunningExecutions.Count == 0 && LastFinishedExecution == null && Active == true) {
                 StartNewExecution();
                 return;
             }
