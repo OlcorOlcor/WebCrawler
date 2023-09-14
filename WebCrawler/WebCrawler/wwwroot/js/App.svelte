@@ -203,14 +203,18 @@
   
 </script>
 
+<style>
+    @import '../lib/bootstrap/dist/css/bootstrap.min.css';
+</style>
+
 <WebRecordTable></WebRecordTable>
 
 <ExecutionsTable></ExecutionsTable>
 
 <h2>Visualisation</h2>
 
-<button bind:this={modeButton} on:click={switchGraphMode}>Make Static</button>
-<button bind:this={viewButton} on:click={switchGraphView}>View Domains</button>
+<button class="btn btn-secondary" bind:this={modeButton} on:click={switchGraphMode}>Make Static</button>
+<button class="btn btn-secondary" bind:this={viewButton} on:click={switchGraphView}>View Domains</button>
 
 
 <!-- TODO Could be only one NodeGraph with changing data for performace reasons -->

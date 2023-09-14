@@ -49,14 +49,14 @@ function startNewExecution(recordId) {
     <table class="table table-striped" id="update">
         <thead>
             <tr>
-                <td>Url</td>
-                <td>Regex</td>
-                <td>Periodicity</td>
-                <td>Label</td>
-                <td>Time of last executions</td>
-                <td>Status of last executions</td>
-                <td>Tags</td>
-                <td>Crawl now</td>
+                <th>Url</th>
+                <th>Regex</th>
+                <th>Periodicity</th>
+                <th>Label</th>
+                <th>Time of last executions</th>
+                <th>Status of last executions</th>
+                <th>Tags</th>
+                <th>Crawl now</th>
             </tr>
         </thead>
         <tbody>

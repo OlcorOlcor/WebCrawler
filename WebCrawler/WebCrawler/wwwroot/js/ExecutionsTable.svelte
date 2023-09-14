@@ -115,15 +115,19 @@
 <div class="list">
     <h3>List of current Executions</h3>
     <table class="table table-striped" id="update">
+      <thead>
         <tr>
-            <th>Record's label</th>
-            <th>Execution status</th>
-            <th>Start time</th>
-            <th>End time</th>
-            <th>Number of sites crawled</th>
-            <th>Show Execution</th>
+          <th>Record's label</th>
+          <th>Execution status</th>
+          <th>Start time</th>
+          <th>End time</th>
+          <th>Number of sites crawled</th>
+          <th>Show Execution</th>
         </tr>
-      {#each allExecutions as oneExecution}
+      </thead>
+
+      <tbody>
+        {#each allExecutions as oneExecution}
         <tr>
           <td contenteditable="false" bind:innerHTML={oneExecution.label}/>
           <td contenteditable="false" bind:innerHTML={oneExecution.status}/>
@@ -133,9 +137,10 @@
           <td>NOT YET</td>
         </tr>
       {/each}
+      </tbody>
     </table>
 </div>
 
-<button disabled=true bind:this={previousButton} on:click={previousPage}>Previous Page</button>
-<button disabled=true bind:this={nextButton} on:click={nextPage}>Next Page</button>
-<button disabled=true bind:this={stopButton} on:click={stopFilter}>Stop Filtering</button>
+<button class="btn btn-outline-secondary btn-sm" disabled=true bind:this={previousButton} on:click={previousPage}>Previous Page</button>
+<button class="btn btn-outline-secondary btn-sm" disabled=true bind:this={nextButton} on:click={nextPage}>Next Page</button>
+<button class="btn btn-outline-dark btn-sm" disabled=true bind:this={stopButton} on:click={stopFilter}>Stop Filtering</button>
