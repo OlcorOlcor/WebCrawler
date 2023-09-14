@@ -13,10 +13,17 @@ class WebsiteRecord {
     }
 }
 
+let pageNumber = 0;
+const numberOfItemsOnPage = 6;
+let previousButton;
+let nextButton;
+
+
 const fullDataUri = "./Api/GetWebsiteRecords"
 const startNewExecutionUri = "./Api/StartNewExecution"
 const fetchInterval = 1000
 $: WebsiteRecords = [];
+$: WebsiteRecordsOnPage = [];
 
 getWebRecords();
 setInterval(() => getWebRecords(), fetchInterval);
@@ -37,6 +44,8 @@ function getWebRecords() {
             let periodicity = "" + record.Days + ":" + record.Hours + ":" + record.Minutes;
             WebsiteRecords.push(new WebsiteRecord(record.Id, record.Url, record.Regex, periodicity, record.Label, record.Tags, record.LastExecutionTime, record.LastExecutionStatus));
         });
+        updatePage();
+        updateButtons();
     })
 }
 
@@ -46,6 +55,44 @@ function startNewExecution(recordId) {
 
 function filterExecutions(recordId) {
 //TODO
+}
+
+function updatePage() {
+    WebsiteRecordsOnPage = [];
+    for (let i = 0; i < WebsiteRecords.length; i++) {
+        if (((((pageNumber) * numberOfItemsOnPage)) <= i) && (i < ((pageNumber + 1) * numberOfItemsOnPage))) {
+            WebsiteRecordsOnPage.push(WebsiteRecords[i]);
+        }
+    }
+  }
+
+function updateButtons() {
+    console.log(WebsiteRecords.length);
+    if ((WebsiteRecords.length <= numberOfItemsOnPage) || (((pageNumber + 1) * numberOfItemsOnPage) >= WebsiteRecords.length)) {
+      nextButton.disabled = true;
+    }
+    else {
+      nextButton.disabled = false;
+    }
+    if (pageNumber == 0) {
+      previousButton.disabled = true;
+    }
+    else {
+      previousButton.disabled = false;
+    }
+}
+function nextPage() {
+if(pageNumber < (WebsiteRecords.length / numberOfItemsOnPage)){
+    pageNumber++;
+    updatePage();
+}
+}
+
+function previousPage() {
+if(pageNumber > 0){
+    pageNumber--;
+    updatePage();
+}
 }
 </script>
 
@@ -65,7 +112,7 @@ function filterExecutions(recordId) {
             </tr>
         </thead>
         <tbody>
-            {#each WebsiteRecords as record}
+            {#each WebsiteRecordsOnPage as record}
                 <tr>
                     <td contenteditable="false" bind:innerHTML={record.Url}/>
                     <td contenteditable="false" bind:innerHTML={record.Regex}/>
@@ -85,3 +132,5 @@ function filterExecutions(recordId) {
         </tbody>
     </table>  
 </div>
+<button class="btn btn-outline-secondary btn-sm" disabled=true bind:this={previousButton} on:click={previousPage}>Previous Page</button>
+<button class="btn btn-outline-secondary btn-sm" disabled=true bind:this={nextButton} on:click={nextPage}>Next Page</button>
