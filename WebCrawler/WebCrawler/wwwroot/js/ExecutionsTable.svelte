@@ -13,16 +13,18 @@
   }
 
   let pageNumber = 0;
-  const numberOfItemsOnPage = 6;
+  const MaxItemsOnPage = 6;
   let previousButton;
   let nextButton;
-  let numberOfExecutions = 0;
+  let filteredExecutionCount = 0;
   let executions;
   
   let stopButton;
-  let filteredId = false;
+  let filterOn = false;
+  let filterBy;
 
-  $: allExecutions = [];
+  $: tableExecutions = [];
+  $: filteredExecutions = [];
 
   const url = "./Api/GetExecutions/";
 
@@ -41,8 +43,6 @@
       let jsonData = JSON.parse(json);
       if( typeof jsonData["Executions"] !== undefined){
         executions = jsonData["Executions"];
-        allExecutions = [];
-        numberOfExecutions = 0;
         updatePage();
       }
       updateButtons();
@@ -50,40 +50,63 @@
   }
 
   function updatePage(){
+    filteredExecutionCount = 0;
+    filteredExecutions = [];
+    // Filter executions
     for(let i = 0; i < executions.length; i++){
-      if(((((pageNumber) * numberOfItemsOnPage)) <= i) && (i < ((pageNumber + 1) * numberOfItemsOnPage))) {
-        let exec = executions[i];
-        //only if not filtered show all executions
-        if(filteredId === false){
-          allExecutions.push(new execution(exec["RecordId"], exec["RecordLabel"], exec["Status"], exec["StartTime"], exec["EndTime"], exec["NumberOfSitesCrawled"]));
-        }
-        else{
-          //if filtered show only executions with given id
-          if(filteredId === exec["RecordId"]){
-            allExecutions.push(new execution(exec["RecordId"], exec["RecordLabel"], exec["Status"], exec["StartTime"], exec["EndTime"], exec["NumberOfSitesCrawled"]));
-          }
-        }
+      let exec = executions[i];
+
+      if(!filterOn || filterBy == exec["RecordId"]){
+        filteredExecutions.push(new execution(
+          exec["RecordId"], 
+          exec["RecordLabel"], 
+          exec["Status"],
+          exec["StartTime"], 
+          exec["EndTime"], 
+          exec["NumberOfSitesCrawled"]
+        ));
+
+        filteredExecutionCount++;
       }
-      numberOfExecutions++;
     }
+
+    // Decide what exections are visible
+    tableExecutions = [];
+    if (pageNumber >= filteredExecutionCount / MaxItemsOnPage) {
+      pageNumber = filteredExecutionCount % MaxItemsOnPage == 0 ? (filteredExecutionCount / MaxItemsOnPage) : (filteredExecutionCount / MaxItemsOnPage) + 1;
+    }
+
+    // TODO rewrite to for loop with calculated start and end
+    let i = 0;
+    filteredExecutions.forEach((filteredExecution) => {
+      if (executionOnVisiblePage(i)) {
+        tableExecutions.push(filteredExecution)
+      }
+      i++; 
+    });
   }
-  export function filterExecutionsByIdExport(id) {
-    filterExecutionsById(id);
+
+  function executionOnVisiblePage(count) {
+    return (((pageNumber) * MaxItemsOnPage)) <= count && count < ((pageNumber + 1) * MaxItemsOnPage);
   }
+
   // will be used for changing filter -> WebSiteRecord
-  function filterExecutionsById(id){
-    filteredId = id;
+  export function filterExecutionsById(id) {
+    filterOn = true;
+    filterBy = id;
     updatePage();
     stopButton.disabled = false;
   }
 
-  function stopFilter(){
-    filterExecutionsById(false);
+  function stopFilter() {
+    filterOn = false;
+    filterBy = null;
+    updatePage();
     stopButton.disabled = true;
   }
 
   function updateButtons(){
-    if ((numberOfExecutions <= numberOfItemsOnPage) || (((pageNumber + 1) * numberOfItemsOnPage) >= numberOfExecutions)) {
+    if ((filteredExecutionCount <= MaxItemsOnPage) || (((pageNumber + 1) * MaxItemsOnPage) >= filteredExecutionCount)) {
       nextButton.disabled = true;
     }
     else {
@@ -98,7 +121,7 @@
   }
 
   function nextPage(){
-    if(pageNumber < (numberOfExecutions / numberOfItemsOnPage)){
+    if(pageNumber < (filteredExecutionCount / MaxItemsOnPage)){
       pageNumber++;
       updatePage();
     }
@@ -128,13 +151,13 @@
       </thead>
 
       <tbody>
-        {#each allExecutions as oneExecution}
+        {#each tableExecutions as tableExecution}
         <tr>
-          <td contenteditable="false" bind:innerHTML={oneExecution.label}/>
-          <td contenteditable="false" bind:innerHTML={oneExecution.status}/>
-          <td contenteditable="false" bind:innerHTML={oneExecution.starttime}/>
-          <td contenteditable="false" bind:innerHTML={oneExecution.endtime}/>
-          <td contenteditable="false" bind:innerHTML={oneExecution.nmbrOfSites}/>
+          <td contenteditable="false" bind:innerHTML={tableExecution.label}/>
+          <td contenteditable="false" bind:innerHTML={tableExecution.status}/>
+          <td contenteditable="false" bind:innerHTML={tableExecution.starttime}/>
+          <td contenteditable="false" bind:innerHTML={tableExecution.endtime}/>
+          <td contenteditable="false" bind:innerHTML={tableExecution.nmbrOfSites}/>
           <td>NOT YET</td>
         </tr>
       {/each}

@@ -1,6 +1,6 @@
 <svelte:options tag="web-record-table" />
 <script>
-import { filterExecutionsByIdExport } from "./ExecutionsTable.svelte";
+
 class WebsiteRecord {
     constructor(Id, Url, Regex, Periodicity, Label, Tags, LastExecutionTime, LastExecutionStatus) {
         this.Id = Id;
@@ -14,48 +14,25 @@ class WebsiteRecord {
     }
 }
 
+export let startNewExecution;
+export let requestExecutionFilter;
+
 let pageNumber = 0;
 const numberOfItemsOnPage = 6;
 let previousButton;
 let nextButton;
 
-
-const fullDataUri = "./Api/GetWebsiteRecords"
-const startNewExecutionUri = "./Api/StartNewExecution"
-const fetchInterval = 1000
 $: WebsiteRecords = [];
 $: WebsiteRecordsOnPage = [];
 
-getWebRecords();
-setInterval(() => getWebRecords(), fetchInterval);
-
-function getWebRecords() {
-    fetch(fullDataUri + "/")
-    .then(res => {
-        if (res.ok) {
-            return res.json()
-        } else {
-            throw new Error("Unable to fetch latest executions")
-        }
-    })
-    .then(json => JSON.parse(json))
-    .then(jsonData => {
-        WebsiteRecords = [];
-        jsonData["WebsiteRecords"].forEach(record => {
-            let periodicity = "" + record.Days + ":" + record.Hours + ":" + record.Minutes;
-            WebsiteRecords.push(new WebsiteRecord(record.Id, record.Url, record.Regex, periodicity, record.Label, record.Tags, record.LastExecutionTime, record.LastExecutionStatus));
-        });
-        updatePage();
-        updateButtons();
-    })
-}
-
-function startNewExecution(recordId) {
-    fetch(startNewExecutionUri + "/?recordId=" + recordId);
-}
-
-function filterExecutions(recordId) {
-    filterExecutionsByIdExport(recordId);
+export function update(data) {
+    WebsiteRecords = [];
+    data["WebsiteRecords"].forEach(record => {
+        let periodicity = "" + record.Days + ":" + record.Hours + ":" + record.Minutes;
+        WebsiteRecords.push(new WebsiteRecord(record.Id, record.Url, record.Regex, periodicity, record.Label, record.Tags, record.LastExecutionTime, record.LastExecutionStatus));
+    });
+    updatePage();
+    updateButtons();
 }
 
 function updatePage() {
@@ -65,10 +42,9 @@ function updatePage() {
             WebsiteRecordsOnPage.push(WebsiteRecords[i]);
         }
     }
-  }
+}
 
 function updateButtons() {
-    console.log(WebsiteRecords.length);
     if ((WebsiteRecords.length <= numberOfItemsOnPage) || (((pageNumber + 1) * numberOfItemsOnPage) >= WebsiteRecords.length)) {
       nextButton.disabled = true;
     }
@@ -126,8 +102,8 @@ if(pageNumber > 0){
                             <div contenteditable="false" bind:innerHTML={tag} />
                         {/each}
                     </td>
-                    <td><button type="button" class="btn btn-primary" on:click={startNewExecution(record.recordId)}>Start New Execution</button></td>
-                    <td><button type="button" class="btn btn-primary" on:click={filterExecutions(record.recordId)}>Show Related Executions</button></td>
+                    <td><button type="button" class="btn btn-primary" on:click={startNewExecution(record.Id)}>Start New Execution</button></td>
+                    <td><button type="button" class="btn btn-primary" on:click={requestExecutionFilter(record.Id)}>Show Related Executions</button></td>
                 </tr>
             {/each}
         </tbody>

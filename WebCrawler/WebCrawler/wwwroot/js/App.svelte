@@ -7,12 +7,14 @@
 
     const metaDataUri = '/Api/GetMetaData';
     const fullDataUri = '/Api/GetFullData';
-    const latestExecutionUri = '/Api/GetLatestExecutions'
-    const formUri = '/Home/AddRecord'
+    const webRecordsDataUri =  "/Api/GetWebsiteRecords";
+    const startNewExecutionUri = "/Api/StartNewExecution";
+    const latestExecutionUri = "/Api/GetLatestExecutions";
+    const formUri = "/Home/AddRecord";
 
-    // TODO We could possibly update this interval dynamicaly
     const graphUpdateInterval = 5000;
-    const executionUpdateInterval = 10000; //10 seconds
+    const webRecordUpdateInterval = 1000;
+    const executionUpdateInterval = 1000; //10 seconds
 
     let currentRecordIndex = 0;
     let currentExecutionIndex = 0;
@@ -27,11 +29,15 @@
 
     let websiteGraph;
     let domainGraph;
+    let webRecordTable;
+    let executionsTable;
 
     let regexInput = document.getElementById("regex");
     let form = document.getElementById("WebRecordForm");
 
     getData();
+    getWebRecordData();
+    setInterval(() => getWebRecordData(), webRecordUpdateInterval);
 
     form.addEventListener("submit", (event) => {
         let regex;
@@ -69,6 +75,32 @@
         if (!staticMode) {
             setTimeout(getData, graphUpdateInterval);
         }
+    }
+
+    function getWebRecordData() {
+        fetch(webRecordsDataUri + "/")
+        .then(res => {
+            if (res.ok) {
+                return res.json()
+            } else {
+                throw new Error("Unable to fetch WebRecords.")
+            }
+        })
+        .then(json => JSON.parse(json))
+        .then(jsonData => {
+            if (jsonData["WebsiteRecords"] == undefined) {
+                return;
+            }
+            if (webRecordTable == null || webRecordTable == undefined) {
+                return;
+            }
+
+            webRecordTable.update(jsonData);
+        })
+    }
+
+    function startNewExecution(recordId) {
+        fetch(startNewExecutionUri + "/?recordId=" + recordId);
     }
 
     function getMetaData() {
@@ -170,6 +202,15 @@
         }
     }
 
+    function filterExecutions(id) {
+        console.log(id, executionsTable);
+        if (executionsTable == null || executionsTable == undefined) {
+            return;
+        }
+
+        executionsTable.filterExecutionsById(id);
+    }
+
     function switchGraphMode() {
         if (staticMode) {
             modeButton.textContent = "Make Static";
@@ -223,9 +264,8 @@
     @import '../lib/bootstrap/dist/css/bootstrap.min.css';
 </style>
 
-<WebRecordTable></WebRecordTable>
-
-<ExecutionsTable></ExecutionsTable>
+<WebRecordTable startNewExecution={startNewExecution} requestExecutionFilter={filterExecutions} bind:this={webRecordTable}></WebRecordTable>
+<ExecutionsTable bind:this={executionsTable}></ExecutionsTable>
 
 <h2>Visualisation</h2>
 
