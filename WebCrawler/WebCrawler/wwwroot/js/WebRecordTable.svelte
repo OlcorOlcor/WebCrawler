@@ -44,9 +44,11 @@ function startNewExecution(recordId) {
     fetch(startNewExecutionUri + "/?recordId=" + recordId);
 }
 
-function filterExecutions(recordId) {
+import {filterExecutionsById} from './ExecutionsTable.svelte'
+
+//function filterExecutions(recordId) {
 //TODO
-}
+//}
 </script>
 
 <div class="list">
@@ -79,7 +81,7 @@ function filterExecutions(recordId) {
                         {/each}
                     </td>
                     <td><button type="button" class="btn btn-primary" on:click={startNewExecution(record.recordId)}>Start New Execution</button></td>
-                    <td><button type="button" class="btn btn-primary" on:click={filterExecutions(record.recordId)}>Show Related Executions</button></td>
+                    <td><button type="button" class="btn btn-primary" on:click={filterExecutionsById(record.recordId)}>Show Related Executions</button></td>
                 </tr>
             {/each}
         </tbody>
