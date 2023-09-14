@@ -8,17 +8,18 @@ class WebsiteRecord {
         this.Periodicity = Periodicity;
         this.Label = Label;
         this.Tags = Tags;
-        this.LastExecutionTime = LastExecutionStatus;
+        this.LastExecutionTime = LastExecutionTime;
         this.LastExecutionStatus = LastExecutionStatus;
     }
 }
 
 const fullDataUri = "./Api/GetWebsiteRecords"
 const startNewExecutionUri = "./Api/StartNewExecution"
+const fetchInterval = 1000
 $: WebsiteRecords = [];
 
 getWebRecords();
-setInterval(() => getWebRecords(), 1000);
+setInterval(() => getWebRecords(), fetchInterval);
 
 function getWebRecords() {
     fetch(fullDataUri + "/")
@@ -41,6 +42,10 @@ function getWebRecords() {
 
 function startNewExecution(recordId) {
     fetch(startNewExecutionUri + "/?recordId=" + recordId);
+}
+
+function filterExecutions(recordId) {
+//TODO
 }
 </script>
 
@@ -73,7 +78,8 @@ function startNewExecution(recordId) {
                             <div contenteditable="false" bind:innerHTML={tag} />
                         {/each}
                     </td>
-                    <td><button type="button" class="btn btn-primary" on:click={startNewExecution(record.recordId)} >Start New Execution</button></td>
+                    <td><button type="button" class="btn btn-primary" on:click={startNewExecution(record.recordId)}>Start New Execution</button></td>
+                    <td><button type="button" class="btn btn-primary" on:click={filterExecutions(record.recordId)}>Show Related Executions</button></td>
                 </tr>
             {/each}
         </tbody>
