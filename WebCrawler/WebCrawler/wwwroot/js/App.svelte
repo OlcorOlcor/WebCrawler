@@ -236,13 +236,25 @@
             }
         }
     }
-
-    const buttonStyle = "display: inline-block;font-weight: 400;line-height: 1.5;color: #212529;text-align: center;text-decoration: none;vertical-align: middle;cursor: pointer;user-select: none;background-color: transparent;border: 1px solid transparent;padding: 0.375rem 0.75rem;font-size: 1rem;border-radius: 0.25rem;transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;color: #fff;background-color: #6c757d;border-color: #6c757d;";
   
 </script>
 
-<button style={buttonStyle} class="btn btn-primary" bind:this={modeButton} on:click={switchGraphMode}>Make Static</button>
-<button style={buttonStyle} class="btn btn-primary" bind:this={viewButton} on:click={switchGraphView}>View Domains</button>
+<style>
+    @import "../css/site.css";
+    @import "../lib/bootstrap/dist/css/bootstrap.min.css";
+
+    div.container {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+    }
+</style>
+
+<div class="container">
+    <button class="btn btn-secondary" bind:this={modeButton} on:click={switchGraphMode}>Make Static</button>
+    <button class="btn btn-secondary" bind:this={viewButton} on:click={switchGraphView}>View Domains</button>
+</div>
+
 
 <!-- TODO Could be only one NodeGraph with changing data for performace reasons -->
 {#if websiteView}
