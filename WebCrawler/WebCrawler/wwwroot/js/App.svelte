@@ -221,7 +221,6 @@
     }
 
     function filterExecutions(id) {
-        console.log(id, executionsTable);
         if (executionsTable == null || executionsTable == undefined) {
             return;
         }
