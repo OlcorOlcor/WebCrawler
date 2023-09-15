@@ -1,4 +1,5 @@
 using WebCrawler.Models;
+using GraphQL.AspNet.Configuration;
 
 namespace WebCrawler {
     public class Program {

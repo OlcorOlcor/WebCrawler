@@ -10,7 +10,6 @@ RUN npm run build
 # backend build stage
 FROM mcr.microsoft.com/dotnet/sdk:7.0-alpine AS backend
 WORKDIR /build
-RUN dotnet add package GraphQL.AspNet
 COPY WebCrawler/WebCrawler/WebCrawler.csproj .
 RUN dotnet restore WebCrawler.csproj
 COPY WebCrawler/WebCrawler .

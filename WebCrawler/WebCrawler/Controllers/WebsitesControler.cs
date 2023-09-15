@@ -1,4 +1,6 @@
 using WebCrawler.Models;
+using GraphQL.AspNet.Attributes;
+using GraphQL.AspNet.Controllers;
 
 namespace WebCrawler.Controllers {
     public class WebsitesController : GraphController {
@@ -11,7 +13,7 @@ namespace WebCrawler.Controllers {
 
         [QueryRoot]
         public WebsiteRecord[] Websites() {
-            return repo!.GetAll.ToArray();
+            return repo!.GetAll().ToArray();
         }
     }
 }
