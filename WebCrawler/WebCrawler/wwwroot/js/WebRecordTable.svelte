@@ -28,7 +28,7 @@ $: WebsiteRecordsOnPage = [];
 export function update(data) {
     WebsiteRecords = [];
     data.forEach(record => {
-        let periodicity = "" + record.Days + ":" + record.Hours + ":" + record.Minutes;
+        let periodicity = "" + record.Days + "d:" + record.Hours + "h:" + record.Minutes + "m";
         WebsiteRecords.push(new WebsiteRecord(record.Id, record.Url, record.Regex, periodicity, record.Label, record.Tags, record.LastExecutionTime, record.LastExecutionStatus));
     });
     updatePage();
