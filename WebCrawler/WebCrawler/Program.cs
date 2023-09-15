@@ -6,18 +6,18 @@ namespace WebCrawler {
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-
             builder.Services.AddControllersWithViews();
             builder.Logging.ClearProviders();
             builder.Logging.AddConsole();
 
             var services = builder.Services;
 
-            services.AddControllersWithViews();
+            // Add graphql services to the DI container.
+            builder.Services.AddGraphQL();
 
+            services.AddControllersWithViews();
             services.AddSingleton<WebsiteRecordRepository>();   
             services.AddSingleton<IList<WebsiteRecord>, List<WebsiteRecord>>();
-
 
             var app = builder.Build();
 
@@ -32,6 +32,8 @@ namespace WebCrawler {
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseGraphQL();
 
             // app.UseAuthorization();
 
