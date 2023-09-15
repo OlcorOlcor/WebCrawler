@@ -26,30 +26,14 @@
   $: tableExecutions = [];
   $: filteredExecutions = [];
 
-  const url = "./Api/GetExecutions/";
+  
 
-  var fetchDataRepeatedly = setInterval( fetchData, 1000 );
-
-  function fetchData() {
-    fetch(url)
-    .then(result => {
-      if (result.ok) {
-        return result.json()
-      } else {
-        throw new Error("Unable to fetch executions")
-      }
-    })
-    .then(json => {
-      let jsonData = JSON.parse(json);
-      if( typeof jsonData["Executions"] !== undefined){
-        executions = jsonData["Executions"];
-        updatePage();
-      }
-      updateButtons();
-    })
+  export function update(data) {
+    executions = data;
+    updateTable();
   }
 
-  function updatePage(){
+  function updateTable(){
     filteredExecutionCount = 0;
     filteredExecutions = [];
     // Filter executions
@@ -73,7 +57,7 @@
     // Decide what exections are visible
     tableExecutions = [];
     if (pageNumber >= filteredExecutionCount / MaxItemsOnPage) {
-      pageNumber = filteredExecutionCount % MaxItemsOnPage == 0 ? (filteredExecutionCount / MaxItemsOnPage) : (filteredExecutionCount / MaxItemsOnPage) + 1;
+      pageNumber = filteredExecutionCount % MaxItemsOnPage == 0 ? (filteredExecutionCount / MaxItemsOnPage) - 1 : (filteredExecutionCount / MaxItemsOnPage);
     }
 
     // TODO rewrite to for loop with calculated start and end
@@ -84,6 +68,8 @@
       }
       i++; 
     });
+
+    updateButtons();
   }
 
   function executionOnVisiblePage(count) {
@@ -94,18 +80,18 @@
   export function filterExecutionsById(id) {
     filterOn = true;
     filterBy = id;
-    updatePage();
+    updateTable();
     stopButton.disabled = false;
   }
 
   function stopFilter() {
     filterOn = false;
     filterBy = null;
-    updatePage();
+    updateTable();
     stopButton.disabled = true;
   }
 
-  function updateButtons(){
+  function updateButtons() {
     if ((filteredExecutionCount <= MaxItemsOnPage) || (((pageNumber + 1) * MaxItemsOnPage) >= filteredExecutionCount)) {
       nextButton.disabled = true;
     }
@@ -120,17 +106,17 @@
     }
   }
 
-  function nextPage(){
+  function nextPage() {
     if(pageNumber < (filteredExecutionCount / MaxItemsOnPage)){
       pageNumber++;
-      updatePage();
+      updateTable();
     }
   }
 
-  function previousPage(){
+  function previousPage() {
     if(pageNumber > 0){
       pageNumber--;
-      updatePage();
+      updateTable();
     }
   }
 

@@ -9,12 +9,13 @@
     const fullDataUri = '/Api/GetFullData';
     const webRecordsDataUri =  "/Api/GetWebsiteRecords";
     const startNewExecutionUri = "/Api/StartNewExecution";
-    const latestExecutionUri = "/Api/GetLatestExecutions";
+    const executionsDataUri = "./Api/GetExecutions/";
     const formUri = "/Home/AddRecord";
 
+    // Intervals in ms
     const graphUpdateInterval = 5000;
     const webRecordUpdateInterval = 1000;
-    const executionUpdateInterval = 1000; //10 seconds
+    const executionUpdateInterval = 1000; 
 
     let currentRecordIndex = 0;
     let currentExecutionIndex = 0;
@@ -37,7 +38,8 @@
 
     getData();
     getWebRecordData();
-    setInterval(() => getWebRecordData(), webRecordUpdateInterval);
+    setInterval(getWebRecordData, webRecordUpdateInterval);
+    setInterval(getExecutionsData, executionUpdateInterval);
 
     form.addEventListener("submit", (event) => {
         let regex;
@@ -77,6 +79,25 @@
         }
     }
 
+    function getExecutionsData() {
+        fetch(executionsDataUri)
+        .then(result => {
+        if (result.ok) {
+            return result.json()
+        } else {
+            throw new Error("Unable to fetch executions.")
+        }
+        })
+        .then(json => {
+            let jsonData = JSON.parse(json);
+            if (jsonData["Executions"] == undefined || executionsTable == null || executionsTable == undefined) {
+                return;
+            }
+
+            executionsTable.update(jsonData["Executions"]);
+        })
+    }
+
     function getWebRecordData() {
         fetch(webRecordsDataUri + "/")
         .then(res => {
@@ -88,14 +109,11 @@
         })
         .then(json => JSON.parse(json))
         .then(jsonData => {
-            if (jsonData["WebsiteRecords"] == undefined) {
-                return;
-            }
-            if (webRecordTable == null || webRecordTable == undefined) {
+            if (jsonData["WebsiteRecords"] == undefined || webRecordTable == null || webRecordTable == undefined) {
                 return;
             }
 
-            webRecordTable.update(jsonData);
+            webRecordTable.update(jsonData["WebsiteRecords"]);
         })
     }
 
