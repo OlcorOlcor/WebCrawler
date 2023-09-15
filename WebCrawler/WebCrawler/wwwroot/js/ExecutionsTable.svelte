@@ -56,7 +56,7 @@
 
     // Decide what exections are visible
     tableExecutions = [];
-    if (pageNumber >= filteredExecutionCount / MaxItemsOnPage) {
+    if (pageNumber >= filteredExecutionCount / MaxItemsOnPage && pageNumber != 0) {
       pageNumber = filteredExecutionCount % MaxItemsOnPage == 0 ? (filteredExecutionCount / MaxItemsOnPage) - 1 : (filteredExecutionCount / MaxItemsOnPage);
     }
 
@@ -153,4 +153,4 @@
 
 <button class="btn btn-outline-secondary btn-sm" disabled=true bind:this={previousButton} on:click={previousPage}>Previous Page</button>
 <button class="btn btn-outline-secondary btn-sm" disabled=true bind:this={nextButton} on:click={nextPage}>Next Page</button>
-<button class="btn btn-outline-dark btn-sm" disabled=true bind:this={stopButton} on:click={stopFilter}>Stop Filtering</button>
+<button class="btn btn-outline-secondary btn-sm" disabled=true bind:this={stopButton} on:click={stopFilter}>Stop Filtering</button>

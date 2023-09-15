@@ -18,7 +18,7 @@ export let startNewExecution;
 export let requestExecutionFilter;
 
 let pageNumber = 0;
-const numberOfItemsOnPage = 6;
+const MaxItemsOnPage = 6;
 let previousButton;
 let nextButton;
 
@@ -31,21 +31,30 @@ export function update(data) {
         let periodicity = "" + record.Days + "d:" + record.Hours + "h:" + record.Minutes + "m";
         WebsiteRecords.push(new WebsiteRecord(record.Id, record.Url, record.Regex, periodicity, record.Label, record.Tags, record.LastExecutionTime, record.LastExecutionStatus));
     });
-    updatePage();
-    updateButtons();
+    updateTable();
 }
 
-function updatePage() {
+function updateTable() {
+    if (pageNumber >= WebsiteRecords.length / MaxItemsOnPage && pageNumber != 0) {
+      pageNumber = WebsiteRecords.length % MaxItemsOnPage == 0 ? (WebsiteRecords.length / MaxItemsOnPage) - 1 : (WebsiteRecords.length / MaxItemsOnPage);
+    }
+
     WebsiteRecordsOnPage = [];
     for (let i = 0; i < WebsiteRecords.length; i++) {
-        if (((((pageNumber) * numberOfItemsOnPage)) <= i) && (i < ((pageNumber + 1) * numberOfItemsOnPage))) {
+        if (webRecordOnVisiblePage(i)) {
             WebsiteRecordsOnPage.push(WebsiteRecords[i]);
         }
     }
+
+    updateButtons();
+}
+
+function webRecordOnVisiblePage(count) {
+    return (((pageNumber) * MaxItemsOnPage)) <= count && count < ((pageNumber + 1) * MaxItemsOnPage);
 }
 
 function updateButtons() {
-    if ((WebsiteRecords.length <= numberOfItemsOnPage) || (((pageNumber + 1) * numberOfItemsOnPage) >= WebsiteRecords.length)) {
+    if ((WebsiteRecords.length <= MaxItemsOnPage) || (((pageNumber + 1) * MaxItemsOnPage) >= WebsiteRecords.length)) {
       nextButton.disabled = true;
     }
     else {
@@ -59,17 +68,17 @@ function updateButtons() {
     }
 }
 function nextPage() {
-if(pageNumber < (WebsiteRecords.length / numberOfItemsOnPage)){
-    pageNumber++;
-    updatePage();
-}
+    if(pageNumber < (WebsiteRecords.length / MaxItemsOnPage)){
+        pageNumber++;
+        updateTable();
+    }
 }
 
 function previousPage() {
-if(pageNumber > 0){
-    pageNumber--;
-    updatePage();
-}
+    if(pageNumber > 0){
+        pageNumber--;
+        updateTable();
+    }
 }
 </script>
 
