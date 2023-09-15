@@ -29,6 +29,16 @@
     let regexInput = document.getElementById("regex");
     let form = document.getElementById("WebRecordForm");
 
+    // test fetch for graphql
+    fetch("/graphql/", {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query: '{ websites: [{websiteRecord: {id, url, regex}}] }' })
+    })
+    .then(response => response.json())
+    .then(response => console.log(response.data));
+
+
     getData();
     setInterval(() => updateExecutionInformationInRecordTable(), executionUpdateInterval);
 
@@ -222,14 +232,14 @@
 
     function switchGraphView() {
         if (websiteView) {
-            viewButton.textContent = "View Websites"
+            viewButton.textContent = "View Websites";
             websiteView = false;
             if (staticMode) {
                 updateDomainGraph();
             }
         }
         else {
-            viewButton.textContent = "View Domains"
+            viewButton.textContent = "View Domains";
             websiteView = true;
             if (staticMode) {
                 updateWebsiteGraph();
