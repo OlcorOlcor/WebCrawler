@@ -298,8 +298,8 @@
     }
 </style>
 
-<WebRecordTable startNewExecution={"startNewExecution"} requestExecutionFilter={"filterExecutions"} bind:this={"webRecordTable"}></WebRecordTable>
-<ExecutionsTable bind:this={"executionsTable"}></ExecutionsTable>
+<WebRecordTable startNewExecution={startNewExecution} requestExecutionFilter={filterExecutions} bind:this={webRecordTable}></WebRecordTable>
+<ExecutionsTable bind:this={executionsTable}></ExecutionsTable>
 
 <div class="container">
     <button class="btn btn-secondary" bind:this={modeButton} on:click={switchGraphMode}>Make Static</button>
