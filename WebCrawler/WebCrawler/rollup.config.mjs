@@ -27,6 +27,7 @@ export default {
         //     typescript
         // }),
         // Tell any third-party plugins that we're building for the browser
-        resolve({ browser: true })
+        resolve({ browser: true }),
+
     ]
 };

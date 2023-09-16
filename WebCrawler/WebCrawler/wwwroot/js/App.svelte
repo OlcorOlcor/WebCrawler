@@ -36,6 +36,16 @@
     let regexInput = document.getElementById("regex");
     let form = document.getElementById("WebRecordForm");
 
+    // test fetch for graphql
+    fetch("/graphql/", {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query: '{ websites: [{websiteRecord: {id, url, regex}}] }' })
+    })
+    .then(response => response.json())
+    .then(response => console.log(response.data));
+
+
     getData();
     getWebRecordData();
     setInterval(getWebRecordData, webRecordUpdateInterval);
@@ -260,14 +270,14 @@
 
     function switchGraphView() {
         if (websiteView) {
-            viewButton.textContent = "View Websites"
+            viewButton.textContent = "View Websites";
             websiteView = false;
             if (staticMode) {
                 updateDomainGraph();
             }
         }
         else {
-            viewButton.textContent = "View Domains"
+            viewButton.textContent = "View Domains";
             websiteView = true;
             if (staticMode) {
                 updateWebsiteGraph();
@@ -278,16 +288,20 @@
 </script>
 
 <style>
-    @import '../lib/bootstrap/dist/css/bootstrap.min.css';
+    @import "../css/site.css";
+    @import "../lib/bootstrap/dist/css/bootstrap.min.css";
+
+    div.container {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+    }
 </style>
 
-<WebRecordTable startNewExecution={startNewExecution} requestExecutionFilter={filterExecutions} bind:this={webRecordTable}></WebRecordTable>
-<ExecutionsTable bind:this={executionsTable}></ExecutionsTable>
-
-<h2>Visualisation</h2>
-
-<button class="btn btn-secondary" bind:this={modeButton} on:click={switchGraphMode}>Make Static</button>
-<button class="btn btn-secondary" bind:this={viewButton} on:click={switchGraphView}>View Domains</button>
+<div class="container">
+    <button class="btn btn-secondary" bind:this={modeButton} on:click={switchGraphMode}>Make Static</button>
+    <button class="btn btn-secondary" bind:this={viewButton} on:click={switchGraphView}>View Domains</button>
+</div>
 
 <!-- TODO Could be only one NodeGraph with changing data for performace reasons -->
 {#if websiteView}

@@ -305,20 +305,16 @@ svelte example: https://github.com/happybeing/d3-fdg-svelte
 
 </script>
 
+<style>
+    @import "../css/site.css";
+</style>
+
 <!-- <svelte:window on:resize='{resize}'/> -->
-<div class='container'>
+<div>
     <canvas bind:this={canvas} width={width} height={height}/>
 </div>
 
-<div style='
-    display: none; 
-    position: absolute;
-    border: 3px solid #258cfb; 
-    border-radius: 6px;
-    background-color: white;
-    padding: 5px;
-'
-class="nodeInfo" bind:this={infoBox}>
+<div class="nodeInfo" bind:this={infoBox}>
 </div>
 
 

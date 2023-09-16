@@ -5,6 +5,10 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="GraphQL.AspNet" Version="1.2.6" />
+  </ItemGroup>
   
   <!-- <Target Name="Rollup" BeforeTargets="Build">
     <Exec Command="npm install" />
