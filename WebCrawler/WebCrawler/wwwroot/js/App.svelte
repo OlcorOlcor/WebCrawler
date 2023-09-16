@@ -48,10 +48,8 @@
     fetch("/graphql/", {
         method: 'POST',
         header: {'Content-Type': 'application/json'},
-        body: JSON.stringify({query: '{ Record: {id url} }'})
+        body: JSON.stringify({query: '{Nodes: [{Node: {url title}}]}'})
     })
-    .then(res => res.json())
-    .then(json => console.log(json));
 
     getData();
     getWebRecordData();

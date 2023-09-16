@@ -16,9 +16,20 @@ namespace WebCrawler.Controllers {
             this.repo = repo;
         }
 
-        [QueryRoot]
+        [Query("Websites")]
         public WebsiteRecord[] Websites() {
             return repo!.GetAll().ToArray();
+        }
+        [Query("Nodes")]
+        public WebPage[] Nodes() {
+            var records = repo!.GetAll();
+            List<WebPage> pages = new List<WebPage>();
+            foreach (var record in records) {
+                if (record.LastFinishedExecution is not null) {
+                    pages.AddRange(record.LastFinishedExecution.pages);
+                }
+            }
+            return pages.ToArray();
         }
     }
 }
