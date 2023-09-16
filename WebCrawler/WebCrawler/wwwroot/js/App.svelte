@@ -45,6 +45,13 @@
     .then(response => response.json())
     .then(response => console.log(response.data));
 
+    fetch("/graphql/", {
+        method: 'POST',
+        header: {'Content-Type': 'application/json'},
+        body: JSON.stringify({query: '{ Record: {id url} }'})
+    })
+    .then(res => res.json())
+    .then(json => console.log(json));
 
     getData();
     getWebRecordData();
@@ -297,6 +304,9 @@
         gap: 10px;
     }
 </style>
+
+<WebRecordTable startNewExecution={startNewExecution} requestExecutionFilter={filterExecutions} bind:this={webRecordTable}></WebRecordTable>
+<ExecutionsTable bind:this={executionsTable}></ExecutionsTable>
 
 <div class="container">
     <button class="btn btn-secondary" bind:this={modeButton} on:click={switchGraphMode}>Make Static</button>
