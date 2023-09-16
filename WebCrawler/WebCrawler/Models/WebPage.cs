@@ -5,11 +5,11 @@
     }
 
     public struct WebPage {
-        public readonly string Url;
-        public readonly string Title; 
-        public readonly WebLinks OutgoingLinks;
-        public readonly DateTime CrawlTime;
-        public readonly bool Active;
+        public readonly string Url { get; }
+        public readonly string Title { get; }
+        public readonly WebLinks OutgoingLinks { get; }
+        public readonly DateTime CrawlTime { get; }
+        public readonly bool Active { get; }
       
         public WebPage(string url, string title, WebLinks OutgoingLinks, DateTime crawlTime, bool active) {
             this.Url = url;
