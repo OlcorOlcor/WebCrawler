@@ -1,9 +1,10 @@
 ﻿using System.Text;
 
-namespace WebCrawler.Models {
-    public class GraphDataSerializer {
-        private StringBuilder sb = new StringBuilder();
-        public string SerializeRecord(WebsiteRecord record) {
+namespace WebCrawler.Models.Serializers {
+    public class GraphDataSerializer : ISerializer<WebsiteRecord> {
+        private StringBuilder? sb;
+        public string Serialize(WebsiteRecord record) {
+            sb = new StringBuilder();
             WebsiteRecord websiteRecord = record;
             sb.Append("{");
             sb.Append("\"executions\": {");
@@ -11,7 +12,7 @@ namespace WebCrawler.Models {
             int executionNumber = 0;
             bool firstExecution = true;
             if (websiteRecord.LastFinishedExecution is not null) {
-                SerializeExecution(websiteRecord.LastFinishedExecution, executionNumber++);                
+                SerializeExecution(websiteRecord.LastFinishedExecution, executionNumber++);
                 firstExecution = false;
             }
 
@@ -55,7 +56,7 @@ namespace WebCrawler.Models {
                     sb.Append(",");
                 }
                 firstPage = false;
-              
+
                 SerializeNode(
                     page.Url, 
                     page.Title, 
@@ -72,7 +73,7 @@ namespace WebCrawler.Models {
                         SerializeNode(link, "", "", new string[0], 2, true);
                     }
                 }
-                
+
                 if (page.OutgoingLinks.UrlsNotMatchingRegex is not null) {
                     foreach (var link in page.OutgoingLinks.UrlsNotMatchingRegex) {
                         sb.Append(",");

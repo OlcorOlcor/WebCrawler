@@ -13,7 +13,7 @@ export default {
         // Our bundle will be an Immediately-Invoked Function Expression
         format: 'iife',
         // The IIFE return value will be assigned into a variable called `app`
-        name: 'app',
+        name: 'app'
     },
     plugins: [
         svelte({
@@ -21,12 +21,13 @@ export default {
             include: 'wwwroot/**/*.svelte',
             compilerOptions: {
                 customElement: true
-            },
+            }
         }),
         // ts({
         //     typescript
         // }),
         // Tell any third-party plugins that we're building for the browser
         resolve({ browser: true }),
+
     ]
 };

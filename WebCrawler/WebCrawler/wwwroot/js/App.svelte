@@ -2,15 +2,20 @@
 
 <script>
     import NodeGraph from "./NodeGraph.svelte";
-    
+    import WebRecordTable from "./WebRecordTable.svelte";
+    import ExecutionsTable from "./ExecutionsTable.svelte";
+
     const metaDataUri = '/Api/GetMetaData';
     const fullDataUri = '/Api/GetFullData';
-    const latestExecutionUri = '/Api/GetLatestExecutions'
-    const formUri = '/Home/AddRecord'
+    const webRecordsDataUri =  "/Api/GetWebsiteRecords";
+    const startNewExecutionUri = "/Api/StartNewExecution";
+    const executionsDataUri = "./Api/GetExecutions/";
+    const formUri = "/Home/AddRecord";
 
-    // TODO We could possibly update this interval dynamicaly
+    // Intervals in ms
     const graphUpdateInterval = 5000;
-    const executionUpdateInterval = 10000; //10 seconds
+    const webRecordUpdateInterval = 1000;
+    const executionUpdateInterval = 1000; 
 
     let currentRecordIndex = 0;
     let currentExecutionIndex = 0;
@@ -25,6 +30,8 @@
 
     let websiteGraph;
     let domainGraph;
+    let webRecordTable;
+    let executionsTable;
 
     let regexInput = document.getElementById("regex");
     let form = document.getElementById("WebRecordForm");
@@ -40,7 +47,9 @@
 
 
     getData();
-    setInterval(() => updateExecutionInformationInRecordTable(), executionUpdateInterval);
+    getWebRecordData();
+    setInterval(getWebRecordData, webRecordUpdateInterval);
+    setInterval(getExecutionsData, executionUpdateInterval);
 
     form.addEventListener("submit", (event) => {
         let regex;
@@ -80,6 +89,48 @@
         }
     }
 
+    function getExecutionsData() {
+        fetch(executionsDataUri)
+        .then(result => {
+        if (result.ok) {
+            return result.json()
+        } else {
+            throw new Error("Unable to fetch executions.")
+        }
+        })
+        .then(json => {
+            let jsonData = JSON.parse(json);
+            if (jsonData["Executions"] == undefined || executionsTable == null || executionsTable == undefined) {
+                return;
+            }
+
+            executionsTable.update(jsonData["Executions"]);
+        })
+    }
+
+    function getWebRecordData() {
+        fetch(webRecordsDataUri + "/")
+        .then(res => {
+            if (res.ok) {
+                return res.json()
+            } else {
+                throw new Error("Unable to fetch WebRecords.")
+            }
+        })
+        .then(json => JSON.parse(json))
+        .then(jsonData => {
+            if (jsonData["WebsiteRecords"] == undefined || webRecordTable == null || webRecordTable == undefined) {
+                return;
+            }
+
+            webRecordTable.update(jsonData["WebsiteRecords"]);
+        })
+    }
+
+    function startNewExecution(recordId) {
+        fetch(startNewExecutionUri + "/?recordId=" + recordId);
+    }
+
     function getMetaData() {
         return fetch(metaDataUri)
             .then(response => response.json())
@@ -92,27 +143,6 @@
             .then(response => response.json())
             .then(data => data)
             .catch(error => console.error("Unable to getFullData for recordId" + id + ".", error));
-    }
-
-    function updateExecutionInformationInRecordTable() {
-        fetch(latestExecutionUri + "/")
-            .then(res => {
-                if (res.ok) {
-                    return res.json()
-                } else {
-                    throw new Error("Unable to fetch latest executions")
-                }
-            })
-            .then(json => JSON.parse(json))
-            .then(jsonData => {
-                jsonData["Executions"].forEach(execution => {
-                    let timeDOM = document.getElementById("ExecutionTime" + execution["RecordId"])
-                    let statusDOM = document.getElementById("ExecutionStatus" + execution["RecordId"])
-                    timeDOM.innerHTML = execution["Time"];
-                    statusDOM.innerHTML = execution["Status"];
-                })
-            })
-            .catch(err => console.error(err));
     }
 
     function getDomainData(websiteData) {
@@ -200,6 +230,14 @@
         }
     }
 
+    function filterExecutions(id) {
+        if (executionsTable == null || executionsTable == undefined) {
+            return;
+        }
+
+        executionsTable.filterExecutionsById(id);
+    }
+
     function switchGraphMode() {
         if (staticMode) {
             modeButton.textContent = "Make Static";
@@ -264,7 +302,6 @@
     <button class="btn btn-secondary" bind:this={modeButton} on:click={switchGraphMode}>Make Static</button>
     <button class="btn btn-secondary" bind:this={viewButton} on:click={switchGraphView}>View Domains</button>
 </div>
-
 
 <!-- TODO Could be only one NodeGraph with changing data for performace reasons -->
 {#if websiteView}

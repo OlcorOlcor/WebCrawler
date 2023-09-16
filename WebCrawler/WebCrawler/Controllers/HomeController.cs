@@ -15,8 +15,6 @@ namespace WebCrawler.Controllers {
             repo = repository;
         }
         public IActionResult Index() {
-            this.ViewBag.WRList = repo!.GetAll();
-			_logger.LogInformation("INDEX");
 			return View();
         }
 

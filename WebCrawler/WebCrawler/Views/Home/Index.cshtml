@@ -69,52 +69,6 @@
     </div>
 </div>
 
-<hr/>
-
-<div class="list">
-    <h3>List of current Website Records</h3>
-        <table class="table table-striped" id="update">
-            <tr>
-                <td>Url</td>
-                <td>Regex</td>
-                <td>Periodicity</td>
-                <td>Label</td>
-                <td>Time of last executions</td>
-                <td>Status of last executions</td>
-                <td>Tags</td>
-                <td>Crawl now</td>
-            </tr>
-        @{ int i = 0; }
-            @foreach (WebsiteRecord record in ViewBag.WRList) {
-                <tr>
-                    <td>@record.Url</td>
-                    <td>@record.Regex</td>
-                    <td>@record.Days.ToString()d @record.Hours.ToString()h @record.Minutes.ToString()m</td>
-                    <td id="ExecutionTime@(record.Id)"></td>
-                    <td id="ExecutionStatus@(record.Id)"></td>
-                    <td>@record.Label</td>
-                    <td>
-                        <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#Tags@(i)" aria-expanded="false" aria-controls="Tags@(i)">Show Tags</button>
-                    </td>
-                    <td>
-                        <button class="btn btn-primary" type="button">Start New Execution</button>
-                    </td>
-                </tr>
-                <tr class="collapse" id="Tags@(i)">
-                    <td colspan="8"> Tags:
-                        @for (int j = 0; j < record.TagsArray.Length; j++) {
-                            @(record.TagsArray[j])
-                            @if (j + 1 != record.TagsArray.Length) {
-                                @(", ")
-                            }
-                        }
-                    </td>
-                </tr>
-                i++;
-            }
-        </table>
-</div>
-
-<h2>Visualisation</h2>
+<hr/>   
 
 <svelte-app></svelte-app>
