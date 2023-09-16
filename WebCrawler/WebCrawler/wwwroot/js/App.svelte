@@ -7,12 +7,15 @@
 
     const metaDataUri = '/Api/GetMetaData';
     const fullDataUri = '/Api/GetFullData';
-    const latestExecutionUri = '/Api/GetLatestExecutions'
-    const formUri = '/Home/AddRecord'
+    const webRecordsDataUri =  "/Api/GetWebsiteRecords";
+    const startNewExecutionUri = "/Api/StartNewExecution";
+    const executionsDataUri = "./Api/GetExecutions/";
+    const formUri = "/Home/AddRecord";
 
-    // TODO We could possibly update this interval dynamicaly
+    // Intervals in ms
     const graphUpdateInterval = 5000;
-    const executionUpdateInterval = 10000; //10 seconds
+    const webRecordUpdateInterval = 1000;
+    const executionUpdateInterval = 1000; 
 
     let currentRecordIndex = 0;
     let currentExecutionIndex = 0;
@@ -27,11 +30,16 @@
 
     let websiteGraph;
     let domainGraph;
+    let webRecordTable;
+    let executionsTable;
 
     let regexInput = document.getElementById("regex");
     let form = document.getElementById("WebRecordForm");
 
     getData();
+    getWebRecordData();
+    setInterval(getWebRecordData, webRecordUpdateInterval);
+    setInterval(getExecutionsData, executionUpdateInterval);
 
     form.addEventListener("submit", (event) => {
         let regex;
@@ -69,6 +77,48 @@
         if (!staticMode) {
             setTimeout(getData, graphUpdateInterval);
         }
+    }
+
+    function getExecutionsData() {
+        fetch(executionsDataUri)
+        .then(result => {
+        if (result.ok) {
+            return result.json()
+        } else {
+            throw new Error("Unable to fetch executions.")
+        }
+        })
+        .then(json => {
+            let jsonData = JSON.parse(json);
+            if (jsonData["Executions"] == undefined || executionsTable == null || executionsTable == undefined) {
+                return;
+            }
+
+            executionsTable.update(jsonData["Executions"]);
+        })
+    }
+
+    function getWebRecordData() {
+        fetch(webRecordsDataUri + "/")
+        .then(res => {
+            if (res.ok) {
+                return res.json()
+            } else {
+                throw new Error("Unable to fetch WebRecords.")
+            }
+        })
+        .then(json => JSON.parse(json))
+        .then(jsonData => {
+            if (jsonData["WebsiteRecords"] == undefined || webRecordTable == null || webRecordTable == undefined) {
+                return;
+            }
+
+            webRecordTable.update(jsonData["WebsiteRecords"]);
+        })
+    }
+
+    function startNewExecution(recordId) {
+        fetch(startNewExecutionUri + "/?recordId=" + recordId);
     }
 
     function getMetaData() {
@@ -170,6 +220,14 @@
         }
     }
 
+    function filterExecutions(id) {
+        if (executionsTable == null || executionsTable == undefined) {
+            return;
+        }
+
+        executionsTable.filterExecutionsById(id);
+    }
+
     function switchGraphMode() {
         if (staticMode) {
             modeButton.textContent = "Make Static";
@@ -223,9 +281,8 @@
     @import '../lib/bootstrap/dist/css/bootstrap.min.css';
 </style>
 
-<WebRecordTable></WebRecordTable>
-
-<ExecutionsTable></ExecutionsTable>
+<WebRecordTable startNewExecution={startNewExecution} requestExecutionFilter={filterExecutions} bind:this={webRecordTable}></WebRecordTable>
+<ExecutionsTable bind:this={executionsTable}></ExecutionsTable>
 
 <h2>Visualisation</h2>
 
