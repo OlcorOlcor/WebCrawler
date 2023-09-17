@@ -29,7 +29,7 @@ namespace WebCrawler.Controllers
                 return Json("{}");
             }
 
-			JsonResult result = Json(record.ToStringJson());
+            JsonResult result = Json(record.ToStringJson());
             return result;
         }
 

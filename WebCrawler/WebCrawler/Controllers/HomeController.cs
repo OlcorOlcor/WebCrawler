@@ -24,7 +24,6 @@ namespace WebCrawler.Controllers {
                 return Content("");
             }
 
-
             record.ParseTags();
 			repo!.Add(record);
             repo.StartNewExecution(record);
@@ -73,7 +72,7 @@ namespace WebCrawler.Controllers {
                 valid = false;
             }
             //Validation of periodicity
-            if (record.Days + record.Hours + record.Minutes < 0) {
+            if (record.Days + record.Hours + record.Minutes <= 0) {
                 _logger.Log(LogLevel.Error, "Periodicy is not set");
                 valid = false;
             }
@@ -90,6 +89,44 @@ namespace WebCrawler.Controllers {
                 _logger.Log(LogLevel.Error, "URL is not well formated");
                 valid = false;
             }
+            if(record.Label!.Contains("\"") || record.Label!.Contains("\\")) {
+                _logger.Log(LogLevel.Error, "Label cannot contain \" or \\ symbols.");
+                valid = false;
+            }
+            if (record.Tags is not null && (record.Tags!.Contains("\"") || record.Tags!.Contains("\\"))) {
+                _logger.Log(LogLevel.Error, "Tags cannot contain \" or \\ symbols.");
+                valid = false;
+            }
+            char? lastchar = null;
+            foreach( char c in record.Regex!) {
+                if(c == '\"') {
+                    if(lastchar != '\\') {
+                        _logger.Log(LogLevel.Error, "Regex must only contain \" and \\ symbols excaped by \\.");
+                        valid = false; 
+                        break;
+                    }
+                    else {
+                        lastchar = null;
+                    }
+                }
+                else if (c == '\\') {
+                    if(lastchar == '\\') {
+                        lastchar = null;
+                    }
+                    else {
+                        lastchar = '\\';
+                    }
+                }
+                else {
+                    if(lastchar == '\\') {
+                        _logger.Log(LogLevel.Error, "Regex must only contain \" and \\ symbols excaped by \\.");
+                        valid = false;
+                        break;
+                    }
+                    lastchar = null;
+                }
+            }
+
             //Validation of Regular Expression
             try {
                 Regex regex = new Regex(record.Regex!);

@@ -34,6 +34,9 @@ namespace WebCrawler.Models.Serializers {
                 sb.Append($",\"LastExecutionStatus\": \"running\"");
             }
             sb.Append("}");
+
+            Console.WriteLine(sb.ToString());
+
             return sb.ToString();
         }
 
