@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
 namespace WebCrawler.Controllers {
-    [Route("graphql")]
     public class WebsitesController : GraphController {
         private readonly ILogger<ApiController> _logger;
         protected WebsiteRecordRepository? repo;
@@ -15,11 +14,21 @@ namespace WebCrawler.Controllers {
             this.repo = repo;
         }
 
-        [Query]
+        [QueryRoot]
         public List<WebsiteRecord> Websites() {
             return repo!.GetAllRecords();
         }
-        [Query]
+    }
+
+    public class NodesController : GraphController {
+        private readonly ILogger<ApiController> _logger;
+        protected WebsiteRecordRepository? repo;
+        public NodesController(ILogger<ApiController> logger, WebsiteRecordRepository repo) {
+            this._logger = logger;
+            this.repo = repo;
+        }
+
+        [QueryRoot]
         public List<WebPage> Nodes() {
             var records = repo!.GetAll();
             List<WebPage> pages = new List<WebPage>();
