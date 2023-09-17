@@ -5,7 +5,6 @@
     import WebRecordTable from "./WebRecordTable.svelte";
     import ExecutionsTable from "./ExecutionsTable.svelte";
 
-    const metaDataUri = '/Api/GetMetaData';
     const fullDataUri = '/Api/GetFullData';
     const webRecordsDataUri =  "/Api/GetWebsiteRecords";
     const startNewExecutionUri = "/Api/StartNewExecution";
@@ -19,7 +18,6 @@
 
     let currentRecordIndex = 0;
     let currentExecutionIndex = 0;
-    let metaData;
     let currentRecordFullData;
     let currentRecordDomainData;
 
@@ -64,7 +62,6 @@
 
     // Data retrieval
     function getData() {
-        getMetaData().then(data => metaData = data);
         getFullData(currentRecordIndex).then(data => {
             currentRecordFullData = JSON.parse(data);
             if (currentRecordFullData["executions"] == undefined) {
@@ -129,13 +126,6 @@
 
     function startNewExecution(recordId) {
         fetch(startNewExecutionUri + "/?recordId=" + recordId);
-    }
-
-    function getMetaData() {
-        return fetch(metaDataUri)
-            .then(response => response.json())
-            .then(data => data)
-            .catch(error => console.error('Unable to get metaData.', error));
     }
 
     function getFullData(id) {
@@ -259,12 +249,12 @@
         }
     }
 
-    function updateWebsiteGraph() {
+    function updateWebsiteGraph(newGraph) {
         if (websiteGraph !== undefined && websiteGraph !== null && currentRecordFullData["executions"] !== undefined) {
-            websiteGraph.updateData(currentRecordFullData["executions"][currentExecutionIndex]);
+            websiteGraph.updateData(currentRecordFullData["executions"][currentExecutionIndex], newGraph);
         }
         else {
-            setTimeout(updateWebsiteGraph, 500);
+            setTimeout(() => updateWebsiteGraph(false), 500);
         }
     }
 
@@ -280,11 +270,15 @@
             viewButton.textContent = "View Domains";
             websiteView = true;
             if (staticMode) {
-                updateWebsiteGraph();
+                updateWebsiteGraph(false);
             }
         }
     }
-  
+
+    function showGraph(recordId) {
+        currentRecordIndex = recordId;
+        updateWebsiteGraph(true);
+    }
 </script>
 
 <style>
@@ -298,6 +292,8 @@
     }
 </style>
 
+<WebRecordTable startNewExecution={startNewExecution} requestExecutionFilter={filterExecutions} showGraph={showGraph} bind:this={webRecordTable}></WebRecordTable>
+<ExecutionsTable bind:this={executionsTable}></ExecutionsTable>
 <div class="container">
     <button class="btn btn-secondary" bind:this={modeButton} on:click={switchGraphMode}>Make Static</button>
     <button class="btn btn-secondary" bind:this={viewButton} on:click={switchGraphView}>View Domains</button>
