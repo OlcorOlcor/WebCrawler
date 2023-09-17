@@ -69,14 +69,20 @@
             }
 
             currentRecordDomainData = getDomainData(currentRecordFullData["executions"][currentExecutionIndex]);
-
+            
+            console.log(websiteGraph);
+            console.log(domainGraph);
+            
             if (websiteView && websiteGraph != null && websiteGraph !== undefined) {
-                websiteGraph.updateData(currentRecordFullData["executions"][currentExecutionIndex], false); 
+                console.log("here1");
+                websiteGraph.updateData(currentRecordFullData["executions"][currentExecutionIndex]); 
                 return;
             }
 
+            
             if (!websiteView && domainGraph != null && domainGraph !== undefined) {
-                domainGraph.updateData(currentRecordDomainData, false);
+                console.log("here2");
+                domainGraph.updateData(currentRecordDomainData);
                 return;
             }
         });
@@ -245,7 +251,7 @@
             if (newGraph) {
                 domainGraph.clearData();
             }
-            domainGraph.updateData(currentRecordDomainData, newGraph);
+            domainGraph.updateData(currentRecordDomainData);
         }
         else {
             setTimeout(() => updateDomainGraph(newGraph), 500);
@@ -257,7 +263,7 @@
             if (newGraph) {
                 websiteGraph.clearData();
             }
-            websiteGraph.updateData(currentRecordFullData["executions"][currentExecutionIndex], newGraph);
+            websiteGraph.updateData(currentRecordFullData["executions"][currentExecutionIndex]);
         }
         else {
             setTimeout(() => updateWebsiteGraph(newGraph), 500);
@@ -269,14 +275,14 @@
             viewButton.textContent = "View Websites";
             websiteView = false;
             if (staticMode) {
-                updateDomainGraph(true);
+                updateDomainGraph(false);
             }
         }
         else {
             viewButton.textContent = "View Domains";
             websiteView = true;
             if (staticMode) {
-                updateWebsiteGraph(true);
+                updateWebsiteGraph(false);
             }
         }
     }

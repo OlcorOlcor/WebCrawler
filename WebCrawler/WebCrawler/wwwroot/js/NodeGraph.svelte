@@ -198,7 +198,7 @@ svelte example: https://github.com/happybeing/d3-fdg-svelte
         }
     }
 
-    export function updateData(newGraphData, newGraph) {
+    export function updateData(newGraphData) {
         if (newGraphData.nodes == null && newGraphData.links == null) {
             return;
         } 
