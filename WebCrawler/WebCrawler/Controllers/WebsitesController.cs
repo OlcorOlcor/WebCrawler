@@ -6,8 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
 namespace WebCrawler.Controllers {
-
-    [Route("~/graphql")]
+    [Route("graphql")]
     public class WebsitesController : GraphController {
         private readonly ILogger<ApiController> _logger;
         protected WebsiteRecordRepository? repo;
@@ -16,12 +15,12 @@ namespace WebCrawler.Controllers {
             this.repo = repo;
         }
 
-        [Query("Websites")]
-        public WebsiteRecord[] Websites() {
-            return repo!.GetAll().ToArray();
+        [Query]
+        public List<WebsiteRecord> Websites() {
+            return repo!.GetAllRecords();
         }
-        [Query("Nodes")]
-        public WebPage[] Nodes() {
+        [Query]
+        public List<WebPage> Nodes() {
             var records = repo!.GetAll();
             List<WebPage> pages = new List<WebPage>();
             foreach (var record in records) {
@@ -29,7 +28,7 @@ namespace WebCrawler.Controllers {
                     pages.AddRange(record.LastFinishedExecution.pages);
                 }
             }
-            return pages.ToArray();
+            return pages;
         }
     }
 }

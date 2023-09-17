@@ -40,16 +40,18 @@
     fetch("/graphql/", {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query: '{ websites: [{websiteRecord: {id, url, regex}}] }' })
+        body: JSON.stringify({ query: '{ websites: {id regex}}' })
     })
     .then(response => response.json())
     .then(response => console.log(response.data));
 
     fetch("/graphql/", {
-        method: 'POST',
-        header: {'Content-Type': 'application/json'},
-        body: JSON.stringify({query: '{Nodes: [{Node: {url title}}]}'})
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ query: '{ Nodes { url title } }'})
     })
+    .then(response => response.json())
+    .then(response => console.log(response.data));
 
     getData();
     getWebRecordData();
