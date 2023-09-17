@@ -5,6 +5,19 @@
     import WebRecordTable from "./WebRecordTable.svelte";
     import ExecutionsTable from "./ExecutionsTable.svelte";
 
+    // Enum of Views 
+    class View {
+        static Website = new View('Website');
+        static Domain = new View('Domain');
+
+        constructor(name) {
+            this.name = name;
+        }
+        toString() {
+            return `View.${this.name}`;
+        }
+    }
+
     const fullDataUri = '/Api/GetFullData';
     const webRecordsDataUri =  "/Api/GetWebsiteRecords";
     const startNewExecutionUri = "/Api/StartNewExecution";
@@ -22,12 +35,11 @@
     let currentRecordDomainData;
 
     let modeButton;
-    let staticMode = false;
+    let staticGraphMode = false;
     let viewButton;
-    let websiteView = true;
+    let graphView = View.Website;
 
-    let websiteGraph;
-    let domainGraph;
+    let nodeGraph;
     let webRecordTable;
     let executionsTable;
 
@@ -44,7 +56,7 @@
     .then(response => console.log(response.data));
 
 
-    getData();
+    getGraphData(false);
     getWebRecordData();
     setInterval(getWebRecordData, webRecordUpdateInterval);
     setInterval(getExecutionsData, executionUpdateInterval);
@@ -61,7 +73,7 @@
     });
 
     // Data retrieval
-    function getData() {
+    function getGraphData(recordChange) {
         getFullData(currentRecordIndex).then(data => {
             currentRecordFullData = JSON.parse(data);
             if (currentRecordFullData["executions"] == undefined) {
@@ -70,25 +82,11 @@
 
             currentRecordDomainData = getDomainData(currentRecordFullData["executions"][currentExecutionIndex]);
             
-            console.log(websiteGraph);
-            console.log(domainGraph);
-            
-            if (websiteView && websiteGraph != null && websiteGraph !== undefined) {
-                console.log("here1");
-                websiteGraph.updateData(currentRecordFullData["executions"][currentExecutionIndex]); 
-                return;
-            }
-
-            
-            if (!websiteView && domainGraph != null && domainGraph !== undefined) {
-                console.log("here2");
-                domainGraph.updateData(currentRecordDomainData);
-                return;
-            }
+            updateNodeGraph(recordChange, graphView);
         });
 
-        if (!staticMode) {
-            setTimeout(getData, graphUpdateInterval);
+        if (!staticGraphMode && !recordChange) {
+            setTimeout(getGraphData, graphUpdateInterval);
         }
     }
 
@@ -174,7 +172,6 @@
     }
 
     function getDomainNodes(websiteNodes) {
-
         let domainNodes = [];
         for (let i = 0; i < websiteNodes.length; i++) {
             let nodeDomain = getDomain(websiteNodes[i].id);
@@ -235,61 +232,52 @@
     }
 
     function switchGraphMode() {
-        if (staticMode) {
+        if (staticGraphMode) {
             modeButton.textContent = "Make Static";
-            staticMode = false;
-            getData();
+            staticGraphMode = false;
+            getGraphData();
         }
         else {
             modeButton.textContent = "Make Active";
-            staticMode = true;
+            staticGraphMode = true;
         }
     }
 
-    function updateDomainGraph(newGraph) {
-        if (domainGraph !== undefined && domainGraph !== null && currentRecordDomainData !== undefined) {
-            if (newGraph) {
-                domainGraph.clearData();
-            }
-            domainGraph.updateData(currentRecordDomainData);
+    function updateNodeGraph(switchView, view) {
+        let newData = view === View.Domain ? currentRecordDomainData : currentRecordFullData["executions"][currentExecutionIndex];
+        if (nodeGraph === undefined || nodeGraph === null || newData === undefined) {
+            // Try it again in 0.5s
+            setTimeout(() => updateNodeGraph(switchView, view), 500);
         }
-        else {
-            setTimeout(() => updateDomainGraph(newGraph), 500);
-        }
-    }
 
-    function updateWebsiteGraph(newGraph) {
-        if (websiteGraph !== undefined && websiteGraph !== null && currentRecordFullData["executions"] !== undefined) {
-            if (newGraph) {
-                websiteGraph.clearData();
-            }
-            websiteGraph.updateData(currentRecordFullData["executions"][currentExecutionIndex]);
+        if (switchView) {
+            nodeGraph.clearData();
         }
-        else {
-            setTimeout(() => updateWebsiteGraph(newGraph), 500);
-        }
+
+        nodeGraph.updateData(newData);
     }
 
     function switchGraphView() {
-        if (websiteView) {
+        if (graphView === View.Website) {
             viewButton.textContent = "View Websites";
-            websiteView = false;
-            if (staticMode) {
-                updateDomainGraph(false);
-            }
+            graphView = View.Domain;
+
+            updateNodeGraph(true, graphView);
         }
         else {
             viewButton.textContent = "View Domains";
-            websiteView = true;
-            if (staticMode) {
-                updateWebsiteGraph(false);
-            }
+            graphView = View.Website;
+        
+            updateNodeGraph(true, graphView);
         }
     }
 
     function showGraph(recordId) {
+        if (staticGraphMode) {
+            switchGraphMode();
+        }
         currentRecordIndex = recordId;
-        websiteView ? updateWebsiteGraph(true) : updateDomainGraph(true);
+        getGraphData(true);
     }
 </script>
 
@@ -311,9 +299,4 @@
     <button class="btn btn-secondary" bind:this={viewButton} on:click={switchGraphView}>View Domains</button>
 </div>
 
-<!-- TODO Could be only one NodeGraph with changing data for performace reasons -->
-{#if websiteView}
-    <NodeGraph bind:this={websiteGraph}></NodeGraph>
-{:else}
-    <NodeGraph bind:this={domainGraph}></NodeGraph>
-{/if}
+<NodeGraph bind:this={nodeGraph}></NodeGraph>
