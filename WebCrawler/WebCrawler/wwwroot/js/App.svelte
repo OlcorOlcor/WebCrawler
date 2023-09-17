@@ -71,7 +71,7 @@
             currentRecordDomainData = getDomainData(currentRecordFullData["executions"][currentExecutionIndex]);
 
             if (websiteView && websiteGraph != null && websiteGraph !== undefined) {
-                websiteGraph.updateData(currentRecordFullData["executions"][currentExecutionIndex]); 
+                websiteGraph.updateData(currentRecordFullData["executions"][currentExecutionIndex], false); 
                 return;
             }
 
@@ -254,7 +254,7 @@
             websiteGraph.updateData(currentRecordFullData["executions"][currentExecutionIndex], newGraph);
         }
         else {
-            setTimeout(() => updateWebsiteGraph(false), 500);
+            setTimeout(() => updateWebsiteGraph(newGraph), 500);
         }
     }
 
