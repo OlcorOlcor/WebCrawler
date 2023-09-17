@@ -16,6 +16,7 @@ class WebsiteRecord {
 
 export let startNewExecution;
 export let requestExecutionFilter;
+export let showGraph;
 
 let pageNumber = 0;
 const MaxItemsOnPage = 6;
@@ -95,6 +96,8 @@ function previousPage() {
                 <th>Status of last executions</th>
                 <th>Tags</th>
                 <th>Crawl now</th>
+                <th>Filter Executions</th>
+                <th>Show Graph</th>
             </tr>
         </thead>
         <tbody>
@@ -113,6 +116,7 @@ function previousPage() {
                     </td>
                     <td><button type="button" class="btn btn-primary" on:click={startNewExecution(record.Id)}>Start New Execution</button></td>
                     <td><button type="button" class="btn btn-primary" on:click={requestExecutionFilter(record.Id)}>Show Related Executions</button></td>
+                    <td><button type="button" class="tbn btn-primary" on:click={showGraph(record.Id)}>Show Graph</button></td>
                 </tr>
             {/each}
         </tbody>
