@@ -204,10 +204,11 @@ svelte example: https://github.com/happybeing/d3-fdg-svelte
         if (newGraph) {
             nodes = [];
             links = [];
-            d3.set().clear();
+            if (d3.set() !== undefined) {
+                d3.set().clear();
+            }
             noUpdateNeeded = false;
         }
-        
         // TODO Both inner forEaches should be replaced with more efficient hashset or something
 
         newNodes.forEach((newNode) => {
