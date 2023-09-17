@@ -190,6 +190,14 @@ svelte example: https://github.com/happybeing/d3-fdg-svelte
         event.subject.fy = null;
     }
 
+    export function clearData() {
+        nodes = [];
+        links = [];
+        if (d3.set !== undefined) {
+            d3.set().clear();
+        }
+    }
+
     export function updateData(newGraphData, newGraph) {
         if (newGraphData.nodes == null && newGraphData.links == null) {
             return;
@@ -201,14 +209,6 @@ svelte example: https://github.com/happybeing/d3-fdg-svelte
         
         let noUpdateNeeded = true;
         
-        if (newGraph) {
-            nodes = [];
-            links = [];
-            if (d3.set() !== undefined) {
-                d3.set().clear();
-            }
-            noUpdateNeeded = false;
-        }
         // TODO Both inner forEaches should be replaced with more efficient hashset or something
 
         newNodes.forEach((newNode) => {

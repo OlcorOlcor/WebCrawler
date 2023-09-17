@@ -76,7 +76,7 @@
             }
 
             if (!websiteView && domainGraph != null && domainGraph !== undefined) {
-                domainGraph.updateData(currentRecordDomainData);
+                domainGraph.updateData(currentRecordDomainData, false);
                 return;
             }
         });
@@ -240,17 +240,23 @@
         }
     }
 
-    function updateDomainGraph() {
+    function updateDomainGraph(newGraph) {
         if (domainGraph !== undefined && domainGraph !== null && currentRecordDomainData !== undefined) {
-            domainGraph.updateData(currentRecordDomainData);
+            if (newGraph) {
+                domainGraph.clearData();
+            }
+            domainGraph.updateData(currentRecordDomainData, newGraph);
         }
         else {
-            setTimeout(updateDomainGraph, 500);
+            setTimeout(() => updateDomainGraph(newGraph), 500);
         }
     }
 
     function updateWebsiteGraph(newGraph) {
         if (websiteGraph !== undefined && websiteGraph !== null && currentRecordFullData["executions"] !== undefined) {
+            if (newGraph) {
+                websiteGraph.clearData();
+            }
             websiteGraph.updateData(currentRecordFullData["executions"][currentExecutionIndex], newGraph);
         }
         else {
@@ -263,21 +269,21 @@
             viewButton.textContent = "View Websites";
             websiteView = false;
             if (staticMode) {
-                updateDomainGraph();
+                updateDomainGraph(true);
             }
         }
         else {
             viewButton.textContent = "View Domains";
             websiteView = true;
             if (staticMode) {
-                updateWebsiteGraph(false);
+                updateWebsiteGraph(true);
             }
         }
     }
 
     function showGraph(recordId) {
         currentRecordIndex = recordId;
-        updateWebsiteGraph(true);
+        websiteView ? updateWebsiteGraph(true) : updateDomainGraph(true);
     }
 </script>
 
