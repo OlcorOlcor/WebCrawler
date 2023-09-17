@@ -15,6 +15,7 @@ class WebsiteRecord {
 }
 
 export let startNewExecution;
+export let deleteWebSiteRecord;
 export let requestExecutionFilter;
 
 let pageNumber = 0;
@@ -82,6 +83,9 @@ function previousPage() {
 }
 
 function deleteRecord(record){
+    console.log(record);
+    console.log(WebsiteRecords);
+    console.log(WebsiteRecordsOnPage);
     if(WebsiteRecords.includes(record)){
         WebsiteRecords.splice(WebsiteRecords.indexOf(record), 1);
     }
@@ -123,7 +127,7 @@ function deleteRecord(record){
                     </td>
                     <td><button type="button" class="btn btn-primary" on:click={startNewExecution(record.Id)}>Start New Execution</button></td>
                     <td><button type="button" class="btn btn-primary" on:click={requestExecutionFilter(record.Id)}>Show Related Executions</button></td>
-                    <td><button type="button" class="btn btn-primary" on:click={deleteRecord(record)}>Delete Record</button></td>
+                    <td><button type="button" class="btn btn-primary" on:click={deleteWebSiteRecord(record.Id)}>Delete Record</button></td>
                 </tr>
             {/each}
         </tbody>
