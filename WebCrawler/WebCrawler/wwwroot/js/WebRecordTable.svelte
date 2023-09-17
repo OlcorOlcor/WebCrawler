@@ -22,6 +22,7 @@ let pageNumber = 0;
 const MaxItemsOnPage = 6;
 let previousButton;
 let nextButton;
+let selectedRowId = 0;
 
 $: WebsiteRecords = [];
 $: WebsiteRecordsOnPage = [];
@@ -81,6 +82,22 @@ function previousPage() {
         updateTable();
     }
 }
+
+
+//TODO: For some reason the getELementById method doesn't work.
+function ShowGraph(recordId) {
+    let oldRow = document.getElementById("row-" + selectedRowId);
+    let currentRow = document.getElementById("row-" + recordId);
+    console.log(oldRow);
+    console.log(currentRow);
+    console.log("row-" + selectedRowId);
+    console.log("row-" + recordId);
+    oldRow.classList.remove("selected");
+    currentRow.classList.add("selected");
+    selectedRowId = recordId;
+    showGraph(recordId);
+}
+
 </script>
 
 <div class="list">
@@ -102,7 +119,7 @@ function previousPage() {
         </thead>
         <tbody>
             {#each WebsiteRecordsOnPage as record}
-                <tr>
+                <tr id="row-{record.Id}">
                     <td contenteditable="false" bind:innerHTML={record.Url}/>
                     <td contenteditable="false" bind:innerHTML={record.Regex}/>
                     <td contenteditable="false" bind:innerHTML={record.Periodicity}/>
@@ -124,3 +141,10 @@ function previousPage() {
 </div>
 <button class="btn btn-outline-secondary btn-sm" disabled=true bind:this={previousButton} on:click={previousPage}>Previous Page</button>
 <button class="btn btn-outline-secondary btn-sm" disabled=true bind:this={nextButton} on:click={nextPage}>Next Page</button>
+
+
+<style>
+    .selected {
+        background-color: blue;
+    }
+</style>
