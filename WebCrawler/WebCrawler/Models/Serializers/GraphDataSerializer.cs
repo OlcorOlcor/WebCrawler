@@ -54,7 +54,7 @@ namespace WebCrawler.Models.Serializers {
                 }
             }
             sb = new StringBuilder();
-            sb.Append("\"graph data\": {");
+            sb.Append("{");
             SerializeRepeatingNodes(allPages);
             SerializeLinks(links.ToArray());
             sb.Append("}");
