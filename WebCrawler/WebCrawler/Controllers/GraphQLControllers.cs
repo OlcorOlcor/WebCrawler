@@ -15,8 +15,15 @@ namespace WebCrawler.Controllers {
         }
 
         [QueryRoot]
-        public List<WebsiteRecord> Websites() {
-            return repo!.GetAllRecords();
+        public List<Website> Websites() {
+            var records = repo!.GetAllRecords();
+            List<Website> websites = new List<Website>();
+
+            foreach (var record in records) {
+                websites.Add(Websites.MakeNewWebsite(record));
+            }
+
+            return websites;
         }
     }
 

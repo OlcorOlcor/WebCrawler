@@ -16,5 +16,9 @@ namespace WebCrawler.Models {
             Tags = tags; 
             Active = active;
         }
+
+        public static Website MakeNewWebsite(WebsiteRecord record) {
+            return new Website(record.Id, record.Label, record.Url, record.Regex, record.TagsArray, record.Active);
+        }
     }
 }
