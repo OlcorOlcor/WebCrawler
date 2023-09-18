@@ -132,7 +132,6 @@
           <th>Start time</th>
           <th>End time</th>
           <th>Number of sites crawled</th>
-          <th>Show Execution</th>
         </tr>
       </thead>
 
@@ -144,7 +143,6 @@
           <td contenteditable="false" bind:innerHTML={tableExecution.starttime}/>
           <td contenteditable="false" bind:innerHTML={tableExecution.endtime}/>
           <td contenteditable="false" bind:innerHTML={tableExecution.nmbrOfSites}/>
-          <td>NOT YET</td>
         </tr>
       {/each}
       </tbody>
