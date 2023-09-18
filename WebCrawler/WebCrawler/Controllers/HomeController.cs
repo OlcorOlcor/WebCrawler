@@ -19,7 +19,7 @@ namespace WebCrawler.Controllers {
         }
 
         [HttpPost]
-		public ContentResult Index(WebsiteRecord record) {
+        public ContentResult Index(WebsiteRecord record) {
             if (!ValidateWebRecord(record)) { 
                 return Content("");
             }
