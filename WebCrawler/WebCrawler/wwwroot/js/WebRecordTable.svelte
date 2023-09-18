@@ -15,12 +15,15 @@ class WebsiteRecord {
 }
 
 export let startNewExecution;
+export let deleteWebSiteRecord;
 export let requestExecutionFilter;
+export let showGraph;
 
 let pageNumber = 0;
 const MaxItemsOnPage = 6;
 let previousButton;
 let nextButton;
+let selectedRowId = 0;
 
 $: WebsiteRecords = [];
 $: WebsiteRecordsOnPage = [];
@@ -80,6 +83,34 @@ function previousPage() {
         updateTable();
     }
 }
+
+
+//TODO: For some reason the getELementById method doesn't work.
+function ShowGraph(recordId) {
+    let oldRow = document.getElementById("row-" + selectedRowId);
+    let currentRow = document.getElementById("row-" + recordId);
+    console.log(oldRow);
+    console.log(currentRow);
+    console.log("row-" + selectedRowId);
+    console.log("row-" + recordId);
+    oldRow.classList.remove("selected");
+    currentRow.classList.add("selected");
+    selectedRowId = recordId;
+    showGraph(recordId);
+}
+
+function deleteRecord(record){
+    console.log(record);
+    console.log(WebsiteRecords);
+    console.log(WebsiteRecordsOnPage);
+    if(WebsiteRecords.includes(record)){
+        WebsiteRecords.splice(WebsiteRecords.indexOf(record), 1);
+    }
+    if(WebsiteRecordsOnPage.includes(record)){
+        WebsiteRecordsOnPage.splice(WebsiteRecordsOnPage.indexOf(record), 1);
+    }
+}
+  
 </script>
 
 <div class="list">
@@ -95,11 +126,14 @@ function previousPage() {
                 <th>Status of last executions</th>
                 <th>Tags</th>
                 <th>Crawl now</th>
+                <th>Filter Executions</th>
+                <th>Show Graph</th>
+                <th>Delete</th>
             </tr>
         </thead>
         <tbody>
             {#each WebsiteRecordsOnPage as record}
-                <tr>
+                <tr id="row-{record.Id}">
                     <td contenteditable="false" bind:innerHTML={record.Url}/>
                     <td contenteditable="false" bind:innerHTML={record.Regex}/>
                     <td contenteditable="false" bind:innerHTML={record.Periodicity}/>
@@ -113,6 +147,8 @@ function previousPage() {
                     </td>
                     <td><button type="button" class="btn btn-primary" on:click={startNewExecution(record.Id)}>Start New Execution</button></td>
                     <td><button type="button" class="btn btn-primary" on:click={requestExecutionFilter(record.Id)}>Show Related Executions</button></td>
+                    <td><button type="button" class="tbn btn-primary" on:click={showGraph(record.Id)}>Show Graph</button></td>
+                    <td><button type="button" class="btn btn-primary" on:click={deleteWebSiteRecord(record.Id)}>Delete Record</button></td>
                 </tr>
             {/each}
         </tbody>
@@ -120,3 +156,10 @@ function previousPage() {
 </div>
 <button class="btn btn-outline-secondary btn-sm" disabled=true bind:this={previousButton} on:click={previousPage}>Previous Page</button>
 <button class="btn btn-outline-secondary btn-sm" disabled=true bind:this={nextButton} on:click={nextPage}>Next Page</button>
+
+
+<style>
+    .selected {
+        background-color: blue;
+    }
+</style>

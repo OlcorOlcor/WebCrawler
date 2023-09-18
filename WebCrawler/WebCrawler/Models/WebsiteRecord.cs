@@ -79,7 +79,7 @@ namespace WebCrawler.Models {
             RunningExecutions.Remove(RunningExecutions[executionIndex]);
             this.LastFinishedExecution = execution;
 
-            if (RunningExecutions.Count == 0 && Active == true) {
+            if (RunningExecutions.Count == 0 && LastFinishedExecution == null && Active == true) {
                 StartNewExecution();
                 return;
             }

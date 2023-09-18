@@ -190,10 +190,19 @@ svelte example: https://github.com/happybeing/d3-fdg-svelte
         event.subject.fy = null;
     }
 
+    export function clearData() {
+        nodes = [];
+        links = [];
+        if (d3.set !== undefined) {
+            d3.set().clear();
+        }
+    }
+
     export function updateData(newGraphData) {
         if (newGraphData.nodes == null && newGraphData.links == null) {
             return;
         } 
+        
         
         let newNodes = newGraphData.nodes.map(d => Object.create(d));
         let newLinks = newGraphData.links.map(d => Object.create(d));
@@ -316,6 +325,3 @@ svelte example: https://github.com/happybeing/d3-fdg-svelte
 
 <div class="nodeInfo" bind:this={infoBox}>
 </div>
-
-
-
