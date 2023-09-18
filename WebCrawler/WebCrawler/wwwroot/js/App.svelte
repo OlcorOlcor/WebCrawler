@@ -48,14 +48,21 @@
     let form = document.getElementById("WebRecordForm");
 
     // test fetch for graphql
-    fetch("/graphql/", {
+    fetch("/graphql", {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query: '{ websites: [{websiteRecord: {id, url, regex}}] }' })
+        body: JSON.stringify({ query: '{ websites {id regex}}' })
     })
     .then(response => response.json())
     .then(response => console.log(response.data));
 
+    fetch("/graphql", {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ query: '{ nodes { url title } }'})
+    })
+    .then(response => response.json())
+    .then(response => console.log(response.data));
 
     getGraphData(false);
     getWebRecordData();
