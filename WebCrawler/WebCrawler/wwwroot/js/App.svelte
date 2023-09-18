@@ -24,7 +24,7 @@
     const deleteWebSiteRecordUri = "/Api/DeleteWebSiteRecord";
     const executionsDataUri = "./Api/GetExecutions/";
     const formUri = "/Home/AddRecord";
-    const multiGraphUri = "/Api/GetGraphs";
+    const multiGraphUri = "/Api/GetGraphByIds";
 
     // Intervals in ms
     const graphUpdateInterval = 5000;
@@ -280,7 +280,6 @@
     }
 
     function showSelected(recordIds) {
-        console.log(JSON.stringify(recordIds));
         fetch(multiGraphUri + '/', 
         {
         method: 'POST',
@@ -289,6 +288,7 @@
         })
         .then(response => response.json())
         .then(data => {
+            console.log(data);
             currentRecordFullData = JSON.parse(data);
             if (currentRecordFullData["executions"] == undefined) {
                 return;
@@ -296,7 +296,7 @@
 
             currentRecordDomainData = getDomainData(currentRecordFullData["executions"][currentExecutionIndex]);
             
-            updateNodeGraph(false, graphView);
+            updateNodeGraph(true, graphView);
         });
     }
 </script>

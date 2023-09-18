@@ -38,11 +38,11 @@ namespace WebCrawler.Models.Serializers {
                 foreach (var record in records) {
                     if (record.Id == id) {
                         List<WebPage> pages;
-                        if (record.RunningExecutions.Count != 0) {
-                            pages = record.RunningExecutions[0].pages;
-                        }
-                        else if (record.LastFinishedExecution != null) {
+                        if (record.LastFinishedExecution != null) {
                             pages = record.LastFinishedExecution.pages;
+                        }
+                        else if(record.RunningExecutions.Count != 0) {
+                            pages = record.RunningExecutions[0].pages;
                         }
                         else continue;
 
@@ -55,9 +55,10 @@ namespace WebCrawler.Models.Serializers {
             }
             sb = new StringBuilder();
             sb.Append("{");
+            sb.Append("\"executions\": [{");
             SerializeRepeatingNodes(allPages);
             SerializeLinks(links.ToArray());
-            sb.Append("}");
+            sb.Append("}]}");
             return sb.ToString();
         }
 
@@ -90,9 +91,13 @@ namespace WebCrawler.Models.Serializers {
                             sb.Append(",");
                         }
                         firstUrl = false;
-                        sb.Append($"{url.Item2} : \"{url.Item1}\"");
+                        sb.Append($"{{");
+                        sb.Append($"\"Id\": {url.Item2},");
+                        sb.Append($"\"Label\": \"{url.Item1}\"");
+                        sb.Append($"}}");
                     }
-                    sb.Append($"}}");
+                    sb.Append("]");
+                    sb.Append($"}},");
 
                     mostRecentTime = null;
                     crawledBy = new List<(string, int)>();
@@ -118,8 +123,12 @@ namespace WebCrawler.Models.Serializers {
                         sb.Append(",");
                     }
                     firstUrl = false;
-                    sb.Append($"{url.Item2} : \"{url.Item1}\"");
+                    sb.Append($"{{");
+                    sb.Append($"\"Id\": {url.Item2},");
+                    sb.Append($"\"Label\": \"{url.Item1}\"");
+                    sb.Append($"}}");
                 }
+                sb.Append("]");
                 sb.Append($"}}");
             }
 
