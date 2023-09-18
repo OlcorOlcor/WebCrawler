@@ -24,7 +24,6 @@ namespace WebCrawler.Controllers {
                 return Content("");
             }
 
-
             record.ParseTags();
 			repo!.Add(record);
             repo.StartNewExecution(record);
@@ -37,7 +36,7 @@ namespace WebCrawler.Controllers {
                 $"  <td>{record.Url}</td>" +
                 $"<td>{record.Regex}</td>" +
                 $"<td>{record.Days.ToString()}d {record.Hours.ToString()}h {record.Minutes.ToString()}m</td>" +
-                $"<td>{record.Label}</td>" +
+                $"<td>{record.Label!}</td>" +
                 $"<td id=\"ExecutionTime{record.Id}\">YET TO FINISH</td>" +
                 $"<td id=\"ExecutionStatus{record.Id}\">RUNNING</td>" +
                 $"<td>Tags</td>" +
