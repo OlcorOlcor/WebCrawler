@@ -2,7 +2,7 @@
 
 namespace WebCrawler.Models.Serializers {
     public class GraphDataSerializer : ISerializer<WebsiteRecord> {
-        private StringBuilder? sb;
+        private StringBuilder sb = new StringBuilder();
         public string Serialize(WebsiteRecord record) {
             sb = new StringBuilder();
             WebsiteRecord websiteRecord = record;

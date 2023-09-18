@@ -59,7 +59,7 @@
     fetch("/graphql", {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({ query: '{ nodes { url title } }'})
+    body: JSON.stringify({ query: '{ nodes(webPages: [0]) { url title } }'})
     })
     .then(response => response.json())
     .then(response => console.log(response.data));
