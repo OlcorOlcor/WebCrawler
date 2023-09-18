@@ -148,7 +148,7 @@ function deleteRecord(record){
                     <td><button type="button" class="btn btn-primary" on:click={startNewExecution(record.Id)}>Start New Execution</button></td>
                     <td><button type="button" class="btn btn-primary" on:click={requestExecutionFilter(record.Id)}>Show Related Executions</button></td>
                     <td><button type="button" class="tbn btn-primary" on:click={showGraph(record.Id)}>Show Graph</button></td>
-                    <td><button type="button" class="btn btn-primary" on:click={deleteWebSiteRecord(record.Id)}>Delete Record</button></td>
+                    <td><button type="button" class="btn btn-danger" on:click={deleteWebSiteRecord(record.Id)}>Delete Record</button></td>
                 </tr>
             {/each}
         </tbody>
