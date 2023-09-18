@@ -87,7 +87,7 @@ namespace WebCrawler.Models.Serializers {
                     if(mostRecentTime > page.Item1.CrawlTime || mostRecentTime == null) {
                         mostRecentTime = page.Item1.CrawlTime;
                     }
-                    if (!crawledBy.Contains((page.Item2, page.Item3))) {
+                    if (!RecordInfoAlreadyPresent(crawledBy, page.Item3)) {
                         crawledBy.Add((page.Item2,page.Item3));
                     }
                 }
@@ -159,6 +159,15 @@ namespace WebCrawler.Models.Serializers {
             }
 
             sb.Append("],");
+        }
+
+        private bool RecordInfoAlreadyPresent(List<(string, int)> crawledBy, int id) {
+            foreach (var record in crawledBy) {
+                if (record.Item2 == id) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         private void SerializeExecution(Execution execution, int executionNumber) {

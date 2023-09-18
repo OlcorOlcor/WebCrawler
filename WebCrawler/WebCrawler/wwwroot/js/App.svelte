@@ -195,10 +195,10 @@
                 let websiteCrawlers = websiteNodes[i]["crawled-by"];
                 let domainCrawlers = domainNodes[nodeMatchIndex]["crawled-by"];
 
-                websiteCrawlers.forEach((websiteCrawlerUrl) => {
-                    let domainCrawler = domainCrawlers.find((crawler) => crawler === websiteCrawlerUrl);
+                websiteCrawlers.forEach((websiteCrawler) => {
+                    let domainCrawler = domainCrawlers.find((crawler) => crawler.Id === websiteCrawler.Id);
                     if (domainCrawler === undefined) {
-                        domainCrawlers[domainCrawlers.length] = websiteCrawlerUrl;
+                        domainCrawlers[domainCrawlers.length] = websiteCrawler;
                     }
                 });
 
@@ -290,7 +290,7 @@
 
     div.container {
         display: flex;
-        justify-content: left;
+        justify-content: flex-end;
         gap: 10px;
     }
 </style>
