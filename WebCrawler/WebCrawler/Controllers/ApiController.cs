@@ -41,7 +41,7 @@ namespace WebCrawler.Controllers
         }
 
         [HttpGet]
-        public JsonResult GetGrafByIds(List<int> listId) {
+        public JsonResult GetGraphByIds(List<int> listId) {
             GraphDataSerializer serializer = new GraphDataSerializer();
             return Json(serializer.SerializeById(listId, repo!));
         }
