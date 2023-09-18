@@ -1,6 +1,6 @@
 
 namespace WebCrawler.Models {
-    public class Website {
+    public class WebPage {
         public int Id { get; set; }
         public string Label { get; set; }
         public string Url { get; set; }
@@ -8,7 +8,7 @@ namespace WebCrawler.Models {
         public string[] Tags { get; set; }
         public bool Active { get; set; }
 
-        public Website(int id, string label, string url, string regex, string[] tags, bool active) {
+        public WebPage(int id, string label, string url, string regex, string[] tags, bool active) {
             Id = id;
             Label = label;
             Url = url;
@@ -17,8 +17,8 @@ namespace WebCrawler.Models {
             Active = active;
         }
 
-        public static Website MakeNewWebsite(WebsiteRecord record) {
-            return new Website(record.Id, record.Label, record.Url, record.Regex, record.TagsArray, record.Active);
+        public static WebPage MakeNewWebsite(WebsiteRecord record) {
+            return new WebPage(record.Id, record.Label, record.Url, record.Regex, record.TagsArray, record.Active);
         }
     }
 }

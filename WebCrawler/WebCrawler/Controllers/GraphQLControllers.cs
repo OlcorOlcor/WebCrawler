@@ -15,12 +15,12 @@ namespace WebCrawler.Controllers {
         }
 
         [QueryRoot]
-        public List<Website> Websites() {
+        public List<WebPage> Websites() {
             var records = repo!.GetAllRecords();
-            List<Website> websites = new List<Website>();
+            List<WebPage> websites = new List<WebPage>();
 
             foreach (var record in records) {
-                websites.Add(Websites.MakeNewWebsite(record));
+                websites.Add(WebPage.MakeNewWebsite(record));
             }
 
             return websites;
@@ -36,15 +36,30 @@ namespace WebCrawler.Controllers {
         }
 
         [QueryRoot]
-        public List<WebPage> Nodes() {
-            var records = repo!.GetAll();
-            List<WebPage> pages = new List<WebPage>();
+        public List<Websites> Nodes(int[] recordIds) {
+            var records = new List<WebsiteRecord>();
+
+            foreach (var recordId in recordIds) {
+                var record = repo!.Find(recordId);
+                if (record is null) {
+                    throw new InvalidParameterException();
+                }
+
+                records.Add(record);
+            }
+
+            List<WebPage> websites = new List<WebPage>();
+            foreach (var record in records) {
+                websites.Add(Websites.MakeNewWebsite(record));
+            }
+
+            List<Website> sites = new List<Website>();
             foreach (var record in records) {
                 if (record.LastFinishedExecution is not null) {
-                    pages.AddRange(record.LastFinishedExecution.pages);
+                    sites.AddRange(record.LastFinishedExecution.pages);
                 }
             }
-            return pages;
+            return sites;
         }
     }
 }

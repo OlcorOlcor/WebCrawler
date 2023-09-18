@@ -19,7 +19,7 @@ namespace WebCrawler.Models {
         private Queue<string> _queue;
 
         //list of all crawled sites with their oriented conections
-        public List<WebPage> pages;
+        public List<Website> websites;
 
         //hashset of already visited urls
         private HashSet<string> _visited;
@@ -34,7 +34,7 @@ namespace WebCrawler.Models {
             this._regex = regex;
             this._queue = new Queue<string>();
             this._queue.Enqueue(url);
-            this.pages = new List<WebPage>();
+            this.websites = new List<Website>();
             this._visited = new HashSet<string>();
         }
 
@@ -47,14 +47,14 @@ namespace WebCrawler.Models {
             while (_queue.Count > 0) {
                 var page = _queue.Dequeue();
 
-                WebPage crawledPage = await _crawler.CrawlSite(page, _regex);
-                pages.Add(crawledPage);
+                Website crawledSite = await _crawler.CrawlSite(page, _regex);
+                websites.Add(crawledSite);
 
-                if (crawledPage.OutgoingLinks.UrlsMatchingRegex is null) {
+                if (crawledSite.OutgoingLinks.UrlsMatchingRegex is null) {
                     continue;
                 }
 
-                foreach (var outgoingLink in crawledPage.OutgoingLinks.UrlsMatchingRegex) { 
+                foreach (var outgoingLink in crawledSite.OutgoingLinks.UrlsMatchingRegex) { 
                     if(!_visited.Contains(outgoingLink)) {
                         _visited.Add(outgoingLink);
                         _queue.Enqueue(outgoingLink);

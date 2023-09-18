@@ -20,8 +20,7 @@ namespace WebCrawler.Models {
             // TODO ADD MORE!!!!
         };
 
-        //list to be filled with found webpages
-        public async Task<WebPage> CrawlSite(string url, string regex) {
+        public async Task<Website> CrawlSite(string url, string regex) {
             Console.WriteLine("Crawling " + url);
 
             //get data from server
@@ -31,7 +30,7 @@ namespace WebCrawler.Models {
                     pageStream = await client.GetStreamAsync(url);
                 } catch (Exception e) {
                     await Console.Out.WriteLineAsync(e.Message);
-                    return new WebPage(url, "", new WebLinks(), DateTime.Now, false);
+                    return new Website(url, "", new WebLinks(), DateTime.Now, false);
                 }
             }
 
@@ -79,7 +78,7 @@ namespace WebCrawler.Models {
                 UrlsMatchingRegex = matchingLinks.ToArray(), 
                 UrlsNotMatchingRegex = notMatchingLinks.ToArray()
             };
-            return new WebPage(url, title, outgoingLinks, DateTime.Now, true);
+            return new Website(url, title, outgoingLinks, DateTime.Now, true);
         }
 
         private bool IsRelativeUrl(string url) {
