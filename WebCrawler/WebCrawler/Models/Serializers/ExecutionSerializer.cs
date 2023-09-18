@@ -32,6 +32,7 @@ namespace WebCrawler.Models.Serializers {
         public string SerializeForExecutionTable(Execution execution, int recordId, string recordLabel) {
             StringBuilder sb2 = new StringBuilder();
             sb2.Append("{");
+            sb2.Append($"\"Id\": {execution.Id},");
             sb2.Append($"\"RecordId\": {recordId},"); //is not displayed to user, but important for filtering
             sb2.Append($"\"RecordLabel\": \"{recordLabel}\",");
             sb2.Append($"\"StartTime\": \"{execution.Start}\",");
