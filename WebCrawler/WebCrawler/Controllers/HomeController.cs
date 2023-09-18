@@ -101,7 +101,7 @@ namespace WebCrawler.Controllers {
             foreach( char c in record.Regex!) {
                 if(c == '\"') {
                     if(lastchar != '\\') {
-                        _logger.Log(LogLevel.Error, "Regex must only contain \" and \\ symbols excaped by \\.");
+                        _logger.Log(LogLevel.Error, "Regex must only contain \" and \\ symbols escaped by \\.");
                         valid = false; 
                         break;
                     }
@@ -119,7 +119,7 @@ namespace WebCrawler.Controllers {
                 }
                 else {
                     if(lastchar == '\\') {
-                        _logger.Log(LogLevel.Error, "Regex must only contain \" and \\ symbols excaped by \\.");
+                        _logger.Log(LogLevel.Error, "Regex must only contain \" and \\ symbols escaped by \\.");
                         valid = false;
                         break;
                     }
