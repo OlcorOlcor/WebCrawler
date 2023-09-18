@@ -1,4 +1,6 @@
 
+using System.Diagnostics;
+
 namespace WebCrawler.Models {
    
     public enum Status { NotRunning, Running, Finished }
@@ -43,6 +45,8 @@ namespace WebCrawler.Models {
 
             Start = DateTime.Now;
             Status = Status.Running;
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
 
             while (_queue.Count > 0) {
                 var page = _queue.Dequeue();
@@ -62,6 +66,8 @@ namespace WebCrawler.Models {
                 }
             }
 
+            stopwatch.Stop();
+            ExecutionTime = stopwatch.Elapsed;
             End = DateTime.Now;
             Status = Status.Finished;
 

@@ -44,6 +44,13 @@ function updateTable() {
       pageNumber = WebsiteRecords.length % MaxItemsOnPage == 0 ? (WebsiteRecords.length / MaxItemsOnPage) - 1 : (WebsiteRecords.length / MaxItemsOnPage);
     }
 
+    if(sortBy === "Time"){
+        WebsiteRecords.sort((a,b) => (a.LastExecutionTime > b.LastExecutionTime) ? 1 : -1);
+    }
+    else if(sortBy === "Url"){
+        WebsiteRecords.sort((a,b) => (a.Url > b.Url) ? 1 : -1);
+    }
+
     WebsiteRecordsOnPage = [];
     for (let i = 0; i < WebsiteRecords.length; i++) {
         if (webRecordOnVisiblePage(i)) {
@@ -120,6 +127,24 @@ function selectRecord(recordId) {
         SelectedRecords.push(recordId);
     }
 }
+
+let sortButton;
+let sortBy = "Default";
+function nextSort(){
+    if(sortButton === "Sort by: Default"){
+        sortButton = "Sort by: Time Crawled";
+        sortBy = "Time";
+    }
+    else if(sortButton === "Sort by: Time Crawled"){
+        sortButton = "Sort by: Url";
+        sortBy = "Url";
+    }
+    else{
+        sortButton = "Sort by: Default";
+        sortBy = "Default";
+    }
+    updateTable();
+}
 </script>
 
 <div class="list">
@@ -168,7 +193,7 @@ function selectRecord(recordId) {
 </div>
 <button class="btn btn-outline-secondary btn-sm" disabled=true bind:this={previousButton} on:click={previousPage}>Previous Page</button>
 <button class="btn btn-outline-secondary btn-sm" disabled=true bind:this={nextButton} on:click={nextPage}>Next Page</button>
-
+<button class="btn btn-outline-secondary btn-sm" contenteditable="false" bind:innerHTML={sortButton} on:click={nextSort}>Sort by: Default</button>
 
 <style>
     .selected {
