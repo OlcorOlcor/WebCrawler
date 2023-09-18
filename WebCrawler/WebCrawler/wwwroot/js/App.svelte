@@ -303,8 +303,9 @@
         body: JSON.stringify(recordIds)
         })
         .then(response => response.json())
-        .then(response => console.log(response.data)
-        );
+        .then(response => {
+            
+        });
     }
 </script>
 
