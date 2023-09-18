@@ -35,6 +35,11 @@ namespace WebCrawler.Controllers
 			}
 		}
 
+        [HttpDelete]
+        public void DeleteWebSiteRecord(int recordId) {
+            repo!.Delete(recordId);
+        }
+
         [HttpGet]
         public JsonResult GetLatestExecutions() {
             var records = repo!.GetAll();

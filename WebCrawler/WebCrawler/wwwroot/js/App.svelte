@@ -21,6 +21,7 @@
     const fullDataUri = '/Api/GetFullData';
     const webRecordsDataUri =  "/Api/GetWebsiteRecords";
     const startNewExecutionUri = "/Api/StartNewExecution";
+    const deleteWebSiteRecordUri = "/Api/DeleteWebSiteRecord";
     const executionsDataUri = "./Api/GetExecutions/";
     const formUri = "/Home/AddRecord";
 
@@ -130,6 +131,11 @@
 
     function startNewExecution(recordId) {
         fetch(startNewExecutionUri + "/?recordId=" + recordId);
+    }
+
+
+    function deleteWebSiteRecord(recordId) {
+        fetch(deleteWebSiteRecordUri + "/?recordId=" + recordId , { method: 'DELETE' });
     }
 
     function getFullData(id) {
@@ -292,8 +298,9 @@
     }
 </style>
 
-<WebRecordTable startNewExecution={startNewExecution} requestExecutionFilter={filterExecutions} showGraph={showGraph} bind:this={webRecordTable}></WebRecordTable>
+<WebRecordTable startNewExecution={startNewExecution} deleteWebSiteRecord={deleteWebSiteRecord} requestExecutionFilter={filterExecutions} showGraph={showGraph} bind:this={webRecordTable}></WebRecordTable>
 <ExecutionsTable bind:this={executionsTable}></ExecutionsTable>
+
 <div class="container">
     <button class="btn btn-secondary" bind:this={modeButton} on:click={switchGraphMode}>Make Static</button>
     <button class="btn btn-secondary" bind:this={viewButton} on:click={switchGraphView}>View Domains</button>

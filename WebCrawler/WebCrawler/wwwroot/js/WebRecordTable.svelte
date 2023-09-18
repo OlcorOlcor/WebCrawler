@@ -15,6 +15,7 @@ class WebsiteRecord {
 }
 
 export let startNewExecution;
+export let deleteWebSiteRecord;
 export let requestExecutionFilter;
 export let showGraph;
 
@@ -98,6 +99,18 @@ function ShowGraph(recordId) {
     showGraph(recordId);
 }
 
+function deleteRecord(record){
+    console.log(record);
+    console.log(WebsiteRecords);
+    console.log(WebsiteRecordsOnPage);
+    if(WebsiteRecords.includes(record)){
+        WebsiteRecords.splice(WebsiteRecords.indexOf(record), 1);
+    }
+    if(WebsiteRecordsOnPage.includes(record)){
+        WebsiteRecordsOnPage.splice(WebsiteRecordsOnPage.indexOf(record), 1);
+    }
+}
+  
 </script>
 
 <div class="list">
@@ -115,6 +128,7 @@ function ShowGraph(recordId) {
                 <th>Crawl now</th>
                 <th>Filter Executions</th>
                 <th>Show Graph</th>
+                <th>Delete</th>
             </tr>
         </thead>
         <tbody>
@@ -134,6 +148,7 @@ function ShowGraph(recordId) {
                     <td><button type="button" class="btn btn-primary" on:click={startNewExecution(record.Id)}>Start New Execution</button></td>
                     <td><button type="button" class="btn btn-primary" on:click={requestExecutionFilter(record.Id)}>Show Related Executions</button></td>
                     <td><button type="button" class="tbn btn-primary" on:click={showGraph(record.Id)}>Show Graph</button></td>
+                    <td><button type="button" class="btn btn-primary" on:click={deleteWebSiteRecord(record.Id)}>Delete Record</button></td>
                 </tr>
             {/each}
         </tbody>
