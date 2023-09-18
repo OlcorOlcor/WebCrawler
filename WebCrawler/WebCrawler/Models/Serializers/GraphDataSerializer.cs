@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using System.Text.RegularExpressions;
 
 namespace WebCrawler.Models.Serializers {
     public class GraphDataSerializer : ISerializer<WebsiteRecord> {
@@ -27,6 +28,102 @@ namespace WebCrawler.Models.Serializers {
 
             sb.Append("}}");
             return sb.ToString();
+        }
+
+        public string SerializeById(int[] listId, WebsiteRecordRepository repo) {
+            List<(WebPage,string, int)> allPages = new List<(WebPage,string,int)>();
+            List<WebPage> links = new List<WebPage> ();
+            var records = repo!.GetAll();
+            foreach (int id in listId) {
+                foreach (var record in records) {
+                    if (record.Id == id) {
+                        List<WebPage> pages;
+                        if (record.RunningExecutions.Count != 0) {
+                            pages = record.RunningExecutions[0].pages;
+                        }
+                        else if (record.LastFinishedExecution != null) {
+                            pages = record.LastFinishedExecution.pages;
+                        }
+                        else continue;
+
+                        foreach(var page in pages) {
+                            allPages.Add((page, record.Label!, record.Id!));
+                        }
+                        links.AddRange(pages);
+                    }
+                }
+            }
+            sb = new StringBuilder();
+            sb.Append("{");
+            SerializeRepeatingNodes(allPages);
+            SerializeLinks(links.ToArray());
+            sb.Append("}");
+            return sb.ToString();
+        }
+
+        private void SerializeRepeatingNodes(List<(WebPage,string, int)> allPages) {
+            List<(WebPage,string, int)> allPagesSorted = allPages.OrderBy(o => o.Item1.Url).ToList();
+            string lastUrl = allPages[0].Item1.Url;
+            DateTime? mostRecentTime = null;
+            List<(string,int)> crawledBy = new List<(string, int)>();
+
+            sb.Append("\"nodes\": [");
+
+            sb.Append($"{{\"id\": \"{allPages[0].Item1.Url}\"");
+            sb.Append($",\"title\": \"{allPages[0].Item1.Title}\"");
+            sb.Append($",\"group\": 2");
+            sb.Append($",\"match\": \"true\"");
+
+            foreach (var page in allPagesSorted) {
+                if(page.Item1.Url == lastUrl ) {
+                    if(mostRecentTime > page.Item1.CrawlTime || mostRecentTime == null) {
+                        mostRecentTime = page.Item1.CrawlTime;
+                    }
+                    crawledBy.Add((page.Item2,page.Item3));
+                }
+                else {
+                    sb.Append($",\"crawl-time\": \"{mostRecentTime}\"");
+                    sb.Append($",\"crawled-by\": [");
+                    bool firstUrl = true;
+                    foreach ((string, int) url in crawledBy) {
+                        if (!firstUrl) {
+                            sb.Append(",");
+                        }
+                        firstUrl = false;
+                        sb.Append($"{url.Item2} : \"{url.Item1}\"");
+                    }
+                    sb.Append($"}}");
+
+                    mostRecentTime = null;
+                    crawledBy = new List<(string, int)>();
+
+                    if (mostRecentTime > page.Item1.CrawlTime || mostRecentTime == null) {
+                        mostRecentTime = page.Item1.CrawlTime;
+                    }
+                    crawledBy.Add((page.Item2, page.Item3));
+
+                    sb.Append($"{{\"id\": \"{page.Item1.Url}\"");
+                    sb.Append($",\"title\": \"{page.Item1.Title}\"");
+                    sb.Append($",\"group\": 2");
+                    sb.Append($",\"match\": \"true\"");
+                }
+            }
+
+            if(mostRecentTime != null) {
+                sb.Append($",\"crawl-time\": \"{mostRecentTime}\"");
+                sb.Append($",\"crawled-by\": [");
+                bool firstUrl = true;
+                foreach ((string, int) url in crawledBy) {
+                    if (!firstUrl) {
+                        sb.Append(",");
+                    }
+                    firstUrl = false;
+                    sb.Append($"{url.Item2} : \"{url.Item1}\"");
+                }
+                sb.Append($"}}");
+            }
+
+            sb.Append("],");
         }
 
         private void SerializeExecution(Execution execution, int executionNumber) {
