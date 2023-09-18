@@ -42,6 +42,9 @@ namespace WebCrawler.Controllers
 
         [HttpPost]
         public JsonResult GetGraphByIds([FromBody] int[] listId) {
+            if (listId.Length == 0) {
+                return Json("{}");
+            }
             GraphDataSerializer serializer = new GraphDataSerializer();
             return Json(serializer.SerializeById(listId, repo!));
         }

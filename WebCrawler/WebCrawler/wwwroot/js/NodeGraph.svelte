@@ -293,7 +293,7 @@ svelte example: https://github.com/happybeing/d3-fdg-svelte
             crawledByDiv.appendChild(crawledByUListTextNode);
             for (let i = 0; i < crawledBy.length; i++) {
                 const crawledByItem = document.createElement("li");
-                const crawledByTextNode = document.createTextNode(crawledBy[i]);
+                const crawledByTextNode = document.createTextNode(crawledBy[i].Label);
                 crawledByItem.appendChild(crawledByTextNode);
                 crawledByUList.appendChild(crawledByItem);
             }
