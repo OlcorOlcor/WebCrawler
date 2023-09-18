@@ -20,6 +20,7 @@ export let requestExecutionFilter;
 export let showGraph;
 export let showSelected;
 
+let tagToFilterBy = null;
 let pageNumber = 0;
 const MaxItemsOnPage = 6;
 let previousButton;
@@ -49,6 +50,12 @@ function updateTable() {
     }
     else if(sortBy === "Url"){
         WebsiteRecords.sort((a,b) => (a.Url > b.Url) ? 1 : -1);
+    }
+
+    if(tagToFilterBy !== null) {
+        WebsiteRecords = WebsiteRecords.filter(function(obj) {
+            return obj.Tags.includes(tagToFilterBy);
+        });
     }
 
     WebsiteRecordsOnPage = [];
@@ -145,6 +152,11 @@ function nextSort(){
     }
     updateTable();
 }
+
+function setFilterTag(tag){
+    tagToFilterBy = tag;
+}
+
 </script>
 
 <div class="list">
@@ -178,7 +190,7 @@ function nextSort(){
                     <td contenteditable="false" bind:innerHTML={record.LastExecutionStatus}/>
                     <td>
                         {#each record.Tags as tag}
-                            <div contenteditable="false" bind:innerHTML={tag} />
+                            <button class="btn btn-primary" contenteditable="false" bind:innerHTML={tag} on:click={setFilterTag(tag)}/>
                         {/each}
                     </td>
                     <td><input type="checkbox" on:change={() => selectRecord(record.Id)} value={record.Id} name="select-{record.Id}"/></td>
@@ -194,6 +206,7 @@ function nextSort(){
 <button class="btn btn-outline-secondary btn-sm" disabled=true bind:this={previousButton} on:click={previousPage}>Previous Page</button>
 <button class="btn btn-outline-secondary btn-sm" disabled=true bind:this={nextButton} on:click={nextPage}>Next Page</button>
 <button class="btn btn-outline-secondary btn-sm" contenteditable="false" bind:innerHTML={sortButton} on:click={nextSort}>Sort by: Default</button>
+<button class="btn btn-outline-secondary btn-sm" on:click={setFilterTag(null)}>Stop filtering</button>
 
 <style>
     .selected {
