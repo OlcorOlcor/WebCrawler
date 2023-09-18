@@ -1,9 +1,13 @@
 
+using System.Net.NetworkInformation;
+
 namespace WebCrawler.Models {
    
     public enum Status { NotRunning, Running, Finished }
     
     public class Execution {
+        static private int _Id = 0;
+        public int Id;
         public readonly string _url;
         private readonly string _regex;
 
@@ -30,6 +34,8 @@ namespace WebCrawler.Models {
         public TimeSpan ExecutionTime;
 
         public Execution(string url, string regex) {
+            _Id++;
+            this.Id = _Id;
             this._url = url;
             this._regex = regex;
             this._queue = new Queue<string>();
