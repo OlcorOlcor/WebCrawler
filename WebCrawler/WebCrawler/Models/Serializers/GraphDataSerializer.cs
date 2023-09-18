@@ -30,9 +30,9 @@ namespace WebCrawler.Models.Serializers {
         }
 
         private void SerializeExecution(Execution execution, int executionNumber) {
-            WebPage[] webPages;
-            if (execution.pages is not null) {
-                webPages = execution.pages.ToArray();
+            Website[] websites;
+            if (execution.websites is not null) {
+                websites = execution.websites.ToArray();
             }
             else {
                 return;
@@ -42,40 +42,40 @@ namespace WebCrawler.Models.Serializers {
             sb.Append($"\"status\": \"{execution.Status.ToString()}\",");
             sb.Append($"\"start-time\": \"{execution.Start}\",");
             sb.Append($"\"end-time\": \"{execution.End}\",");
-            sb.Append($"\"crawled-page-count\": \"{execution.pages.Count}\",");
-            SerializeNodes(webPages);
-            SerializeLinks(webPages);
+            sb.Append($"\"crawled-page-count\": \"{execution.websites.Count}\",");
+            SerializeNodes(websites);
+            SerializeLinks(websites);
             sb.Append("}");
         }
 
-        private void SerializeNodes(WebPage[] webPages) {
+        private void SerializeNodes(Website[] websites) {
             sb.Append("\"nodes\": [");
-            bool firstPage = true;
-            foreach (var page in webPages) {
-                if (!firstPage) {
+            bool firstSite = true;
+            foreach (var site in websites) {
+                if (!firstSite) {
                     sb.Append(",");
                 }
-                firstPage = false;
+                firstSite = false;
 
                 SerializeNode(
-                    page.Url, 
-                    page.Title, 
-                    page.CrawlTime.ToString(), 
+                    site.Url, 
+                    site.Title, 
+                    site.CrawlTime.ToString(), 
                     new string[] {"https://test.net"}, // TODO Add list of sites that crawled this site
                     2,
                     true
                 );
 
                 // TODO maybe could check if url already present
-                if (page.OutgoingLinks.UrlsMatchingRegex is not null) {
-                    foreach (var link in page.OutgoingLinks.UrlsMatchingRegex) {
+                if (site.OutgoingLinks.UrlsMatchingRegex is not null) {
+                    foreach (var link in site.OutgoingLinks.UrlsMatchingRegex) {
                         sb.Append(",");
                         SerializeNode(link, "", "", new string[0], 2, true);
                     }
                 }
 
-                if (page.OutgoingLinks.UrlsNotMatchingRegex is not null) {
-                    foreach (var link in page.OutgoingLinks.UrlsNotMatchingRegex) {
+                if (site.OutgoingLinks.UrlsNotMatchingRegex is not null) {
+                    foreach (var link in site.OutgoingLinks.UrlsNotMatchingRegex) {
                         sb.Append(",");
                         SerializeNode(link, "", "", new string[0], 1, false);
                     }
@@ -102,27 +102,27 @@ namespace WebCrawler.Models.Serializers {
             sb.Append($",\"match\": \"{match.ToString().ToLower()}\"}}");
         }
 
-        private void SerializeLinks(WebPage[] webPages) {
+        private void SerializeLinks(Website[] websites) {
             sb.Append("\"links\": [");
-            bool firstPageToOutput = true;
-            foreach (var page in webPages) {
-                if (page.OutgoingLinks.UrlsMatchingRegex is not null) {
-                    foreach (var link in page.OutgoingLinks.UrlsMatchingRegex) {
-                        if (!firstPageToOutput) {
+            bool firstSiteToOutput = true;
+            foreach (var site in websites) {
+                if (site.OutgoingLinks.UrlsMatchingRegex is not null) {
+                    foreach (var link in site.OutgoingLinks.UrlsMatchingRegex) {
+                        if (!firstSiteToOutput) {
                             sb.Append(",");
                         }
-                        firstPageToOutput = false;
-                        sb.Append($"{{\"source\": \"{page.Url}\", \"target\": \"{link}\", \"value\": 1}}");
+                        firstSiteToOutput = false;
+                        sb.Append($"{{\"source\": \"{site.Url}\", \"target\": \"{link}\", \"value\": 1}}");
                     }
                 }
 
-                if (page.OutgoingLinks.UrlsNotMatchingRegex is not null) {
-                    foreach (var link in page.OutgoingLinks.UrlsNotMatchingRegex) {
-                        if (!firstPageToOutput) {
+                if (site.OutgoingLinks.UrlsNotMatchingRegex is not null) {
+                    foreach (var link in site.OutgoingLinks.UrlsNotMatchingRegex) {
+                        if (!firstSiteToOutput) {
                             sb.Append(",");
                         }
-                        firstPageToOutput = false;
-                        sb.Append($"{{\"source\": \"{page.Url}\", \"target\": \"{link}\", \"value\": 1}}");
+                        firstSiteToOutput = false;
+                        sb.Append($"{{\"source\": \"{site.Url}\", \"target\": \"{link}\", \"value\": 1}}");
                     }
                 }
             }

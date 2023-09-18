@@ -17,7 +17,7 @@ namespace WebCrawler.Models {
             Active = active;
         }
 
-        public static WebPage MakeNewWebsite(WebsiteRecord record) {
+        public static WebPage MakeNewWebPage(WebsiteRecord record) {
             return new WebPage(record.Id, record.Label, record.Url, record.Regex, record.TagsArray, record.Active);
         }
     }

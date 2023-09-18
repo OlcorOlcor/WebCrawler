@@ -1,9 +1,9 @@
-using WebCrawler.Models;
 using GraphQL.AspNet.Attributes;
 using GraphQL.AspNet.Controllers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using WebCrawler.Models;
 
 namespace WebCrawler.Controllers {
     public class WebsitesController : GraphController {
@@ -20,7 +20,7 @@ namespace WebCrawler.Controllers {
             List<WebPage> websites = new List<WebPage>();
 
             foreach (var record in records) {
-                websites.Add(WebPage.MakeNewWebsite(record));
+                websites.Add(WebPage.MakeNewWebPage(record));
             }
 
             return websites;
@@ -36,27 +36,27 @@ namespace WebCrawler.Controllers {
         }
 
         [QueryRoot]
-        public List<Websites> Nodes(int[] recordIds) {
+        public List<Website> Nodes(int[] recordIds) {
             var records = new List<WebsiteRecord>();
 
             foreach (var recordId in recordIds) {
                 var record = repo!.Find(recordId);
                 if (record is null) {
-                    throw new InvalidParameterException();
+                    throw new ArgumentException();
                 }
 
                 records.Add(record);
             }
 
-            List<WebPage> websites = new List<WebPage>();
+            List<WebPage> pages = new List<WebPage>();
             foreach (var record in records) {
-                websites.Add(Websites.MakeNewWebsite(record));
+                pages.Add(WebPage.MakeNewWebPage(record));
             }
 
             List<Website> sites = new List<Website>();
             foreach (var record in records) {
                 if (record.LastFinishedExecution is not null) {
-                    sites.AddRange(record.LastFinishedExecution.pages);
+                    sites.AddRange(record.LastFinishedExecution.websites);
                 }
             }
             return sites;

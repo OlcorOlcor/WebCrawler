@@ -42,7 +42,7 @@ namespace WebCrawler.Models.Serializers {
                 sb2.Append($"\"EndTime\": \"{execution.End}\",");
             }
             sb2.Append($"\"Status\": \"{execution.Status.ToString()}\",");
-            sb2.Append($"\"NumberOfSitesCrawled\": {execution.pages.Count}");
+            sb2.Append($"\"NumberOfSitesCrawled\": {execution.websites.Count}");
             sb2.Append("}");
             return sb2.ToString();
         }
