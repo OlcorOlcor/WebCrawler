@@ -62,5 +62,14 @@ namespace WebCrawler.Controllers
             string json = es.SerializeAllExecutions(repo!);
             return Json(json);
         }
+        [HttpPost]
+        public JsonResult GetGraphs([FromBody] int[] recordIds) {
+            Console.WriteLine(recordIds.Length);
+            
+            foreach (int id in recordIds) {
+                Console.WriteLine(id);
+            }
+            return Json("{}");
+        }
     }
 }
