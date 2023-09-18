@@ -30,7 +30,7 @@ namespace WebCrawler.Models.Serializers {
             return sb.ToString();
         }
 
-        public string SerializeById(List<int> listId, WebsiteRecordRepository repo) {
+        public string SerializeById(int[] listId, WebsiteRecordRepository repo) {
             List<(WebPage,string, int)> allPages = new List<(WebPage,string,int)>();
             List<WebPage> links = new List<WebPage> ();
             var records = repo!.GetAll();

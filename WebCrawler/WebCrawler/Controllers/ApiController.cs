@@ -40,8 +40,8 @@ namespace WebCrawler.Controllers
             repo!.Delete(recordId);
         }
 
-        [HttpGet]
-        public JsonResult GetGraphByIds(List<int> listId) {
+        [HttpPost]
+        public JsonResult GetGraphByIds([FromBody] int[] listId) {
             GraphDataSerializer serializer = new GraphDataSerializer();
             return Json(serializer.SerializeById(listId, repo!));
         }
