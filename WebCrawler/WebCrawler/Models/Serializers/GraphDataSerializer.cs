@@ -29,6 +29,46 @@ namespace WebCrawler.Models.Serializers {
             return sb.ToString();
         }
 
+        public string SerializeById(List<int> listId, WebsiteRecordRepository repo) {
+            List<WebPage> nodes = new List<WebPage>();
+            List<WebPage> links = new List<WebPage>();
+            var records = repo!.GetAll();
+            foreach (int id in listId) {
+                foreach (var record in records) {
+                    if (record.Id == id) {
+                        List<WebPage> pages;
+                        if (record.RunningExecutions.Count != 0) {
+                            pages = record.RunningExecutions[0].pages;
+                        }
+                        else if (record.LastFinishedExecution != null) {
+                            pages = record.LastFinishedExecution.pages;
+                        }
+                        else continue;
+
+                        links.AddRange(pages);
+
+                        foreach(var page in pages) {
+                            bool found = false;
+                            foreach(var node in nodes) {
+                                if(node.Url == page.Url) {
+                                    found = true; break;
+                                }
+                            }
+                            if(!found) {
+                                nodes.Add(page);
+                            }
+                        }
+                    }
+                }
+            }
+            sb = new StringBuilder();
+            sb.Append("\"graph data\": {");
+            SerializeNodes(nodes.ToArray());
+            SerializeLinks(links.ToArray());
+            sb.Append("}");
+            return sb.ToString();
+        }
+
         private void SerializeExecution(Execution execution, int executionNumber) {
             WebPage[] webPages;
             if (execution.pages is not null) {
