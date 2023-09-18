@@ -15,6 +15,7 @@ class WebsiteRecord {
 }
 
 export let startNewExecution;
+export let deleteWebSiteRecord;
 export let requestExecutionFilter;
 
 let pageNumber = 0;
@@ -80,6 +81,18 @@ function previousPage() {
         updateTable();
     }
 }
+
+function deleteRecord(record){
+    console.log(record);
+    console.log(WebsiteRecords);
+    console.log(WebsiteRecordsOnPage);
+    if(WebsiteRecords.includes(record)){
+        WebsiteRecords.splice(WebsiteRecords.indexOf(record), 1);
+    }
+    if(WebsiteRecordsOnPage.includes(record)){
+        WebsiteRecordsOnPage.splice(WebsiteRecordsOnPage.indexOf(record), 1);
+    }
+}
 </script>
 
 <div class="list">
@@ -95,6 +108,7 @@ function previousPage() {
                 <th>Status of last executions</th>
                 <th>Tags</th>
                 <th>Crawl now</th>
+                <th>Delete</th>
             </tr>
         </thead>
         <tbody>
@@ -113,6 +127,7 @@ function previousPage() {
                     </td>
                     <td><button type="button" class="btn btn-primary" on:click={startNewExecution(record.Id)}>Start New Execution</button></td>
                     <td><button type="button" class="btn btn-primary" on:click={requestExecutionFilter(record.Id)}>Show Related Executions</button></td>
+                    <td><button type="button" class="btn btn-primary" on:click={deleteWebSiteRecord(record.Id)}>Delete Record</button></td>
                 </tr>
             {/each}
         </tbody>

@@ -9,6 +9,7 @@
     const fullDataUri = '/Api/GetFullData';
     const webRecordsDataUri =  "/Api/GetWebsiteRecords";
     const startNewExecutionUri = "/Api/StartNewExecution";
+    const deleteWebSiteRecordUri = "/Api/DeleteWebSiteRecord";
     const executionsDataUri = "./Api/GetExecutions/";
     const formUri = "/Home/AddRecord";
 
@@ -129,6 +130,10 @@
 
     function startNewExecution(recordId) {
         fetch(startNewExecutionUri + "/?recordId=" + recordId);
+    }
+
+    function deleteWebSiteRecord(recordId) {
+        fetch(deleteWebSiteRecordUri + "/?recordId=" + recordId , { method: 'DELETE' });
     }
 
     function getMetaData() {
@@ -297,6 +302,9 @@
         gap: 10px;
     }
 </style>
+
+<WebRecordTable startNewExecution={startNewExecution} deleteWebSiteRecord={deleteWebSiteRecord} requestExecutionFilter={filterExecutions} bind:this={webRecordTable}></WebRecordTable>
+<ExecutionsTable bind:this={executionsTable}></ExecutionsTable>
 
 <div class="container">
     <button class="btn btn-secondary" bind:this={modeButton} on:click={switchGraphMode}>Make Static</button>
