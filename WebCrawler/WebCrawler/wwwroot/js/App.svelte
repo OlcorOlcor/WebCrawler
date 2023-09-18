@@ -48,22 +48,6 @@
     let regexInput = document.getElementById("regex");
     let form = document.getElementById("WebRecordForm");
 
-    // test fetch for graphql
-    fetch("/graphql", {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query: '{ websites {id regex}}' })
-    })
-    .then(response => response.json())
-    .then(response => console.log(response.data));
-
-    fetch("/graphql", {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({ query: '{ nodes { url title } }'})
-    })
-    .then(response => response.json())
-    .then(response => console.log(response.data));
 
     getGraphData(false);
     getWebRecordData();
@@ -259,6 +243,7 @@
 
     function updateNodeGraph(switchView, view) {
         let newData = view === View.Domain ? currentRecordDomainData : currentRecordFullData["executions"][currentExecutionIndex];
+        console.log(newData);
         if (nodeGraph === undefined || nodeGraph === null || newData === undefined) {
             // Try it again in 0.5s
             setTimeout(() => updateNodeGraph(switchView, view), 500);
@@ -303,8 +288,15 @@
         body: JSON.stringify(recordIds)
         })
         .then(response => response.json())
-        .then(response => {
+        .then(data => {
+            currentRecordFullData = JSON.parse(data);
+            if (currentRecordFullData["executions"] == undefined) {
+                return;
+            }
+
+            currentRecordDomainData = getDomainData(currentRecordFullData["executions"][currentExecutionIndex]);
             
+            updateNodeGraph(false, graphView);
         });
     }
 </script>
