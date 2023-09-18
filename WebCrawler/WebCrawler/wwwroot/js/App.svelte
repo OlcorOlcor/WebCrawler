@@ -24,6 +24,7 @@
     const deleteWebSiteRecordUri = "/Api/DeleteWebSiteRecord";
     const executionsDataUri = "./Api/GetExecutions/";
     const formUri = "/Home/AddRecord";
+    const multiGraphUri = "/Api/GetGraphs";
 
     // Intervals in ms
     const graphUpdateInterval = 5000;
@@ -292,6 +293,19 @@
         currentRecordIndex = recordId;
         getGraphData(true);
     }
+
+    function showSelected(recordIds) {
+        console.log(JSON.stringify(recordIds));
+        fetch(multiGraphUri + '/', 
+        {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(recordIds)
+        })
+        .then(response => response.json())
+        .then(response => console.log(response.data)
+        );
+    }
 </script>
 
 <style>
@@ -305,7 +319,7 @@
     }
 </style>
 
-<WebRecordTable startNewExecution={startNewExecution} deleteWebSiteRecord={deleteWebSiteRecord} requestExecutionFilter={filterExecutions} showGraph={showGraph} bind:this={webRecordTable}></WebRecordTable>
+<WebRecordTable startNewExecution={startNewExecution} deleteWebSiteRecord={deleteWebSiteRecord} requestExecutionFilter={filterExecutions} showGraph={showGraph} showSelected={showSelected} bind:this={webRecordTable}></WebRecordTable>
 <ExecutionsTable bind:this={executionsTable}></ExecutionsTable>
 
 <div class="container">

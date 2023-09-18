@@ -18,6 +18,7 @@ export let startNewExecution;
 export let deleteWebSiteRecord;
 export let requestExecutionFilter;
 export let showGraph;
+export let showSelected;
 
 let pageNumber = 0;
 const MaxItemsOnPage = 6;
@@ -27,6 +28,7 @@ let selectedRowId = 0;
 
 $: WebsiteRecords = [];
 $: WebsiteRecordsOnPage = [];
+let SelectedRecords = [];
 
 export function update(data) {
     WebsiteRecords = [];
@@ -110,11 +112,19 @@ function deleteRecord(record){
         WebsiteRecordsOnPage.splice(WebsiteRecordsOnPage.indexOf(record), 1);
     }
 }
-  
+
+function selectRecord(recordId) {
+    if (SelectedRecords.includes(recordId)) {
+        SelectedRecords = SelectedRecords.filter(id => id !== recordId);
+    } else {
+        SelectedRecords.push(recordId);
+    }
+}
 </script>
 
 <div class="list">
     <h3>List of current Website Records</h3>
+    <button type="button" on:click={showSelected(SelectedRecords)}>Show selected</button>
     <table class="table table-striped" id="update">
         <thead>
             <tr>
@@ -125,6 +135,7 @@ function deleteRecord(record){
                 <th>Time of last executions</th>
                 <th>Status of last executions</th>
                 <th>Tags</th>
+                <th>Select</th>
                 <th>Crawl now</th>
                 <th>Filter Executions</th>
                 <th>Show Graph</th>
@@ -145,6 +156,7 @@ function deleteRecord(record){
                             <div contenteditable="false" bind:innerHTML={tag} />
                         {/each}
                     </td>
+                    <td><input type="checkbox" on:change={() => selectRecord(record.Id)} value={record.Id} name="select-{record.Id}"/></td>
                     <td><button type="button" class="btn btn-primary" on:click={startNewExecution(record.Id)}>Start New Execution</button></td>
                     <td><button type="button" class="btn btn-primary" on:click={requestExecutionFilter(record.Id)}>Show Related Executions</button></td>
                     <td><button type="button" class="tbn btn-primary" on:click={showGraph(record.Id)}>Show Graph</button></td>
