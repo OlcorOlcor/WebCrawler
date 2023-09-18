@@ -157,6 +157,10 @@ function setFilterTag(tag){
     tagToFilterBy = tag;
 }
 
+function stopFiltering(){
+    tagToFilterBy = null;
+}
+
 </script>
 
 <div class="list">
@@ -206,7 +210,7 @@ function setFilterTag(tag){
 <button class="btn btn-outline-secondary btn-sm" disabled=true bind:this={previousButton} on:click={previousPage}>Previous Page</button>
 <button class="btn btn-outline-secondary btn-sm" disabled=true bind:this={nextButton} on:click={nextPage}>Next Page</button>
 <button class="btn btn-outline-secondary btn-sm" contenteditable="false" bind:innerHTML={sortButton} on:click={nextSort}>Sort by: Default</button>
-<button class="btn btn-outline-secondary btn-sm" on:click={setFilterTag(null)}>Stop filtering</button>
+<button class="btn btn-outline-secondary btn-sm" on:click={stopFiltering}>Stop filtering</button>
 
 <style>
     .selected {
