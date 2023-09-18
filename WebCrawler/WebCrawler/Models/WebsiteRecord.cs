@@ -46,7 +46,7 @@ namespace WebCrawler.Models {
 
         public void ParseTags() {
             if (Tags != "" && Tags != null) {
-                TagsArray = Tags.Split(',');
+                TagsArray = Tags.Replace("\"", "\\\"").Split(',');
             }
             else {
                 TagsArray = new string[0];
