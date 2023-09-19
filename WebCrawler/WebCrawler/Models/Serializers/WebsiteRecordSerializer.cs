@@ -8,11 +8,11 @@ namespace WebCrawler.Models.Serializers {
             sb.Append("{");
             sb.Append($"\"Id\": {record.Id}");
             sb.Append($",\"Url\": \"{record.Url}\"");
-            sb.Append($",\"Regex\": \"{record.Regex}\"");
+            sb.Append($",\"Regex\": \"{record.Regex!.Replace("\"", "\\\"").Replace("\\", "\\\\")}\"");
             sb.Append($",\"Days\": {record.Days}");
             sb.Append($",\"Hours\": {record.Hours}");
             sb.Append($",\"Minutes\": {record.Minutes}");
-            sb.Append($",\"Label\": \"{record.Label}\"");
+            sb.Append($",\"Label\": \"{record.Label!}\"");
 
             sb.Append(",\"Tags\": [");
             bool first = true;

@@ -15,8 +15,15 @@ namespace WebCrawler.Controllers {
         }
 
         [QueryRoot]
-        public List<WebsiteRecord> Websites() {
-            return repo!.GetAllRecords();
+        public List<Website> Websites() {
+            var records = repo!.GetAllRecords();
+            List<Website> websites = new List<Website>();
+
+            foreach (var record in records) {
+                websites.Add(Website.MakeNewWebsite(record));
+            }
+
+            return websites;
         }
     }
 
@@ -29,15 +36,41 @@ namespace WebCrawler.Controllers {
         }
 
         [QueryRoot]
-        public List<WebPage> Nodes() {
-            var records = repo!.GetAll();
-            List<WebPage> pages = new List<WebPage>();
+        public List<Node> Nodes(int[] websites) {
+            var records = new List<WebsiteRecord>();
+
+            foreach (var recordId in websites) {
+                var record = repo!.Find(recordId);
+                if (record is null) {
+                    throw new ArgumentException();
+                }
+
+                records.Add(record);
+            }
+
+            List<Website> sites = new List<Website>();
+            foreach (var record in records) {
+                sites.Add(Website.MakeNewWebsite(record));
+            }
+
+            List<Node> nodes = new List<Node>();
+            int index = 0;
             foreach (var record in records) {
                 if (record.LastFinishedExecution is not null) {
-                    pages.AddRange(record.LastFinishedExecution.pages);
+                    foreach (var page in record.LastFinishedExecution.pages) {
+                        nodes.Add(Node.GetNewNode(page, sites[index]));
+                    }
                 }
+                else if (record.RunningExecutions.Count > 0) {
+                    foreach (var page in record.RunningExecutions[0].pages) {
+                        nodes.Add(Node.GetNewNode(page, sites[index]));
+                    }
+                }
+
+                index++;
             }
-            return pages;
+
+            return nodes;
         }
     }
 }

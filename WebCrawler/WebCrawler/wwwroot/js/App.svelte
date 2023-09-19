@@ -47,6 +47,14 @@
     let regexInput = document.getElementById("regex");
     let form = document.getElementById("WebRecordForm");
 
+    fetch("/graphql", {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ query: '{ nodes(websites: [0]) { url title } }'})
+    })
+    .then(response => response.json())
+    .then(response => console.log(response.data));
+
 
     getGraphData(false);
     getWebRecordData();

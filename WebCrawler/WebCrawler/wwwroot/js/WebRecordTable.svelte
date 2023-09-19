@@ -19,6 +19,7 @@ export let deleteWebSiteRecord;
 export let requestExecutionFilter;
 export let showSelected;
 
+let tagToFilterBy = null;
 let pageNumber = 0;
 const MaxItemsOnPage = 6;
 let previousButton;
@@ -41,6 +42,19 @@ export function update(data) {
 function updateTable() {
     if (pageNumber >= WebsiteRecords.length / MaxItemsOnPage && pageNumber != 0) {
       pageNumber = WebsiteRecords.length % MaxItemsOnPage == 0 ? (WebsiteRecords.length / MaxItemsOnPage) - 1 : (WebsiteRecords.length / MaxItemsOnPage);
+    }
+
+    if(sortBy === "Time"){
+        WebsiteRecords.sort((a,b) => (a.LastExecutionTime > b.LastExecutionTime) ? 1 : -1);
+    }
+    else if(sortBy === "Url"){
+        WebsiteRecords.sort((a,b) => (a.Url > b.Url) ? 1 : -1);
+    }
+
+    if(tagToFilterBy !== null) {
+        WebsiteRecords = WebsiteRecords.filter(function(obj) {
+            return obj.Tags.includes(tagToFilterBy);
+        });
     }
 
     WebsiteRecordsOnPage = [];
@@ -119,6 +133,33 @@ function selectRecord(recordId) {
         SelectedRecords.push(recordId);
     }
 }
+
+let sortButton;
+let sortBy = "Default";
+function nextSort(){
+    if(sortButton === "Sort by: Default"){
+        sortButton = "Sort by: Time Crawled";
+        sortBy = "Time";
+    }
+    else if(sortButton === "Sort by: Time Crawled"){
+        sortButton = "Sort by: Url";
+        sortBy = "Url";
+    }
+    else{
+        sortButton = "Sort by: Default";
+        sortBy = "Default";
+    }
+    updateTable();
+}
+
+function setFilterTag(tag){
+    tagToFilterBy = tag;
+}
+
+function stopFiltering(){
+    tagToFilterBy = null;
+}
+
 </script>
 
 <div class="list">
@@ -151,7 +192,7 @@ function selectRecord(recordId) {
                     <td contenteditable="false" bind:innerHTML={record.LastExecutionStatus}/>
                     <td>
                         {#each record.Tags as tag}
-                            <div contenteditable="false" bind:innerHTML={tag} />
+                            <button class="btn btn-primary" contenteditable="false" bind:innerHTML={tag} on:click={setFilterTag(tag)}/>
                         {/each}
                     </td>
                     <td><input type="checkbox" on:change={() => selectRecord(record.Id)} value={record.Id} name="select-{record.Id}"/></td>
@@ -165,7 +206,8 @@ function selectRecord(recordId) {
 </div>
 <button class="btn btn-outline-secondary btn-sm" disabled=true bind:this={previousButton} on:click={previousPage}>Previous Page</button>
 <button class="btn btn-outline-secondary btn-sm" disabled=true bind:this={nextButton} on:click={nextPage}>Next Page</button>
-
+<button class="btn btn-outline-secondary btn-sm" contenteditable="false" bind:innerHTML={sortButton} on:click={nextSort}>Sort by: Default</button>
+<button class="btn btn-outline-secondary btn-sm" on:click={stopFiltering}>Stop filtering</button>
 
 <style>
     .selected {
