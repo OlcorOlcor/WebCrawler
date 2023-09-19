@@ -18,21 +18,20 @@
         }
     }
 
-    const fullDataUri = '/Api/GetFullData';
     const webRecordsDataUri =  "/Api/GetWebsiteRecords";
     const startNewExecutionUri = "/Api/StartNewExecution";
     const deleteWebSiteRecordUri = "/Api/DeleteWebSiteRecord";
     const executionsDataUri = "./Api/GetExecutions/";
     const formUri = "/Home/AddRecord";
-    const multiGraphUri = "/Api/GetGraphs";
+    const multiGraphUri = "/Api/GetGraphByIds";
 
     // Intervals in ms
     const graphUpdateInterval = 5000;
     const webRecordUpdateInterval = 1000;
     const executionUpdateInterval = 1000; 
 
-    let currentRecordIndex = 0;
     let currentExecutionIndex = 0;
+    let currentRecordIds = [];
     let currentRecordFullData;
     let currentRecordDomainData;
 
@@ -75,7 +74,7 @@
 
     // Data retrieval
     function getGraphData(recordChange) {
-        getFullData(currentRecordIndex).then(data => {
+        getMutligraphData(currentRecordIds).then(data => {
             currentRecordFullData = JSON.parse(data);
             if (currentRecordFullData["executions"] == undefined) {
                 return;
@@ -138,11 +137,16 @@
         fetch(deleteWebSiteRecordUri + "/?recordId=" + recordId , { method: 'DELETE' });
     }
 
-    function getFullData(id) {
-        return fetch(fullDataUri + "/?recordId=" + id)
-            .then(response => response.json())
-            .then(data => data)
-            .catch(error => console.error("Unable to getFullData for recordId" + id + ".", error));
+    function getMutligraphData(recordIds) {
+        return fetch(multiGraphUri + '/', 
+        {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(recordIds)
+        })
+        .then(response => response.json())
+        .then(data => data)
+        .catch(error => console.error("Unable to getMultigraphData.", error))
     }
 
     function getDomainData(websiteData) {
@@ -199,10 +203,10 @@
                 let websiteCrawlers = websiteNodes[i]["crawled-by"];
                 let domainCrawlers = domainNodes[nodeMatchIndex]["crawled-by"];
 
-                websiteCrawlers.forEach((websiteCrawlerUrl) => {
-                    let domainCrawler = domainCrawlers.find((crawler) => crawler === websiteCrawlerUrl);
+                websiteCrawlers.forEach((websiteCrawler) => {
+                    let domainCrawler = domainCrawlers.find((crawler) => crawler.Id === websiteCrawler.Id);
                     if (domainCrawler === undefined) {
-                        domainCrawlers[domainCrawlers.length] = websiteCrawlerUrl;
+                        domainCrawlers[domainCrawlers.length] = websiteCrawler;
                     }
                 });
 
@@ -279,33 +283,12 @@
         }
     }
 
-    function showGraph(recordId) {
+    function showSelected(recordIds) {
         if (staticGraphMode) {
             switchGraphMode();
         }
-        currentRecordIndex = recordId;
+        currentRecordIds = recordIds;
         getGraphData(true);
-    }
-
-    function showSelected(recordIds) {
-        console.log(JSON.stringify(recordIds));
-        fetch(multiGraphUri + '/', 
-        {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(recordIds)
-        })
-        .then(response => response.json())
-        .then(data => {
-            currentRecordFullData = JSON.parse(data);
-            if (currentRecordFullData["executions"] == undefined) {
-                return;
-            }
-
-            currentRecordDomainData = getDomainData(currentRecordFullData["executions"][currentExecutionIndex]);
-            
-            updateNodeGraph(false, graphView);
-        });
     }
 </script>
 
@@ -320,7 +303,13 @@
     }
 </style>
 
-<WebRecordTable startNewExecution={startNewExecution} deleteWebSiteRecord={deleteWebSiteRecord} requestExecutionFilter={filterExecutions} showGraph={showGraph} showSelected={showSelected} bind:this={webRecordTable}></WebRecordTable>
+<WebRecordTable 
+    startNewExecution={startNewExecution} 
+    deleteWebSiteRecord={deleteWebSiteRecord} 
+    requestExecutionFilter={filterExecutions} 
+    showSelected={showSelected} 
+    bind:this={webRecordTable}>
+</WebRecordTable>
 <ExecutionsTable bind:this={executionsTable}></ExecutionsTable>
 
 <div class="container">

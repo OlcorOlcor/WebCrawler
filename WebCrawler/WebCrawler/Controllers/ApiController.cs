@@ -42,6 +42,9 @@ namespace WebCrawler.Controllers
 
         [HttpPost]
         public JsonResult GetGraphByIds([FromBody] int[] listId) {
+            if (listId.Length == 0) {
+                return Json("{}");
+            }
             GraphDataSerializer serializer = new GraphDataSerializer();
             return Json(serializer.SerializeById(listId, repo!));
         }
@@ -68,14 +71,6 @@ namespace WebCrawler.Controllers
             string json = es.SerializeAllExecutions(repo!);
             return Json(json);
         }
-        [HttpPost]
-        public JsonResult GetGraphs([FromBody] int[] recordIds) {
-            Console.WriteLine(recordIds.Length);
-            
-            foreach (int id in recordIds) {
-                Console.WriteLine(id);
-            }
-            return Json("{}");
-        }
+
     }
 }

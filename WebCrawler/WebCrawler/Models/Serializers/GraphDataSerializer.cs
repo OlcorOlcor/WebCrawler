@@ -38,13 +38,15 @@ namespace WebCrawler.Models.Serializers {
                 foreach (var record in records) {
                     if (record.Id == id) {
                         List<WebPage> pages;
-                        if (record.RunningExecutions.Count != 0) {
-                            pages = record.RunningExecutions[0].pages;
-                        }
-                        else if (record.LastFinishedExecution != null) {
+                        if (record.LastFinishedExecution != null) {
                             pages = record.LastFinishedExecution.pages;
                         }
-                        else continue;
+                        else if(record.RunningExecutions.Count != 0) {
+                            pages = record.RunningExecutions[0].pages;
+                        }
+                        else {
+                            continue;
+                        }
 
                         foreach(var page in pages) {
                             allPages.Add((page, record.Label!, record.Id!));
@@ -55,31 +57,39 @@ namespace WebCrawler.Models.Serializers {
             }
             sb = new StringBuilder();
             sb.Append("{");
+            sb.Append("\"executions\": [{");
             SerializeRepeatingNodes(allPages);
             SerializeLinks(links.ToArray());
-            sb.Append("}");
+            sb.Append("}]}");
             return sb.ToString();
         }
 
         private void SerializeRepeatingNodes(List<(WebPage,string, int)> allPages) {
+            if (allPages.Count == 0) {
+                sb.Append("\"nodes\": []");
+                return;
+            }
+
             List<(WebPage,string, int)> allPagesSorted = allPages.OrderBy(o => o.Item1.Url).ToList();
-            string lastUrl = allPages[0].Item1.Url;
+            var lastPage = allPages[0];
             DateTime? mostRecentTime = null;
             List<(string,int)> crawledBy = new List<(string, int)>();
 
             sb.Append("\"nodes\": [");
 
-            sb.Append($"{{\"id\": \"{allPages[0].Item1.Url}\"");
-            sb.Append($",\"title\": \"{allPages[0].Item1.Title}\"");
+            sb.Append($"{{\"id\": \"{lastPage.Item1.Url}\"");
+            sb.Append($",\"title\": \"{lastPage.Item1.Title}\"");
             sb.Append($",\"group\": 2");
             sb.Append($",\"match\": \"true\"");
 
             foreach (var page in allPagesSorted) {
-                if(page.Item1.Url == lastUrl ) {
+                if(page.Item1.Url == lastPage.Item1.Url) {
                     if(mostRecentTime > page.Item1.CrawlTime || mostRecentTime == null) {
                         mostRecentTime = page.Item1.CrawlTime;
                     }
-                    crawledBy.Add((page.Item2,page.Item3));
+                    if (!RecordInfoAlreadyPresent(crawledBy, page.Item3)) {
+                        crawledBy.Add((page.Item2,page.Item3));
+                    }
                 }
                 else {
                     sb.Append($",\"crawl-time\": \"{mostRecentTime}\"");
@@ -90,9 +100,29 @@ namespace WebCrawler.Models.Serializers {
                             sb.Append(",");
                         }
                         firstUrl = false;
-                        sb.Append($"{url.Item2} : \"{url.Item1}\"");
+                        sb.Append($"{{");
+                        sb.Append($"\"Id\": {url.Item2},");
+                        sb.Append($"\"Label\": \"{url.Item1}\"");
+                        sb.Append($"}}");
                     }
+                    sb.Append("]");
                     sb.Append($"}}");
+
+                    // Add outgoing links
+                    // TODO maybe could check if url already present
+                    if (lastPage.Item1.OutgoingLinks.UrlsMatchingRegex is not null) {
+                        foreach (var link in lastPage.Item1.OutgoingLinks.UrlsMatchingRegex) {
+                            sb.Append(",");
+                            SerializeNode(link, "", "", new string[0], 2, true);
+                        }
+                    }
+
+                    if (lastPage.Item1.OutgoingLinks.UrlsNotMatchingRegex is not null) {
+                        foreach (var link in lastPage.Item1.OutgoingLinks.UrlsNotMatchingRegex) {
+                            sb.Append(",");
+                            SerializeNode(link, "", "", new string[0], 1, false);
+                        }
+                    }
 
                     mostRecentTime = null;
                     crawledBy = new List<(string, int)>();
@@ -102,11 +132,12 @@ namespace WebCrawler.Models.Serializers {
                     }
                     crawledBy.Add((page.Item2, page.Item3));
 
-                    sb.Append($"{{\"id\": \"{page.Item1.Url}\"");
+                    sb.Append($",{{\"id\": \"{page.Item1.Url}\"");
                     sb.Append($",\"title\": \"{page.Item1.Title}\"");
                     sb.Append($",\"group\": 2");
                     sb.Append($",\"match\": \"true\"");
                 }
+                lastPage = page;
             }
 
             if(mostRecentTime != null) {
@@ -118,12 +149,25 @@ namespace WebCrawler.Models.Serializers {
                         sb.Append(",");
                     }
                     firstUrl = false;
-                    sb.Append($"{url.Item2} : \"{url.Item1}\"");
+                    sb.Append($"{{");
+                    sb.Append($"\"Id\": {url.Item2},");
+                    sb.Append($"\"Label\": \"{url.Item1}\"");
+                    sb.Append($"}}");
                 }
+                sb.Append("]");
                 sb.Append($"}}");
             }
 
             sb.Append("],");
+        }
+
+        private bool RecordInfoAlreadyPresent(List<(string, int)> crawledBy, int id) {
+            foreach (var record in crawledBy) {
+                if (record.Item2 == id) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         private void SerializeExecution(Execution execution, int executionNumber) {

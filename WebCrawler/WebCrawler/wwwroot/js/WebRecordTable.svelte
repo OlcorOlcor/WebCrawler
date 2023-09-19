@@ -17,7 +17,6 @@ class WebsiteRecord {
 export let startNewExecution;
 export let deleteWebSiteRecord;
 export let requestExecutionFilter;
-export let showGraph;
 export let showSelected;
 
 let tagToFilterBy = null;
@@ -179,7 +178,6 @@ function stopFiltering(){
                 <th>Select</th>
                 <th>Crawl now</th>
                 <th>Filter Executions</th>
-                <th>Show Graph</th>
                 <th>Delete</th>
             </tr>
         </thead>
@@ -198,9 +196,8 @@ function stopFiltering(){
                         {/each}
                     </td>
                     <td><input type="checkbox" on:change={() => selectRecord(record.Id)} value={record.Id} name="select-{record.Id}"/></td>
-                    <td><button type="button" class="btn btn-primary" on:click={startNewExecution(record.Id)}>Start New Execution</button></td>
-                    <td><button type="button" class="btn btn-primary" on:click={requestExecutionFilter(record.Id)}>Show Related Executions</button></td>
-                    <td><button type="button" class="btn btn-primary" on:click={showGraph(record.Id)}>Show Graph</button></td>
+                    <td><button type="button" class="btn btn-secondary" on:click={startNewExecution(record.Id)}>Start New Execution</button></td>
+                    <td><button type="button" class="btn btn-secondary" on:click={requestExecutionFilter(record.Id)}>Show Related Executions</button></td>
                     <td><button type="button" class="btn btn-danger" on:click={deleteWebSiteRecord(record.Id)}>Delete Record</button></td>
                 </tr>
             {/each}
