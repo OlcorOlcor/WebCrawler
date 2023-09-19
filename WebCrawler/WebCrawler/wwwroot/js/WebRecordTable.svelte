@@ -165,7 +165,7 @@ function stopFiltering(){
 
 <div class="list">
     <h3>List of current Website Records</h3>
-    <button type="button" on:click={showSelected(SelectedRecords)}>Show selected</button>
+    <button class="btn btn-primary" type="button" on:click={showSelected(SelectedRecords)}>Show selected</button>
     <table class="table table-striped" id="update">
         <thead>
             <tr>
@@ -200,7 +200,7 @@ function stopFiltering(){
                     <td><input type="checkbox" on:change={() => selectRecord(record.Id)} value={record.Id} name="select-{record.Id}"/></td>
                     <td><button type="button" class="btn btn-primary" on:click={startNewExecution(record.Id)}>Start New Execution</button></td>
                     <td><button type="button" class="btn btn-primary" on:click={requestExecutionFilter(record.Id)}>Show Related Executions</button></td>
-                    <td><button type="button" class="tbn btn-primary" on:click={showGraph(record.Id)}>Show Graph</button></td>
+                    <td><button type="button" class="btn btn-primary" on:click={showGraph(record.Id)}>Show Graph</button></td>
                     <td><button type="button" class="btn btn-danger" on:click={deleteWebSiteRecord(record.Id)}>Delete Record</button></td>
                 </tr>
             {/each}
