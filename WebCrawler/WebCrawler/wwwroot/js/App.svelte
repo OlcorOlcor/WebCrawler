@@ -18,12 +18,10 @@
         }
     }
 
-    const fullDataUri = '/Api/GetFullData';
-    const webRecordsDataUri =  "/Api/GetWebsiteRecords";
-    const startNewExecutionUri = "/Api/StartNewExecution";
-    const deleteWebSiteRecordUri = "/Api/DeleteWebSiteRecord";
-    const executionsDataUri = "./Api/GetExecutions/";
-    const formUri = "/Home/AddRecord";
+    const webSiteRecordUri = '/Api/WebSiteRecord';
+    const webSiteRecordMeta = '/Api/WebSiteRecordInfo';
+    const executionsDataUri = "/Api/WebSiteRecordInfo/Executions";
+    const startNewExecutionUri = "Api/WebSiteRecord/StartNewExecution";
     const multiGraphUri = "/Api/GetGraphs";
 
     // Intervals in ms
@@ -111,7 +109,7 @@
     }
 
     function getWebRecordData() {
-        fetch(webRecordsDataUri + "/")
+        fetch(webSiteRecordMeta + "/")
         .then(res => {
             if (res.ok) {
                 return res.json()
@@ -130,16 +128,16 @@
     }
 
     function startNewExecution(recordId) {
-        fetch(startNewExecutionUri + "/?recordId=" + recordId);
+        fetch(startNewExecutionUri + "/?recordId=" + recordId, { method: 'PUT' });
     }
 
 
     function deleteWebSiteRecord(recordId) {
-        fetch(deleteWebSiteRecordUri + "/?recordId=" + recordId , { method: 'DELETE' });
+        fetch(webSiteRecordUri + "/?recordId=" + recordId , { method: 'DELETE' });
     }
 
     function getFullData(id) {
-        return fetch(fullDataUri + "/?recordId=" + id)
+        return fetch(webSiteRecordUri + "/?recordId=" + id)
             .then(response => response.json())
             .then(data => data)
             .catch(error => console.error("Unable to getFullData for recordId" + id + ".", error));

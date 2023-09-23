@@ -1,0 +1,302 @@
+openapi: 3.0.0
+info:
+  version: '1'
+  title: WebCrawler OpenApi
+  description: ''
+paths:
+  /QraphqlApi:
+    post:
+      operationId: GetNodes
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/ID'
+      responses:
+        '200':
+          description: List of Nodes for given WebPages
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Node'
+    get:
+      operationId: GetWebsites
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          description: List of WebPages
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WebPage'
+  /Api/WebSiteRecord:
+    get:
+      summary: Gets detailed info of the record with given ID
+      description: ''
+      parameters:
+        - in: query
+          name: RecordId
+          schema:
+            type: integer
+          description: ID of the record
+      operationId: GetWebSiteRecord
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebSiteRecord'
+    delete:
+      summary: Deletes record with the given ID
+      description: ''
+      parameters:
+        - in: query
+          name: RecordId
+          schema:
+            type: integer
+          description: ID of the record
+      operationId: DeleteWebSiteRecord
+      responses:
+        default:
+          description: Default error sample response
+  /Api/WebSiteRecordInfo:
+    get:
+      summary: Gets meta-data info about all the records
+      description: ''
+      operationId: GetWebSiteRecordInfo
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebSiteRecordsInfo'
+  /Api/WebSiteRecord/StartNewExecution:
+    put:
+      summary: Starts new execution for the record with given ID
+      description: ''
+      parameters:
+        - in: query
+          name: RecordId
+          schema:
+            type: integer
+          description: ID of the record
+      operationId: StartNewExecution
+      responses:
+        default:
+          description: Default error sample response
+  /Api/WebSiteRecordInfo/Executions:
+    get:
+      summary: Get meta-data info about all the executions
+      description: ''
+      operationId: GetExecutionsInfo
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExecutionsInfo'
+components:
+  securitySchemes: {}
+  schemas:
+    Node:
+      properties:
+        title:
+          nullable: true
+          type: string
+        url:
+          nullable: false
+          type: string
+        crawlTIme:
+          nullable: true
+          type: string
+        links:
+          nullable: false
+          type: array
+          items:
+            $ref: '#/components/schemas/Node'
+        owner:
+          nullable: false
+          $ref: '#/components/schemas/WebPage'
+    WebPage:
+      properties:
+        identifier:
+          nullable: false
+          $ref: '#/components/schemas/ID'
+        label:
+          nullable: false
+          type: string
+        url:
+          nullable: false
+          type: string
+        regexp:
+          nullable: false
+          type: string
+        tags:
+          nullable: false
+          type: array
+          items:
+            type: string
+        active:
+          nullable: false
+          type: boolean
+    Query:
+      properties:
+        websites:
+          nullable: false
+          type: array
+          items:
+            $ref: '#/components/schemas/WebPage'
+        nodes:
+          nullable: false
+          type: array
+          items:
+            $ref: '#/components/schemas/Node'
+    ID:
+      properties:
+        id:
+          nullable: false
+          type: number
+    WebSiteRecord:
+      properties:
+        executions:
+          nullable: false
+          type: array
+          items:
+            $ref: '#/components/schemas/Execution'
+    Execution:
+      properties:
+        status:
+          nullable: false
+          type: string
+        start-time:
+          nullable: false
+          type: string
+        end-time:
+          nullable: true
+          type: string
+        crawled-page-count:
+          nullable: false
+          type: number
+        nodes:
+          nullable: false
+          type: array
+          items:
+            $ref: '#/components/schemas/GraphNode'
+        links:
+          nullable: false
+          type: array
+          items:
+            $ref: '#/components/schemas/GraphLink'
+    GraphNode:
+      properties:
+        id:
+          nullable: false
+          type: string
+        title:
+          nullable: false
+          type: string
+        crawl-time:
+          nullable: true
+          type: string
+        crawled-by:
+          nullable: false
+          type: array
+          items:
+            type: string
+        group:
+          nullable: false
+          type: number
+        match:
+          nullable: false
+          type: boolean
+    GraphLink:
+      properties:
+        source:
+          nullable: false
+          type: string
+        target:
+          nullable: false
+          type: string
+        value:
+          nullable: false
+          type: number
+    WebSiteRecordsInfo:
+      properties:
+        WebsiteRecords:
+          nullable: false
+          type: array
+          items:
+            $ref: '#/components/schemas/WebSiteRecordInfo'
+    WebSiteRecordInfo:
+      properties:
+        Id:
+          nullable: false
+          type: number
+        Url:
+          nullable: false
+          type: string
+        Regex:
+          nullable: false
+          type: string
+        Days:
+          nullable: false
+          type: number
+        Hours:
+          nullable: false
+          type: number
+        Minutes:
+          nullable: false
+          type: number
+        Label:
+          nullable: false
+          type: string
+        Tags:
+          nullable: false
+          type: array
+          items:
+            type: string
+        LastExecutionTime:
+          nullable: false
+          type: string
+        LastExecutionStatus:
+          nullable: false
+          type: string
+    ExecutionsInfo:
+      properties:
+        Executions:
+          nullable: false
+          type: array
+          items:
+            $ref: '#/components/schemas/ExecutionInfo'
+    ExecutionInfo:
+      properties:
+        RecordId:
+          nullable: false
+          type: number
+        RecordLabel:
+          nullable: false
+          type: string
+        StartTime:
+          nullable: false
+          type: string
+        EndTime:
+          nullable: false
+          type: string
+        Status:
+          nullable: false
+          type: string
+        NumberOfSitesCrawled:
+          nullable: false
+          type: number

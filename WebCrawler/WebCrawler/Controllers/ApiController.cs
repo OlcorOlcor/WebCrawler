@@ -17,7 +17,8 @@ namespace WebCrawler.Controllers
     
 		//gets all the data for the given website record
 		[HttpGet]
-        public JsonResult GetFullData(int recordId) {
+        [Route("Api/WebSiteRecord")]
+        public JsonResult GetWebSiteRecord(int recordId) {
             var record = repo!.Find(recordId);
             if (record is null) {
                 return Json("{}");
@@ -27,18 +28,29 @@ namespace WebCrawler.Controllers
             return result;
         }
 
+        [HttpDelete]
+        [Route("Api/WebSiteRecord")]
+        public void DeleteWebSiteRecord(int recordId) {
+            repo!.Delete(recordId);
+        }
+
         [HttpGet]
+        [Route("Api/WebSiteRecordInfo")]
+        public JsonResult GetWebsiteRecordsInfo() {
+            var records = repo!.GetAll();
+            WebsiteRecordSerializer serializer = new WebsiteRecordSerializer();
+            string json = serializer.SerializeWebsiteRecords(records);
+            return Json(json);
+        }
+
+        [HttpPut]
+        [Route("Api/WebSiteRecord/StartNewExecution")]
         public void StartNewExecution(int recordId) {
             var record = repo!.Find(recordId);
             if (record is not null) { 
 			    repo.StartNewExecution(record);
 			}
 		}
-
-        [HttpDelete]
-        public void DeleteWebSiteRecord(int recordId) {
-            repo!.Delete(recordId);
-        }
 
         [HttpPost]
         public JsonResult GetGraphByIds([FromBody] int[] listId) {
@@ -55,19 +67,13 @@ namespace WebCrawler.Controllers
         }
 
         [HttpGet]
-        public JsonResult GetWebsiteRecords() {
-            var records = repo!.GetAll();
-            WebsiteRecordSerializer serializer = new WebsiteRecordSerializer();
-            string json = serializer.SerializeWebsiteRecords(records);
-            return Json(json);
-        }
-
-        [HttpGet]
+        [Route("Api/WebSiteRecordInfo/Executions")]
         public JsonResult GetExecutions() { 
             ExecutionSerializer es = new ExecutionSerializer();
             string json = es.SerializeAllExecutions(repo!);
             return Json(json);
         }
+
         [HttpPost]
         public JsonResult GetGraphs([FromBody] int[] recordIds) {
             Console.WriteLine(recordIds.Length);
